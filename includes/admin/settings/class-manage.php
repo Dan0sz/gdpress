@@ -90,13 +90,14 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                             $is_gf = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
                             $classes      = $i % 2 ? 'even ' : '';
                             $classes      .= $is_ga || $is_gf ? 'suggestion' : '';
+                            $local_url    = Gdpress::get_local_url($type, $request['name'], true);
                             ?>
                             <tr <?= $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
                                 <td class="downloaded"><?= $is_ga || $is_gf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
                                 <th class="name" scope="row"><?= $request['name']; ?></th>
                                 <td class="href"><a href="#" title="<?= $request['href']; ?>"><?= $request['href']; ?></a></td>
-                                <td class="href"></td>
-                                <td class="exclude"><input type="checkbox" <?= Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?= $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
+                                <td class="href"><a href="#" title="<?= $local_url; ?>"><?= $local_url; ?></a></td>
+                                <td class=" exclude"><input type="checkbox" <?= Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?= $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

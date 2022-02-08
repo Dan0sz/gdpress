@@ -120,6 +120,34 @@ class Gdpress
     }
 
     /**
+     * Contains all URLs marked as excluded.
+     * 
+     * @return array 
+     */
+    public static function local()
+    {
+        static $local;
+
+        /**
+         * Get a fresh copy from the database if $excluded is empty|null|false (on 1st run)
+         */
+        if (empty($local)) {
+            $local = get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_LOCAL, []) ?: [];
+        }
+
+        /**
+         * get_option() should take care of this, but often it doesn't.
+         * 
+         * @since v0.1
+         */
+        if (is_string($local)) {
+            $local = unserialize($local);
+        }
+
+        return $local;
+    }
+
+    /**
      * Check if $url is marked as excluded.
      * 
      * @param mixed $type 
@@ -151,5 +179,29 @@ class Gdpress
         }
 
         return true;
+    }
+
+    /**
+     * Gets the local url for $filename
+     * 
+     * @param string $type 
+     * @param string $filename 
+     * @param bool $decode
+     * 
+     * @return string 
+     */
+    public static function get_local_url($type, $filename, $decode = false)
+    {
+        if (!isset(self::local()[$type])) {
+            return '';
+        }
+
+        foreach (self::local()[$type] as $local_url) {
+            if (strpos($local_url, $filename) !== false) {
+                return $decode ? urldecode($local_url) : $local_url;
+            }
+        }
+
+        return '';
     }
 }
