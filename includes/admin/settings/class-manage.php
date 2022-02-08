@@ -90,13 +90,14 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                             $suggest_omgf = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
                             $classes      = $i % 2 ? 'even ' : '';
                             $classes      .= $suggest_caos || $suggest_omgf ? 'suggestion' : '';
+                            $excluded     = in_array($request['href'], Gdpress::excluded()[$type]);
                             ?>
                             <tr <?= $suggest_caos || $suggest_omgf ? "class='$classes'" : ''; ?>>
                                 <td class="downloaded"><?= $suggest_caos || $suggest_omgf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
                                 <th class="name" scope="row"><?= $request['name']; ?></th>
                                 <td class="href"><a href="#" title="<?= $request['href']; ?>"><?= $request['href']; ?></a></td>
                                 <td class="href"></td>
-                                <td class="exclude"><input type="checkbox" name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
+                                <td class="exclude"><input type="checkbox" <?= $excluded ? 'checked' : ''; ?> name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
