@@ -3,20 +3,115 @@
  * @author    Daan van den Bergh
  *            https://ffw.press
  */
-.gdpress.manage {
-  text-align: center;
+#gdpress-manage-form .gdpress.manage {
   padding: 25px 50px;
   max-width: 1024px;
-  margin: 20px auto 0 220px;
+  margin: 20px auto 20px 220px;
   overflow: visible;
   position: relative;
 }
-.gdpress.manage .option-title {
+#gdpress-manage-form .gdpress.manage p {
+  text-align: center;
+}
+#gdpress-manage-form .gdpress.manage .option-title {
   position: absolute;
   left: -220px;
   top: 0;
   font-weight: 600;
   font-size: 14px;
   color: #1d2327;
+}
+#gdpress-manage-form .gdpress.manage table {
+  width: 100%;
+  max-width: 1024px;
+  border-collapse: collapse;
+}
+#gdpress-manage-form .gdpress.manage table td,
+#gdpress-manage-form .gdpress.manage table th {
+  line-height: 2.5;
+  padding: 6px 12px;
+}
+#gdpress-manage-form .gdpress.manage table td.title,
+#gdpress-manage-form .gdpress.manage table th.title {
+  padding: 0;
+  line-height: 1;
+  border-bottom: 1px solid #c3c4c7;
+}
+#gdpress-manage-form .gdpress.manage table td.downloaded,
+#gdpress-manage-form .gdpress.manage table th.downloaded,
+#gdpress-manage-form .gdpress.manage table td.exclude,
+#gdpress-manage-form .gdpress.manage table th.exclude {
+  max-width: 25px;
+}
+#gdpress-manage-form .gdpress.manage table td.downloaded i,
+#gdpress-manage-form .gdpress.manage table th.downloaded i,
+#gdpress-manage-form .gdpress.manage table td.exclude i,
+#gdpress-manage-form .gdpress.manage table th.exclude i {
+  vertical-align: -5px;
+}
+#gdpress-manage-form .gdpress.manage table td.downloaded input,
+#gdpress-manage-form .gdpress.manage table th.downloaded input,
+#gdpress-manage-form .gdpress.manage table td.exclude input,
+#gdpress-manage-form .gdpress.manage table th.exclude input {
+  vertical-align: -3px;
+}
+#gdpress-manage-form .gdpress.manage table td.name,
+#gdpress-manage-form .gdpress.manage table th.name {
+  max-width: 250px;
+  width: 10%;
+}
+#gdpress-manage-form .gdpress.manage table td.href,
+#gdpress-manage-form .gdpress.manage table th.href {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 362px;
+  width: 35%;
+}
+#gdpress-manage-form .gdpress.manage table td.href a,
+#gdpress-manage-form .gdpress.manage table th.href a {
+  text-decoration: none;
+  color: #3c434a;
+}
+#gdpress-manage-form .gdpress.manage table tbody th {
+  text-align: left;
+}
+#gdpress-manage-form .gdpress.manage table tbody tr.even {
+  background-color: #f0f0f1;
+}
+#gdpress-manage-form .gdpress.manage table tbody tr.suggestion {
+  background-color: #FFDC00;
+}
+#gdpress-manage-form .button-cancel {
+  color: #a00;
+  text-decoration: none;
+  border-color: transparent;
+  box-shadow: none;
+  background: 0 0;
+  border-radius: 3px;
+  white-space: nowrap;
+  padding: 1px 10px !important;
+}
+#gdpress-manage-form .button-cancel:hover {
+  cursor: pointer;
+  background: #d54e21;
+  color: #fff;
+  border-color: #d54e21;
+}
+/**
+ * Welcome Block
+ */
+#footer-thankyou a {
+  vertical-align: -0.65em;
+}
+#footer-thankyou .dashicons.ffwp-heart {
+  vertical-align: middle;
+}
+#footer-thankyou .dashicons.ffwp-heart:before {
+  color: #FF4136;
+}
+#footer-thankyou .signature-image {
+  width: 96px;
 }
 /*# sourceMappingURL=./gdpress-admin.css.map */

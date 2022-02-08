@@ -8,9 +8,6 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
 {
-    /** @var string $text_domain */
-    private $text_domain = 'gdpr-press';
-
     /**
      * Set fields.
      * 
@@ -32,13 +29,9 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         // Open
         add_filter('gdpress_manage_content', [$this, 'do_title']);
-        add_filter('gdpress_manage_content', [$this, 'do_before']);
 
         // Content
         add_filter('gdpress_manage_content', [$this, 'manage_section']);
-
-        // Close
-        add_filter('gdpress_manage_content', [$this, 'do_after']);
     }
 
     /**
@@ -52,11 +45,76 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
         <div class="gdpress manage postbox">
             <span class="option-title"><?= __('External Requests Manager', $this->text_domain); ?></span>
             <div class="gdpress-container">
-                <p>
-                    <?= __('Manage all of your site\'s external requests, blablabla.', $this->text_domain); ?>
-                </p>
+                <?php if (Gdpress::requests()) : ?>
+                    <?php $this->manage_screen(); ?>
+                <?php else : ?>
+                    <?php $this->start_screen(); ?>
+                <?php endif; ?>
             </div>
         </div>
+        <?php
+    }
+
+    private function manage_screen()
+    {
+        if (empty(Gdpress::requests())) : ?>
+            <p>
+                <em><?= __('Uh-oh! Something must\'ve gone wrong while scanning the website.', $this->text_domain); ?></em>
+            </p>
+        <?php else : ?>
+            <?php
+            $css_count = isset(Gdpress::requests()['css']) ? count(Gdpress::requests()['css']) : 0;
+            $js_count  = isset(Gdpress::requests()['js']) ? count(Gdpress::requests()['js']) : 0;
+            ?>
+            <p>
+                <em><?= sprintf(__('Beep-boop! GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
+            </p>
+            <table>
+                <thead>
+                    <th class="downloaded" scope="col"><?php /** Header for Downloaded Status column */; ?></th>
+                    <th class="name" scope="col"><?= __('Filename', $this->text_domain); ?></th>
+                    <th class="href" scope="col"><?= __('External URL', $this->text_domain); ?></th>
+                    <th class="href" scope="col"><?= __('Local URL', $this->text_domain); ?></th>
+                    <th class="exclude" scope="col"><?= __('Exclude', $this->text_domain); ?></th>
+                </thead>
+                <?php foreach (Gdpress::requests() as $type => $requests) : ?>
+                    <tbody class="<?= $type; ?>">
+                        <tr>
+                            <td class="title" colspan="5">
+                                <h3><?= strtoupper($type); ?></h3>
+                            </td>
+                        </tr>
+                        <?php foreach ($requests as $i => $request) : ?>
+                            <?php
+                            $suggest_caos = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
+                            $suggest_omgf = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                            $classes      = $i % 2 ? 'even ' : '';
+                            $classes      .= $suggest_caos || $suggest_omgf ? 'suggestion' : '';
+                            ?>
+                            <tr <?= $suggest_caos || $suggest_omgf ? "class='$classes'" : ''; ?>>
+                                <td class="downloaded"><?= $suggest_caos || $suggest_omgf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
+                                <th class="name" scope="row"><?= $request['name']; ?></th>
+                                <td class="href"><a href="#" title="<?= $request['href']; ?>"><?= $request['href']; ?></a></td>
+                                <td class="href"></td>
+                                <td class="exclude"><input type="checkbox" name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                <?php endforeach; ?>
+            </table>
+            <input type="hidden" name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS; ?>" value='<?= serialize(Gdpress::requests()); ?>' />
+        <?php endif;
+    }
+
+    private function start_screen()
+    {
+        ?>
+        <p>
+            <em><?= __('Wow, such empty! Try giving this big button a steady push.', $this->text_domain); ?></em>
+        </p>
+        <p>
+            <button data-nonce="<?= wp_create_nonce(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE); ?>" id="gdpress-fetch" class="button button-primary button-hero"><?= __('Scan Website', $this->text_domain); ?></button>
+        </p>
 <?php
     }
 }

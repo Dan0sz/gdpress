@@ -61,4 +61,32 @@ class Gdpress
     {
         new Gdpress_Admin_Settings();
     }
+
+    /**
+     * Contains all fetched external requests.
+     * 
+     * @return array 
+     */
+    public static function requests()
+    {
+        static $requests;
+
+        /**
+         * Get a fresh copy from the database if $optimized_fonts is empty|null|false (on 1st run)
+         */
+        if (empty($requests)) {
+            $requests = get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, []) ?: [];
+        }
+
+        /**
+         * get_option() should take care of this, but sometimes it doesn't.
+         * 
+         * @since v0.1
+         */
+        if (is_string($requests)) {
+            $requests = unserialize($requests);
+        }
+
+        return $requests;
+    }
 }

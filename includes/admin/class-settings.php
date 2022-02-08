@@ -12,11 +12,18 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     const GDPRESS_ADMIN_SECTION_MANAGE = 'gdpress-manage';
     const GDPRESS_ADMIN_SECTION_HELP   = 'gdpress-help';
     const GDPRESS_ADMIN_CSS_HANDLE     = 'gdpress-admin-css';
+    const GDPRESS_ADMIN_JS_HANDLE      = 'gdpress-admin-js';
 
     /**
      * Transients
      */
     const GDPRESS_TRANSIENT_NEWS_REEL = 'gdpress_news_reel';
+
+    /**
+     * Settings
+     */
+    const GDPRESS_MANAGE_SETTING_REQUESTS = 'gdpress_detected_external_requests';
+    const GDPRESS_MANAGE_SETTING_EXCLUDED = 'gdpress_excluded_requests';
 
     /** @var string $active_tab */
     private $active_tab = '';
@@ -101,7 +108,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
         <div class="wrap">
             <h1><?php _e('GDPRess | Eliminate External Requests', $this->text_domain); ?></h1>
 
-            <h2 class="caos-nav nav-tab-wrapper">
+            <h2 class="gpress-nav nav-tab-wrapper">
                 <?php do_action('gdpress_settings_tab'); ?>
             </h2>
 
@@ -116,8 +123,9 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
                 $current_section = str_replace('-', '_', $this->active_tab);
                 do_action("after_$current_section"); ?>
 
-                <?php if ($this->active_tab !== self::GDPRESS_ADMIN_SECTION_MANAGE) : ?>
+                <?php if (Gdpress::requests()) : ?>
                     <?php submit_button(__('Save Changes & Download', $this->text_domain), 'primary', 'submit', false); ?>
+                    <a href="#" id="gdpress-flush" data-cache-section="/*" data-nonce="<?= wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
                 <?php endif; ?>
             </form>
         </div>
@@ -192,7 +200,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
      */
     public function enqueue_admin_assets()
     {
-        // wp_enqueue_script(self::OMGF_ADMIN_JS_HANDLE, plugin_dir_url(OMGF_PLUGIN_FILE) . 'assets/js/omgf-admin.js', ['jquery'], OMGF_STATIC_VERSION, true);
+        wp_enqueue_script(self::GDPRESS_ADMIN_JS_HANDLE, plugin_dir_url(GDPRESS_PLUGIN_FILE) . 'assets/js/gdpress-admin.js', ['jquery'], GDPRESS_STATIC_VERSION, true);
         wp_enqueue_style(self::GDPRESS_ADMIN_CSS_HANDLE, plugin_dir_url(GDPRESS_PLUGIN_FILE) . 'assets/css/gdpress-admin.css', [], GDPRESS_STATIC_VERSION);
     }
 

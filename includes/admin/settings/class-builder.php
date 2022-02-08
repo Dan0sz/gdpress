@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 class Gdpress_Admin_Settings_Builder
 {
     /** @var string $plugin_text_domain */
-    protected $plugin_text_domain = 'gdpr-press';
+    protected $text_domain = 'gdpr-press';
 
     /** @var string $utm_tags */
     protected $utm_tags = '?utm_source=gdpress&utm_medium=plugin&utm_campaign=settings';

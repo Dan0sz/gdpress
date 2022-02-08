@@ -26,7 +26,9 @@ class Gdpress_Admin
     private function init()
     {
         add_action('admin_notices', [$this, 'print_notices']);
+        add_action('admin_init', [$this, 'download_files']);
 
+        $this->add_ajax_hooks();
         $this->build_manage_section();
         $this->build_help_section();
     }
@@ -39,6 +41,20 @@ class Gdpress_Admin
     public function print_notices()
     {
         Gdpress_Admin_Notice::print_notices();
+    }
+
+    public function download_files()
+    {
+    }
+
+    /**
+     * Add AJAX hooks.
+     * 
+     * @return void 
+     */
+    private function add_ajax_hooks()
+    {
+        new Gdpress_Admin_Ajax();
     }
 
     /**
