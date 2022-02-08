@@ -31,6 +31,10 @@ class Gdpress
         if (is_admin()) {
             $this->render_admin_area();
         }
+
+        if (!is_admin()) {
+            $this->rewrite_urls();
+        }
     }
 
     /**
@@ -61,6 +65,16 @@ class Gdpress
     private function render_admin_area()
     {
         new Gdpress_Admin_Settings();
+    }
+
+    /**
+     * Initiate URL rewriting in frontend.
+     * 
+     * @return void 
+     */
+    private function rewrite_urls()
+    {
+        new Gdpress_Rewrite();
     }
 
     /**
