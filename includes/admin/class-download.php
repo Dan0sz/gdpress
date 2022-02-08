@@ -85,11 +85,20 @@ class Gdpress_Admin_Download
             }
         }
 
+        /**
+         * Write everything to the database.
+         */
         Gdpress::set_local_url('', '', true);
     }
 
     /**
+     * Downloade $filename from $url.
      * 
+     * @param mixed $type 
+     * @param mixed $filename 
+     * @param mixed $url 
+     * @return string 
+     * @throws SodiumException 
      */
     private function download_file($type, $filename, $url)
     {
