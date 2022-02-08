@@ -75,7 +75,7 @@ class Gdpress
      */
     private function rewrite_urls()
     {
-        new Gdpress_Rewrite();
+        new Gdpress_RewriteUrl();
     }
 
     /**

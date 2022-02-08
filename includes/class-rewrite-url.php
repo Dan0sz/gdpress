@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
  * @author    Daan van den Bergh
  *            https://ffw.press
  */
-class Gdpress_Rewrite
+class Gdpress_RewriteUrl
 {
     /**
      * Set fields.
@@ -48,7 +48,14 @@ class Gdpress_Rewrite
                     continue;
                 }
 
-                $html = str_replace($request['href'], Gdpress::get_local_url($type, $request['name'], true), $html);
+                $local_url = Gdpress::get_local_url($type, $request['name'], true);
+                $local_dir = str_replace(content_url(), WP_CONTENT_DIR, $local_url);
+
+                if (!file_exists($local_dir)) {
+                    continue;
+                }
+
+                $html = str_replace($request['href'], $local_url, $html);
             }
         }
 
