@@ -57,7 +57,7 @@ class Gdpress_Admin_Ajax
 
         $html     = wp_remote_retrieve_body($response);
         $document = new DOMDocument();
-        $document->loadHTML($html);
+        @$document->loadHTML($html);
 
         $stylesheets  = $document->getElementsByTagName('link');
         $external_css = [];
