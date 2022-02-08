@@ -86,18 +86,17 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                         </tr>
                         <?php foreach ($requests as $i => $request) : ?>
                             <?php
-                            $suggest_caos = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
-                            $suggest_omgf = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                            $is_ga = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
+                            $is_gf = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
                             $classes      = $i % 2 ? 'even ' : '';
-                            $classes      .= $suggest_caos || $suggest_omgf ? 'suggestion' : '';
-                            $excluded     = in_array($request['href'], Gdpress::excluded()[$type]);
+                            $classes      .= $is_ga || $is_gf ? 'suggestion' : '';
                             ?>
-                            <tr <?= $suggest_caos || $suggest_omgf ? "class='$classes'" : ''; ?>>
-                                <td class="downloaded"><?= $suggest_caos || $suggest_omgf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
+                            <tr <?= $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
+                                <td class="downloaded"><?= $is_ga || $is_gf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
                                 <th class="name" scope="row"><?= $request['name']; ?></th>
                                 <td class="href"><a href="#" title="<?= $request['href']; ?>"><?= $request['href']; ?></a></td>
                                 <td class="href"></td>
-                                <td class="exclude"><input type="checkbox" <?= $excluded ? 'checked' : ''; ?> name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
+                                <td class="exclude"><input type="checkbox" <?= Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?= $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

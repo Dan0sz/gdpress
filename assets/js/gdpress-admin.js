@@ -10,6 +10,7 @@ jQuery(document).ready(function ($) {
         init: function () {
             // Buttons
             $('#gdpress-fetch').on('click', this.fetch);
+            $('.locked').on('click', this.lock);
         },
 
         fetch: function (e) {
@@ -26,6 +27,10 @@ jQuery(document).ready(function ($) {
                     location.reload();
                 }
             });
+        },
+
+        lock: function () {
+            this.checked = true;
         }
     }
 
