@@ -118,7 +118,7 @@ class Gdpress_Admin_Ajax
             $external_requests['js'] = $external_js;
         }
 
-        update_option('gdpress_detected_external_requests', $external_requests);
+        update_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $external_requests);
 
         wp_send_json_success();
     }

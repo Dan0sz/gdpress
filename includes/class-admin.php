@@ -43,8 +43,14 @@ class Gdpress_Admin
         Gdpress_Admin_Notice::print_notices();
     }
 
+    /**
+     * File Downloader
+     * 
+     * @return void 
+     */
     public function download_files()
     {
+        new Gdpress_Admin_Download();
     }
 
     /**

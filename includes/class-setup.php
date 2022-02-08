@@ -8,9 +8,6 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Setup
 {
-    /** @var string $cache_dir */
-    private $cache_dir = '/uploads/gdpress';
-
     /** @var string $full_cache_path */
     private $full_cache_path;
 
@@ -21,7 +18,7 @@ class Gdpress_Setup
      */
     public function __construct()
     {
-        $this->full_cache_path = WP_CONTENT_DIR . $this->cache_dir;
+        $this->full_cache_path = WP_CONTENT_DIR . GDPRESS_CACHE_DIR;
 
         $this->init_hooks();
     }

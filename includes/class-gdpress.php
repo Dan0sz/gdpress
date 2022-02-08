@@ -40,6 +40,7 @@ class Gdpress
      */
     private function define_constants()
     {
+        define('GDPRESS_CACHE_DIR', '/uploads/gdpress');
     }
 
     /**
@@ -72,7 +73,7 @@ class Gdpress
         static $requests;
 
         /**
-         * Get a fresh copy from the database if $optimized_fonts is empty|null|false (on 1st run)
+         * Get a fresh copy from the database if $requests is empty|null|false (on 1st run)
          */
         if (empty($requests)) {
             $requests = get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, []) ?: [];
@@ -88,5 +89,67 @@ class Gdpress
         }
 
         return $requests;
+    }
+
+    /**
+     * Contains all URLs marked as excluded.
+     * 
+     * @return array 
+     */
+    public static function excluded()
+    {
+        static $excluded;
+
+        /**
+         * Get a fresh copy from the database if $excluded is empty|null|false (on 1st run)
+         */
+        if (empty($excluded)) {
+            $excluded = get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED, []) ?: [];
+        }
+
+        /**
+         * get_option() should take care of this, but sometimes it doesn't.
+         * 
+         * @since v0.1
+         */
+        if (is_string($excluded)) {
+            $excluded = unserialize($excluded);
+        }
+
+        return $excluded;
+    }
+
+    /**
+     * Check if $url is marked as excluded.
+     * 
+     * @param mixed $type 
+     * @param mixed $url 
+     * @return bool 
+     */
+    public static function is_excluded($type, $url)
+    {
+        return isset(Gdpress::excluded()[$type]) && in_array($url, Gdpress::excluded()[$type]);
+    }
+
+    /**
+     * 
+     * @param string $type 
+     * @param string $url 
+     * @param bool $write_to_db 
+     * @return bool 
+     */
+    public static function set_local_url($type = '', $url = '', $write_to_db = false)
+    {
+        static $local_urls;
+
+        if ($type && $url) {
+            $local_urls[$type][] = $url;
+        }
+
+        if ($write_to_db) {
+            return update_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_LOCAL, $local_urls);
+        }
+
+        return true;
     }
 }
