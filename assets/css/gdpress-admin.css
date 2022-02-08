@@ -21,6 +21,33 @@
   font-size: 14px;
   color: #1d2327;
 }
+#gdpress-manage-form .gdpress.manage .tooltip {
+  position: relative;
+  font-size: 16px;
+  line-height: 25px;
+}
+#gdpress-manage-form .gdpress.manage .tooltip .tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 100%;
+  z-index: 10000;
+  background-color: rgba(0, 0, 0, 0.75);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 0.8em;
+  color: #fff;
+  line-height: 1.5;
+  width: 250px;
+  padding: 10px;
+  margin-left: -125px;
+  border-radius: 3px;
+}
+#gdpress-manage-form .gdpress.manage .tooltip .tooltip-text a {
+  color: white;
+}
+#gdpress-manage-form .gdpress.manage .tooltip:hover .tooltip-text {
+  visibility: visible;
+}
 #gdpress-manage-form .gdpress.manage table {
   width: 100%;
   max-width: 1024px;
@@ -48,6 +75,18 @@
 #gdpress-manage-form .gdpress.manage table td.exclude i,
 #gdpress-manage-form .gdpress.manage table th.exclude i {
   vertical-align: -5px;
+}
+#gdpress-manage-form .gdpress.manage table td.downloaded i.dashicons-yes,
+#gdpress-manage-form .gdpress.manage table th.downloaded i.dashicons-yes,
+#gdpress-manage-form .gdpress.manage table td.exclude i.dashicons-yes,
+#gdpress-manage-form .gdpress.manage table th.exclude i.dashicons-yes {
+  color: #2ECC40;
+}
+#gdpress-manage-form .gdpress.manage table td.downloaded i.dashicons-info-outline,
+#gdpress-manage-form .gdpress.manage table th.downloaded i.dashicons-info-outline,
+#gdpress-manage-form .gdpress.manage table td.exclude i.dashicons-info-outline,
+#gdpress-manage-form .gdpress.manage table th.exclude i.dashicons-info-outline {
+  color: #201e14;
 }
 #gdpress-manage-form .gdpress.manage table td.downloaded input,
 #gdpress-manage-form .gdpress.manage table th.downloaded input,
@@ -81,7 +120,7 @@
   background-color: #f0f0f1;
 }
 #gdpress-manage-form .gdpress.manage table tbody tr.suggestion {
-  background-color: #FFDC00;
+  background-color: #FFF2A0;
 }
 #gdpress-manage-form .button-cancel {
   color: #a00;
@@ -98,6 +137,37 @@
   background: #d54e21;
   color: #fff;
   border-color: #d54e21;
+}
+#gdpress-help-form .postbox {
+  padding: 0 15px 5px;
+}
+#gdpress-help-form .postbox .column-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+#gdpress-help-form .postbox .column-container .column ul li {
+  margin-bottom: 10px;
+}
+#gdpress-help-form .postbox .column-container .column ul li:last-child {
+  margin-bottom: none;
+}
+#gdpress-help-form .postbox .column-container .column ul li a {
+  text-decoration: none;
+  line-height: 1.45;
+}
+#gdpress-help-form .postbox .column-container .column ul li a i.dashicons {
+  margin-right: 5px;
+  color: #646970;
+}
+#gdpress-help-form .postbox .column-container .column.last {
+  margin-right: 45px;
+}
+#gdpress-help-form .postbox .column-container .column.last .signature {
+  text-align: center;
+}
+#gdpress-help-form .postbox .column-container .column.last .signature .dashicons-heart {
+  color: #FF4136;
 }
 /**
  * Welcome Block

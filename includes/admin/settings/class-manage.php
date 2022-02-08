@@ -8,6 +8,9 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
 {
+    /** @var string $notice */
+    private $notice;
+
     /**
      * Set fields.
      * 
@@ -15,7 +18,8 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
      */
     public function __construct()
     {
-        $this->title = __('Manage External Requests', $this->text_domain);
+        $this->title  = __('Manage External Requests', $this->text_domain);
+        $this->notice = __('Because many extra measures are needed to comply with GDPR while using %s, GDPRess ignores this file automatically. <a target="_blank" href="%s">Read more</a>', $this->text_domain);
 
         $this->init();
     }
@@ -86,14 +90,17 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                         </tr>
                         <?php foreach ($requests as $i => $request) : ?>
                             <?php
-                            $is_ga     = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
-                            $is_gf     = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
-                            $classes   = $i % 2 ? 'even ' : '';
-                            $classes   .= $is_ga || $is_gf ? 'suggestion' : '';
-                            $local_url = Gdpress::get_local_url($request['href'], $type);
+                            $is_ga      = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
+                            $is_gf      = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                            $classes    = $i % 2 ? 'even ' : '';
+                            $classes    .= $is_ga || $is_gf ? 'suggestion' : '';
+                            $local_url  = Gdpress::get_local_url($request['href'], $type);
+                            $downloaded = file_exists(Gdpress::get_local_path($request['href'], $type));
+                            $ga_descr   = sprintf(__($this->notice, $this->text_domain), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
+                            $gf_descr   = sprintf(__($this->notice, $this->text_domain), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
                             ?>
                             <tr <?= $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
-                                <td class="downloaded"><?= $is_ga || $is_gf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
+                                <td class="downloaded"><?= $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? $ga_descr : $gf_descr) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
                                 <th class="name" scope="row"><?= $request['name']; ?></th>
                                 <td class="href"><a href="#" title="<?= $request['href']; ?>"><?= $request['href']; ?></a></td>
                                 <td class="href"><a href="#" title="<?= $local_url; ?>"><?= $local_url; ?></a></td>

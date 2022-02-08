@@ -124,7 +124,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
                 $current_section = str_replace('-', '_', $this->active_tab);
                 do_action("after_$current_section"); ?>
 
-                <?php if (Gdpress::requests()) : ?>
+                <?php if ($this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Gdpress::requests()) : ?>
                     <?php submit_button(__('Save Changes & Download', $this->text_domain), 'primary', 'submit', false); ?>
                     <a href="#" id="gdpress-flush" data-nonce="<?= wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
                 <?php endif; ?>
@@ -142,6 +142,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     {
         if (
             $this->active_tab !== self::GDPRESS_ADMIN_SECTION_MANAGE
+            && $this->active_tab !== self::GDPRESS_ADMIN_SECTION_HELP
         ) {
             $this->active_tab = self::GDPRESS_ADMIN_SECTION_MANAGE;
         }
