@@ -17,9 +17,6 @@ class Gdpress_Admin_Download
     /** @var bool $settings_updated */
     private $settings_updated = false;
 
-    /** @var string $cache_dir */
-    private $cache_dir = '';
-
     /**
      * Set Fields.
      * 
@@ -30,7 +27,6 @@ class Gdpress_Admin_Download
         $this->settings_page    = $_GET['page'] ?? '';
         $this->settings_tab     = $_GET['tab'] ?? Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
         $this->settings_updated = isset($_GET['settings-updated']);
-        $this->cache_dir        = WP_CONTENT_DIR . GDPRESS_CACHE_DIR;
 
         $this->maybe_download();
     }
@@ -69,8 +65,8 @@ class Gdpress_Admin_Download
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
-        if (!file_exists($this->cache_dir)) {
-            wp_mkdir_p($this->cache_dir);
+        if (!file_exists(GDPRESS_CACHE_ABSPATH)) {
+            wp_mkdir_p(GDPRESS_CACHE_ABSPATH);
         }
 
         foreach (Gdpress::requests() as $type => $requests) {
@@ -103,8 +99,8 @@ class Gdpress_Admin_Download
     private function download_file($type, $filename, $url)
     {
         $subfolder = str_replace('.', '-', parse_url($url)['host']);
-        $file_path = $this->cache_dir . "/$type/$subfolder/$filename";
-        $file_url  = urlencode(content_url(GDPRESS_CACHE_DIR . "/$type/$subfolder/$filename"));
+        $file_path = GDPRESS_CACHE_ABSPATH . "/$type/$subfolder/$filename";
+        $file_url  = urlencode(content_url(GDPRESS_CACHE_ABSPATH . "/$type/$subfolder/$filename"));
 
         if (file_exists($file_path)) {
             return $file_url;

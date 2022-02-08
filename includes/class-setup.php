@@ -8,9 +8,6 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Setup
 {
-    /** @var string $full_cache_path */
-    private $full_cache_path;
-
     /**
      * Set Fields
      * 
@@ -18,8 +15,6 @@ class Gdpress_Setup
      */
     public function __construct()
     {
-        $this->full_cache_path = WP_CONTENT_DIR . GDPRESS_CACHE_DIR;
-
         $this->init_hooks();
     }
 
@@ -40,8 +35,8 @@ class Gdpress_Setup
      */
     public function create_cache_dir()
     {
-        if (!is_dir($this->full_cache_path)) {
-            wp_mkdir_p($this->full_cache_path);
+        if (!is_dir(GDPRESS_CACHE_ABSPATH)) {
+            wp_mkdir_p(GDPRESS_CACHE_ABSPATH);
         }
     }
 }

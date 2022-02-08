@@ -126,7 +126,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
 
                 <?php if (Gdpress::requests()) : ?>
                     <?php submit_button(__('Save Changes & Download', $this->text_domain), 'primary', 'submit', false); ?>
-                    <a href="#" id="gdpress-flush" data-cache-section="/*" data-nonce="<?= wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
+                    <a href="#" id="gdpress-flush" data-nonce="<?= wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
                 <?php endif; ?>
             </form>
         </div>

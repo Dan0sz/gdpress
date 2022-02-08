@@ -45,6 +45,7 @@ class Gdpress
     private function define_constants()
     {
         define('GDPRESS_CACHE_DIR', '/uploads/gdpress');
+        define('GDPRESS_CACHE_ABSPATH', WP_CONTENT_DIR . GDPRESS_CACHE_DIR);
     }
 
     /**
