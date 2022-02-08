@@ -48,7 +48,7 @@ class Gdpress_RewriteUrl
                     continue;
                 }
 
-                $local_url = Gdpress::get_local_url($type, $request['name'], true);
+                $local_url = Gdpress::get_local_url($request['href'], $type);
                 $local_dir = str_replace(content_url(), WP_CONTENT_DIR, $local_url);
 
                 if (!file_exists($local_dir)) {

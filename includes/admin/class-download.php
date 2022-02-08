@@ -65,17 +65,13 @@ class Gdpress_Admin_Download
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
-        if (!file_exists(GDPRESS_CACHE_ABSPATH)) {
-            wp_mkdir_p(GDPRESS_CACHE_ABSPATH);
-        }
-
         foreach (Gdpress::requests() as $type => $requests) {
             foreach ($requests as $request) {
                 if (Gdpress::is_excluded($type, $request['href'])) {
                     continue;
                 }
 
-                $url = $this->download_file($type, $request['name'], $request['href']);
+                $url = $this->download_file($request['name'], $type, $request['href']);
 
                 Gdpress::set_local_url($type, $url);
             }
@@ -96,15 +92,19 @@ class Gdpress_Admin_Download
      * @return string 
      * @throws SodiumException 
      */
-    private function download_file($type, $filename, $url)
+    private function download_file($filename, $type, $url)
     {
-        $subfolder = str_replace('.', '-', parse_url($url)['host']);
-        $file_path = GDPRESS_CACHE_ABSPATH . "/$type/$subfolder/$filename";
-        $file_url  = urlencode(content_url(GDPRESS_CACHE_ABSPATH . "/$type/$subfolder/$filename"));
+        $file_path = Gdpress::get_local_path($url, $type);
+        $file_url  = Gdpress::get_local_url($url, $type, true);
 
         if (file_exists($file_path)) {
             return $file_url;
         }
+
+        /**
+         * Create dir for file recursively.
+         */
+        wp_mkdir_p(str_replace($filename, '', $file_path));
 
         $tmp = download_url($url);
 

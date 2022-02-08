@@ -197,26 +197,33 @@ class Gdpress
     }
 
     /**
-     * Gets the local url for $filename
+     * Generate a local path from $url.
      * 
-     * @param string $type 
-     * @param string $filename 
-     * @param bool $decode
+     * @param string $url 
+     * @param string $type
+     *  
+     * @return string 
+     */
+    public static function get_local_path($url, $type)
+    {
+        return GDPRESS_CACHE_ABSPATH . "/$type" . parse_url($url)['path'];
+    }
+
+    /**
+     * Generates a local URL from $url.
+     * 
+     * @param string $url
+     * @param string $type
+     * @param bool $bypass We can force returning the URL (even when the file doesn't exist) by setting this to true.
      * 
      * @return string 
      */
-    public static function get_local_url($type, $filename, $decode = false)
+    public static function get_local_url($url, $type, $bypass = false)
     {
-        if (!isset(self::local()[$type])) {
+        if (!file_exists(self::get_local_path($url, $type)) && !$bypass) {
             return '';
         }
 
-        foreach (self::local()[$type] as $local_url) {
-            if (strpos($local_url, $filename) !== false) {
-                return $decode ? urldecode($local_url) : $local_url;
-            }
-        }
-
-        return '';
+        return content_url(GDPRESS_CACHE_DIR . "/$type" . parse_url($url)['path']);
     }
 }

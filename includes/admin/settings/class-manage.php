@@ -86,11 +86,11 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                         </tr>
                         <?php foreach ($requests as $i => $request) : ?>
                             <?php
-                            $is_ga = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
-                            $is_gf = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
-                            $classes      = $i % 2 ? 'even ' : '';
-                            $classes      .= $is_ga || $is_gf ? 'suggestion' : '';
-                            $local_url    = Gdpress::get_local_url($type, $request['name'], true);
+                            $is_ga     = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
+                            $is_gf     = strpos($request['href'], 'fonts.googleapis.com') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                            $classes   = $i % 2 ? 'even ' : '';
+                            $classes   .= $is_ga || $is_gf ? 'suggestion' : '';
+                            $local_url = Gdpress::get_local_url($request['href'], $type);
                             ?>
                             <tr <?= $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
                                 <td class="downloaded"><?= $is_ga || $is_gf ? '<i class="dashicons dashicons-warning"></i>' : ''; ?></td>
