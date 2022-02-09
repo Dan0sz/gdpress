@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Notice
 {
-    const GDPRESS_ADMIN_NOTICE_TRANSIENT = 'caos_admin_notice';
+    const GDPRESS_ADMIN_NOTICE_TRANSIENT = 'gdpress_admin_notice';
     const GDPRESS_ADMIN_NOTICE_EXPIRATION = 60;
 
     /** @var array $notices */

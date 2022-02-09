@@ -60,7 +60,7 @@ class Gdpress_Admin_Settings_Builder
     public function do_tbody_open($class)
     {
     ?>
-        <tbody class="<?= $class; ?>" <?= empty(CAOS_OPT_COMPATIBILITY_MODE) ? '' : 'style="display: none;"'; ?>>
+        <tbody class="<?= $class; ?>">
         <?php
     }
 
