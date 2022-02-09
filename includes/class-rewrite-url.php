@@ -11,17 +11,18 @@ defined('ABSPATH') || exit;
  * 
  * Tests Passed:
  * * Autoptimize (everything on)
- * * WP Fastest Cache (all free options on)
- * * WP Rocket (all options on)
  * * W3 Total Cache
  *   - Page Cache: Disk (basic)
  *   - Database Cache: None
  *   - Object Cache: None
  *   - Browser Cache: Disabled
  *   - Lazy Load: Enabled
+ * * WP Fastest Cache (all free options on)
+ * * WP Rocket (all options on)
+ * * WP Super Cache (recommended settings on)
  * 
  * Tests Failed:
- * * WP Optimize
+ * * WP Optimize - External copies are still loaded.
  */
 class Gdpress_RewriteUrl
 {
