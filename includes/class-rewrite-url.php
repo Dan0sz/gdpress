@@ -5,6 +5,23 @@ defined('ABSPATH') || exit;
  * @package   GDPRess
  * @author    Daan van den Bergh
  *            https://ffw.press
+ * 
+ * This classes use an alternative method to rewrite URLs in the page source. It has been
+ * tested with the following page cache and JS/CSS optimization plugins:
+ * 
+ * Tests Passed:
+ * * Autoptimize (everything on)
+ * * WP Fastest Cache (all free options on)
+ * * WP Rocket (all options on)
+ * * W3 Total Cache
+ *   - Page Cache: Disk (basic)
+ *   - Database Cache: None
+ *   - Object Cache: None
+ *   - Browser Cache: Disabled
+ *   - Lazy Load: Enabled
+ * 
+ * Tests Failed:
+ * * WP Optimize
  */
 class Gdpress_RewriteUrl
 {
