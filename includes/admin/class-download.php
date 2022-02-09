@@ -129,6 +129,11 @@ class Gdpress_Admin_Download
     {
         wp_mkdir_p($path);
 
+        // Is relative protocol?
+        if (strpos($url, '//') === 0) {
+            $url = 'https:' . $url;
+        }
+
         $tmp = download_url($url);
 
         if (is_wp_error($tmp)) {
@@ -163,13 +168,20 @@ class Gdpress_Admin_Download
          */
         $font_faces = $font_faces[0];
 
+        /**
+         * Parse each @font-face statement for src url's.
+         */
         foreach ($font_faces as $font_face) {
-            preg_match_all('/url\([\'"](?P<urls>.+?)[\'"]\)/', $font_face, $urls);
+            preg_match_all('/url\([\'"]?(?P<urls>.+?)[\'"]?\)/', $font_face, $urls);
 
             $urls = $urls['urls'] ?? [];
 
+            /**
+             * Download each file (defined as @font-face src) to the appropriate dir.
+             */
             foreach ($urls as $url) {
-                if ($this->is_rel_url($url)) {
+                // Save a copy of $is_rel_url for later down the road.
+                if ($is_rel_url = $this->is_rel_url($url)) {
                     $url = $this->get_abs_url($url, $ext_url);
                 }
 
@@ -183,11 +195,23 @@ class Gdpress_Admin_Download
                     continue;
                 }
 
-                /** @var string $tmp */
+                /**
+                 * If absolute URLs are used for this @font-face statement, rewrite
+                 * $contents to use local cache dir.
+                 */
+                if (!$is_rel_url) {
+                    $contents = $this->replace_abs_urls($contents, $dir);
+                }
+
+                /**
+                 * Copy font file.
+                 */
                 copy($tmp, $path . $filename);
                 @unlink($tmp);
             }
         }
+
+        return $this->fs->put_contents($file, $contents);
     }
 
     /**
@@ -229,9 +253,24 @@ class Gdpress_Admin_Download
     }
 
     /**
+     * Parse $file contents for occurrences of host. 
+     * 
+     * @param string $contents 
+     * @param string $path 
+     * @return void 
+     */
+    private function replace_abs_urls($contents, $path)
+    {
+        $parts     = parse_url($path);
+        $local_url = content_url(GDPRESS_CACHE_DIR . $parts['path']);
+
+        return str_replace($path, $local_url, $contents);
+    }
+
+    /**
      * Gets filesystem instance.
      * 
-     * @return mixed 
+     * @return WP_Filesystem_Base 
      */
     private function filesystem()
     {
