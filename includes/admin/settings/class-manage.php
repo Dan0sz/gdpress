@@ -122,7 +122,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         ?>
         <p>
-            <em><?= __('Wow, such empty! 🙄 Try giving this big button a steady push.', $this->text_domain); ?></em>
+            <em><?= __('Wow, such empty! 🐼 Try giving this big button a steady push.', $this->text_domain); ?></em>
         </p>
         <p>
             <button data-nonce="<?= wp_create_nonce(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE); ?>" id="gdpress-fetch" class="button button-primary button-hero"><?= __('Scan Website', $this->text_domain); ?></button>
