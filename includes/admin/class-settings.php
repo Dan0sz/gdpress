@@ -113,7 +113,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
                 <?php do_action('gdpress_settings_tab'); ?>
             </h2>
 
-            <form id="<?= $this->active_tab; ?>-form" method="post" action="options.php?tab=<?= $this->active_tab; ?>">
+            <form id="<?php echo $this->active_tab; ?>-form" method="post" action="options.php?tab=<?php echo $this->active_tab; ?>">
                 <?php
                 settings_fields($this->active_tab);
                 do_settings_sections($this->active_tab); ?>
@@ -126,7 +126,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
 
                 <?php if ($this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Gdpress::requests()) : ?>
                     <?php submit_button(__('Save Changes & Download', $this->text_domain), 'primary', 'submit', false); ?>
-                    <a href="#" id="gdpress-flush" data-nonce="<?= wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
+                    <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
                 <?php endif; ?>
             </form>
         </div>
@@ -321,8 +321,8 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     private function generate_tab($id, $icon = null, $label = null)
     {
     ?>
-        <a class="nav-tab dashicons-before <?= $icon; ?> <?= $this->active_tab == $id ? 'nav-tab-active' : ''; ?>" href="<?= $this->generate_tab_link($id); ?>">
-            <?= $label; ?>
+        <a class="nav-tab dashicons-before <?php echo $icon; ?> <?php echo $this->active_tab == $id ? 'nav-tab-active' : ''; ?>" href="<?php echo $this->generate_tab_link($id); ?>">
+            <?php echo $label; ?>
         </a>
 <?php
     }

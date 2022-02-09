@@ -47,7 +47,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
 ?>
         <div class="gdpress manage postbox">
-            <span class="option-title"><?= __('External Requests Manager', $this->text_domain); ?></span>
+            <span class="option-title"><?php echo __('External Requests Manager', $this->text_domain); ?></span>
             <div class="gdpress-container">
                 <?php if (Gdpress::requests()) : ?>
                     <?php $this->manage_screen(); ?>
@@ -63,7 +63,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         if (empty(Gdpress::requests())) : ?>
             <p>
-                <em><?= __('Uh-oh! 😱 Something must\'ve gone wrong while scanning the website.', $this->text_domain); ?></em>
+                <em><?php echo __('Uh-oh! 😱 Something must\'ve gone wrong while scanning the website.', $this->text_domain); ?></em>
             </p>
         <?php else : ?>
             <?php
@@ -72,24 +72,24 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
             ?>
             <p>
                 <?php if (empty(Gdpress::local())) : ?>
-                    <em><?= sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
+                    <em><?php echo sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
                 <?php else : ?>
-                    <em><?= sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax and enjoy your GDPR compliance.', $this->text_domain), count(Gdpress::local()['css']) ?? 0, count(Gdpress::local()['js'] ?? 0)); ?></em>
+                    <em><?php echo sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax and enjoy your GDPR compliance.', $this->text_domain), count(Gdpress::local()['css']) ?? 0, count(Gdpress::local()['js'] ?? 0)); ?></em>
                 <?php endif; ?>
             </p>
             <table>
                 <thead>
                     <th class="downloaded" scope="col"><?php /** Header for Downloaded Status column */; ?></th>
-                    <th class="name" scope="col"><?= __('Filename', $this->text_domain); ?></th>
-                    <th class="href" scope="col"><?= __('External URL', $this->text_domain); ?></th>
-                    <th class="href" scope="col"><?= __('Local URL', $this->text_domain); ?></th>
-                    <th class="exclude" scope="col"><?= __('Exclude', $this->text_domain); ?></th>
+                    <th class="name" scope="col"><?php echo __('Filename', $this->text_domain); ?></th>
+                    <th class="href" scope="col"><?php echo __('External URL', $this->text_domain); ?></th>
+                    <th class="href" scope="col"><?php echo __('Local URL', $this->text_domain); ?></th>
+                    <th class="exclude" scope="col"><?php echo __('Exclude', $this->text_domain); ?></th>
                 </thead>
                 <?php foreach (Gdpress::requests() as $type => $requests) : ?>
-                    <tbody class="<?= $type; ?>">
+                    <tbody class="<?php echo $type; ?>">
                         <tr>
                             <td class="title" colspan="5">
-                                <h3><?= strtoupper($type); ?></h3>
+                                <h3><?php echo strtoupper($type); ?></h3>
                             </td>
                         </tr>
                         <?php foreach ($requests as $i => $request) : ?>
@@ -103,18 +103,18 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                             $ga_descr   = sprintf(__($this->notice, $this->text_domain), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
                             $gf_descr   = sprintf(__($this->notice, $this->text_domain), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
                             ?>
-                            <tr <?= $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
-                                <td class="downloaded"><?= $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? $ga_descr : $gf_descr) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
-                                <th class="name" scope="row"><?= $request['name']; ?></th>
-                                <td class="href"><a href="#" title="<?= $request['href']; ?>"><?= $request['href']; ?></a></td>
-                                <td class="href"><a href="#" title="<?= $local_url; ?>"><?= $local_url; ?></a></td>
-                                <td class=" exclude"><input type="checkbox" <?= Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?= $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?= $type; ?>][]" value="<?= $request['href']; ?>" /></td>
+                            <tr <?php echo $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
+                                <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? $ga_descr : $gf_descr) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
+                                <th class="name" scope="row"><?php echo $request['name']; ?></th>
+                                <td class="href"><a href="#" title="<?php echo $request['href']; ?>"><?php echo $request['href']; ?></a></td>
+                                <td class="href"><a href="#" title="<?php echo $local_url; ?>"><?php echo $local_url; ?></a></td>
+                                <td class=" exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?php echo $type; ?>][]" value="<?php echo $request['href']; ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 <?php endforeach; ?>
             </table>
-            <input type="hidden" name="<?= Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS; ?>" value='<?= serialize(Gdpress::requests()); ?>' />
+            <input type="hidden" name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS; ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
         <?php endif;
     }
 
@@ -122,10 +122,10 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         ?>
         <p>
-            <em><?= __('Wow, such empty! 🐼 Try giving this big button a steady push.', $this->text_domain); ?></em>
+            <em><?php echo __('Wow, such empty! 🐼 Try giving this big button a steady push.', $this->text_domain); ?></em>
         </p>
         <p>
-            <button data-nonce="<?= wp_create_nonce(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE); ?>" id="gdpress-fetch" class="button button-primary button-hero"><?= __('Scan Website', $this->text_domain); ?></button>
+            <button data-nonce="<?php echo wp_create_nonce(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE); ?>" id="gdpress-fetch" class="button button-primary button-hero"><?php echo __('Scan Website', $this->text_domain); ?></button>
         </p>
 <?php
     }

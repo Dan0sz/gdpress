@@ -49,7 +49,7 @@ class Gdpress_Admin_Notice
 ?>
                     <div id="message" class="notice notice-<?php echo $type; ?> is-dismissible">
                         <?php foreach ($message as $line) : ?>
-                            <p><strong><?= $line; ?></strong></p>
+                            <p><strong><?php echo $line; ?></strong></p>
                         <?php endforeach; ?>
                     </div>
 <?php

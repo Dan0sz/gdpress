@@ -50,7 +50,7 @@ class Gdpress_Admin_Settings_Builder
     public function do_title()
     {
     ?>
-        <h2><?= $this->title ?></h2>
+        <h2><?php echo $this->title ?></h2>
     <?php
     }
 
@@ -60,7 +60,7 @@ class Gdpress_Admin_Settings_Builder
     public function do_tbody_open($class)
     {
     ?>
-        <tbody class="<?= $class; ?>">
+        <tbody class="<?php echo $class; ?>">
         <?php
     }
 
@@ -88,17 +88,17 @@ class Gdpress_Admin_Settings_Builder
     {
     ?>
         <tr>
-            <th scope="row"><?= $label; ?></th>
-            <td id="<?= $name . '_right_column'; ?>">
+            <th scope="row"><?php echo $label; ?></th>
+            <td id="<?php echo $name . '_right_column'; ?>">
                 <?php foreach ($inputs as $option => $option_label) : ?>
                     <label>
-                        <input type="radio" class="<?= str_replace('_', '-', $name . '_' . $option); ?>" name="<?= $name; ?>" value="<?= $option; ?>" <?= $option == $checked ? 'checked="checked"' : ''; ?> />
-                        <?= $option_label; ?>
+                        <input type="radio" class="<?php echo str_replace('_', '-', $name . '_' . $option); ?>" name="<?php echo $name; ?>" value="<?php echo $option; ?>" <?php echo $option == $checked ? 'checked="checked"' : ''; ?> />
+                        <?php echo $option_label; ?>
                     </label>
                     <br />
                 <?php endforeach; ?>
                 <p class="description">
-                    <?= apply_filters($name . '_setting_description', $description); ?>
+                    <?php echo apply_filters($name . '_setting_description', $description); ?>
                 </p>
             </td>
         </tr>
@@ -119,19 +119,19 @@ class Gdpress_Admin_Settings_Builder
     ?>
         <tr>
             <th scope="row">
-                <?= apply_filters($select . '_setting_label', $label); ?>
+                <?php echo apply_filters($select . '_setting_label', $label); ?>
             </th>
             <td>
-                <select name="<?= $select; ?>" class="<?= str_replace('_', '-', $select); ?>">
+                <select name="<?php echo $select; ?>" class="<?php echo str_replace('_', '-', $select); ?>">
                     <?php
                     $options = apply_filters($select . '_setting_options', $options);
                     ?>
                     <?php foreach ($options as $option => $option_label) : ?>
-                        <option value="<?= $option; ?>" <?= ($selected == $option) ? 'selected' : ''; ?>><?= $option_label; ?></option>
+                        <option value="<?php echo $option; ?>" <?php echo ($selected == $option) ? 'selected' : ''; ?>><?php echo $option_label; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <p class="description">
-                    <?= apply_filters($select . '_setting_description', $description); ?>
+                    <?php echo apply_filters($select . '_setting_description', $description); ?>
                 </p>
             </td>
         </tr>
@@ -150,11 +150,11 @@ class Gdpress_Admin_Settings_Builder
     {
     ?>
         <tr valign="top">
-            <th scope="row"><?= apply_filters($name . '_setting_label', $label); ?></th>
+            <th scope="row"><?php echo apply_filters($name . '_setting_label', $label); ?></th>
             <td>
-                <input class="<?= str_replace('_', '-', $name); ?>" type="number" name="<?= $name; ?>" min="<?= $min; ?>" value="<?= $value; ?>" />
+                <input class="<?php echo str_replace('_', '-', $name); ?>" type="number" name="<?php echo $name; ?>" min="<?php echo $min; ?>" value="<?php echo $value; ?>" />
                 <p class="description">
-                    <?= apply_filters($name . '_setting_description', $description); ?>
+                    <?php echo apply_filters($name . '_setting_description', $description); ?>
                 </p>
             </td>
         </tr>
@@ -174,12 +174,12 @@ class Gdpress_Admin_Settings_Builder
     public function do_text($label, $name, $placeholder, $value, $description = '', $visible = true)
     {
     ?>
-        <tr class="<?= str_replace('_', '-', $name); ?>-row" <?= $visible ? '' : 'style="display: none;"'; ?>>
-            <th scope="row"><?= apply_filters($name . '_setting_label', $label); ?></th>
+        <tr class="<?php echo str_replace('_', '-', $name); ?>-row" <?php echo $visible ? '' : 'style="display: none;"'; ?>>
+            <th scope="row"><?php echo apply_filters($name . '_setting_label', $label); ?></th>
             <td>
-                <input class="<?= str_replace('_', '-', $name); ?>" type="text" name="<?= $name; ?>" placeholder="<?= $placeholder; ?>" value="<?= $value; ?>" />
+                <input class="<?php echo str_replace('_', '-', $name); ?>" type="text" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $value; ?>" />
                 <p class="description">
-                    <?= apply_filters($name . 'setting_description', $description); ?>
+                    <?php echo apply_filters($name . 'setting_description', $description); ?>
                 </p>
             </td>
         </tr>
@@ -197,12 +197,12 @@ class Gdpress_Admin_Settings_Builder
     public function do_checkbox($label, $name, $checked, $description, $disabled = false, $visible = true)
     {
     ?>
-        <tr class='<?= str_replace('_', '-', $name); ?>-row' <?= $visible ? '' : 'style="display: none;"'; ?>>
-            <th scope="row"><?= apply_filters($name . '_setting_label', $label); ?></th>
+        <tr class='<?php echo str_replace('_', '-', $name); ?>-row' <?php echo $visible ? '' : 'style="display: none;"'; ?>>
+            <th scope="row"><?php echo apply_filters($name . '_setting_label', $label); ?></th>
             <td>
-                <label for="<?= $name; ?>">
-                    <input <?= apply_filters($name . '_setting_disabled', $disabled) ? 'disabled' : ''; ?> type="checkbox" class="<?= str_replace('_', '-', $name); ?>" name="<?= $name; ?>" <?= $checked == "on" ? 'checked = "checked"' : ''; ?> />
-                    <?= apply_filters($name . '_setting_description', $description); ?>
+                <label for="<?php echo $name; ?>">
+                    <input <?php echo apply_filters($name . '_setting_disabled', $disabled) ? 'disabled' : ''; ?> type="checkbox" class="<?php echo str_replace('_', '-', $name); ?>" name="<?php echo $name; ?>" <?php echo $checked == "on" ? 'checked = "checked"' : ''; ?> />
+                    <?php echo apply_filters($name . '_setting_description', $description); ?>
                 </label>
             </td>
         </tr>
