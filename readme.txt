@@ -28,9 +28,9 @@ GDPRess eliminates embedded resources (scripts (JS) and stylesheets (CSS)), down
 
 No, because there are other plugins (like Asset Cleanup or Autoptimize) that are already excellent at that.
 
-= GDPRess downloaded a stylesheet/script, but I'm still seeing external requests to font files, e.g. WOFF2 =
+= GDPRess downloaded a stylesheet/script, but I'm still seeing requests to font files loaded by the stylesheet? =
 
-It's possible that the stylesheet/script that was downloaded makes additional calls to external files. Perhaps in a future version I'll automate this process, too, but for now you should manually download the files and rewrite the URLs inside the stylesheet/script.
+GDPRess parses the stylesheet for defined src urls. But if it somehow missed it, I'd love to hear about that, because that might be a bug. Please head over to the support forum and submit a ticket, and include the full URL to the external stylesheet.
 
 == Screenshots ==
 

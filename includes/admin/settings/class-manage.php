@@ -19,7 +19,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     public function __construct()
     {
         $this->title  = __('Manage External Requests', $this->text_domain);
-        $this->notice = __('Because many extra measures are needed to comply with GDPR while using %s, GDPRess ignores this file automatically. <a target="_blank" href="%s">Read more</a>', $this->text_domain);
+        $this->notice = __('Because many extra measures are needed to comply with GDPR while using %s, GDPRess ignores this file automatically. <a target="_blank" href="%s">How do I fix this?</a>', $this->text_domain);
 
         $this->init();
     }
