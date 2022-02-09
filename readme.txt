@@ -12,7 +12,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 In January, 2022 a German court ruled that a website owner should pay a € 100,- fine, because embedded Google Fonts were used, essentially transferring the user's personal data (IP address) without the user's prior consent.
 
-This ruling doesn\'t go for just Google Fonts; loading any file from a server *outside* the US is in breach of GDPR.
+This ruling doesn\'t go for just Google Fonts; loading any file from a server *outside* the European Union is in breach of GDPR.
 
 GDPRess eliminates embedded resources (scripts (JS) and stylesheets (CSS)), downloads them and automatically rewrites the URLs in your site's frontend.
 
