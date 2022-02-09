@@ -71,7 +71,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
             $js_count  = isset(Gdpress::requests()['js']) ? count(Gdpress::requests()['js']) : 0;
             ?>
             <p>
-                <em><?= sprintf(__('Beep-boop! GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
+                <em><?= sprintf(__('Beep-boop! GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
             </p>
             <table>
                 <thead>
