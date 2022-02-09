@@ -244,7 +244,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
         $xml = get_transient(self::GDPRESS_TRANSIENT_NEWS_REEL);
 
         if (!$xml) {
-            $response = wp_remote_get('https://ffw.press/blog/tag/gdpress/feed');
+            $response = wp_remote_get('https://ffw.press/blog/tag/gdpr/feed');
 
             if (!is_wp_error($response)) {
                 $xml = wp_remote_retrieve_body($response);
@@ -274,7 +274,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
             return $text;
         }
 
-        $text = sprintf(__('Recently tagged <a target="_blank" href="%s"><strong>#GDPRess</strong></a> on my blog:', $this->text_domain), 'https://ffw.press/blog/tag/gdpress') . ' ';
+        $text = sprintf(__('Recently tagged <a target="_blank" href="%s"><strong>#GDPR</strong></a> on my blog:', $this->text_domain), 'https://ffw.press/blog/tag/gdpr') . ' ';
         $text .= '<span id="gdpress-ticker-wrap">';
         $i    = 0;
 
