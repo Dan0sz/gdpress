@@ -12,6 +12,7 @@ jQuery(document).ready(function ($) {
 
         init: function () {
             // Buttons
+            $('#gdpress-manage-form').submit(this.show_loader);
             $('#gdpress-fetch').on('click', this.fetch);
             $('#gdpress-flush').on('click', this.flush);
             $('.locked').on('click', this.lock);
@@ -30,6 +31,9 @@ jQuery(document).ready(function ($) {
                     action: 'gdpress_fetch',
                     nonce: gdpress_admin.fetch_nonce
                 },
+                beforeSend: function () {
+                    gdpress_admin.show_loader();
+                },
                 complete: function () {
                     location.reload();
                 }
@@ -45,6 +49,9 @@ jQuery(document).ready(function ($) {
                 data: {
                     action: 'gdpress_flush',
                     nonce: gdpress_admin.flush_nonce
+                },
+                beforeSend: function () {
+                    gdpress_admin.show_loader();
                 },
                 complete: function () {
                     location.reload();
@@ -70,6 +77,10 @@ jQuery(document).ready(function ($) {
             if (gdpress_admin.ticker_index == gdpress_admin.ticker_items.length) {
                 gdpress_admin.ticker_index = 0;
             }
+        },
+
+        show_loader: function () {
+            $('#wpcontent').append('<div class="gdpress-loading"><span class="spinner is-active"></span></div>');
         }
     }
 
