@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 define('GDPRESS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('GDPRESS_PLUGIN_FILE', __FILE__);
 define('GDPRESS_PLUGIN_BASENAME', plugin_basename(GDPRESS_PLUGIN_FILE));
-define('GDPRESS_STATIC_VERSION', '0.9.9');
+define('GDPRESS_STATIC_VERSION', '1.0.0');
 define('GDPRESS_DB_VERSION', '1.0.0');
 
 /**
