@@ -17,6 +17,9 @@ class Gdpress_Admin_Download
     /** @var bool $settings_updated */
     private $settings_updated = false;
 
+    /** @var WP_Filesystem $filesystem */
+    private $fs;
+
     /**
      * Set Fields.
      * 
@@ -27,6 +30,7 @@ class Gdpress_Admin_Download
         $this->settings_page    = $_GET['page'] ?? '';
         $this->settings_tab     = $_GET['tab'] ?? Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
         $this->settings_updated = isset($_GET['settings-updated']);
+        $this->fs               = $this->filesystem();
 
         $this->maybe_download();
     }
@@ -101,10 +105,29 @@ class Gdpress_Admin_Download
             return $file_url;
         }
 
-        /**
-         * Create dir for file recursively.
-         */
-        wp_mkdir_p(str_replace($filename, '', $file_path));
+        $tmp = $this->download_to_tmp(str_replace($filename, '', $file_path), $url);
+
+        if (!$tmp) {
+            return $file_url;
+        }
+
+        if ($type == 'css') {
+            $this->parse_font_faces($tmp, $url);
+        }
+
+        /** @var string $tmp */
+        copy($tmp, $file_path);
+        @unlink($tmp);
+
+        return $file_url;
+    }
+
+    /**
+     * Downloads file to temporary storage and creates directories recursively where necessary.
+     */
+    private function download_to_tmp($path, $url)
+    {
+        wp_mkdir_p($path);
 
         $tmp = download_url($url);
 
@@ -115,10 +138,110 @@ class Gdpress_Admin_Download
             return '';
         }
 
-        /** @var string $tmp */
-        copy($tmp, $file_path);
-        @unlink($tmp);
+        return $tmp;
+    }
 
-        return $file_url;
+    /**
+     * Manipulates $file's embedded font faces.
+     * 
+     * @param mixed $file 
+     * @return void 
+     */
+    private function parse_font_faces($file, $ext_url)
+    {
+        $contents = $this->fs->get_contents($file);
+
+        if (strpos($contents, '@font-face') === false) {
+            return false;
+        }
+
+        preg_match_all('/@font-face\s*{([\s\S]*?)}/', $contents, $font_faces);
+
+        /**
+         * Let's assume $font_faces[0] exists. We already checked if the stylesheet contains font faces, 
+         * so if the Regex didn't find any, then that's a bug and I'd like to know about it.
+         */
+        $font_faces = $font_faces[0];
+
+        foreach ($font_faces as $font_face) {
+            preg_match_all('/url\([\'"](?P<urls>.+?)[\'"]\)/', $font_face, $urls);
+
+            $urls = $urls['urls'] ?? [];
+
+            foreach ($urls as $url) {
+                if ($this->is_rel_url($url)) {
+                    $url = $this->get_abs_url($url, $ext_url);
+                }
+
+                list($filename) = explode('?', basename($url));
+                $dir            = str_replace($filename, '', $url);
+                $path           = Gdpress::get_local_path($dir, 'css');
+
+                $tmp = $this->download_to_tmp($path, $url);
+
+                if (!$tmp) {
+                    continue;
+                }
+
+                /** @var string $tmp */
+                copy($tmp, $path . $filename);
+                @unlink($tmp);
+            }
+        }
+    }
+
+    /**
+     * Checks if $url begins with '../' or doesn't begin with either 'http', '../' or '/'.
+     * @param mixed $url 
+     * @return bool 
+     */
+    private function is_rel_url($url)
+    {
+        return strpos($url, '../') === 0 || (strpos($url, 'http') === false && strpos($url, '../') === false && strpos($url, '/') > 0);
+    }
+
+    /**
+     * @param mixed $relative_url 
+     * @param mixed $url 
+     * @return void 
+     */
+    private function get_abs_url($rel_url, $source)
+    {
+        $folder_depth  = substr_count($rel_url, '../');
+        $url_to_insert = $source;
+
+        /**
+         * Remove everything after the last occurence of a forward slash ('/');
+         * 
+         * $i = 0: Filename
+         *      1: First level subdirectory, i.e. '../'
+         *      2: 2nd level subdirectory, i.e. '../../'
+         *      3: Etc.
+         */
+        for ($i = 0; $i <= $folder_depth; $i++) {
+            $url_to_insert = substr($source, 0, strrpos($url_to_insert, '/'));
+        }
+
+        $path = ltrim($rel_url, './');
+        $abs  = $url_to_insert . '/' . $path;
+
+        return $abs;
+    }
+
+    /**
+     * Gets filesystem instance.
+     * 
+     * @return mixed 
+     */
+    private function filesystem()
+    {
+        global $wp_filesystem;
+
+        if (is_null($wp_filesystem)) {
+            require_once ABSPATH . '/wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+
+        return $wp_filesystem;
     }
 }
