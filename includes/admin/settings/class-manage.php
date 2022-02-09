@@ -63,7 +63,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         if (empty(Gdpress::requests())) : ?>
             <p>
-                <em><?= __('Uh-oh! Something must\'ve gone wrong while scanning the website.', $this->text_domain); ?></em>
+                <em><?= __('Uh-oh! 😱 Something must\'ve gone wrong while scanning the website.', $this->text_domain); ?></em>
             </p>
         <?php else : ?>
             <?php
@@ -71,7 +71,11 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
             $js_count  = isset(Gdpress::requests()['js']) ? count(Gdpress::requests()['js']) : 0;
             ?>
             <p>
-                <em><?= sprintf(__('Beep-boop! GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
+                <?php if (empty(Gdpress::local())) : ?>
+                    <em><?= sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', $this->text_domain), (string) $css_count, (string) $js_count); ?></em>
+                <?php else : ?>
+                    <em><?= sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax and enjoy your GDPR compliance.', $this->text_domain), count(Gdpress::local()['css']) ?? 0, count(Gdpress::local()['js'] ?? 0)); ?></em>
+                <?php endif; ?>
             </p>
             <table>
                 <thead>
@@ -118,7 +122,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         ?>
         <p>
-            <em><?= __('Wow, such empty! Try giving this big button a steady push.', $this->text_domain); ?></em>
+            <em><?= __('Wow, such empty! 🙄 Try giving this big button a steady push.', $this->text_domain); ?></em>
         </p>
         <p>
             <button data-nonce="<?= wp_create_nonce(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE); ?>" id="gdpress-fetch" class="button button-primary button-hero"><?= __('Scan Website', $this->text_domain); ?></button>
