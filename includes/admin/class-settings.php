@@ -42,8 +42,8 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
      */
     public function __construct()
     {
-        $this->active_tab = isset($_GET['tab']) ? $_GET['tab'] : self::GDPRESS_ADMIN_SECTION_MANAGE;
-        $this->admin_page = isset($_GET['page']) ? $_GET['page'] : '';
+        $this->active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : self::GDPRESS_ADMIN_SECTION_MANAGE;
+        $this->admin_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
         parent::__construct();
 

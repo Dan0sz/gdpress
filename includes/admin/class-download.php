@@ -27,8 +27,8 @@ class Gdpress_Admin_Download
      */
     public function __construct()
     {
-        $this->settings_page    = $_GET['page'] ?? '';
-        $this->settings_tab     = $_GET['tab'] ?? Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
+        $this->settings_page    = sanitize_text_field($_GET['page']) ?? '';
+        $this->settings_tab     = sanitize_text_field($_GET['tab']) ?? Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
         $this->settings_updated = isset($_GET['settings-updated']);
         $this->fs               = $this->filesystem();
 
