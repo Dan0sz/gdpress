@@ -20,6 +20,9 @@ class Gdpress_Admin_Download
     /** @var WP_Filesystem $filesystem */
     private $fs;
 
+    /** @var string $text_domain */
+    private $text_domain = 'gdpr-press';
+
     /**
      * Set Fields.
      * 
@@ -27,8 +30,8 @@ class Gdpress_Admin_Download
      */
     public function __construct()
     {
-        $this->settings_page    = sanitize_text_field($_GET['page']) ?? '';
-        $this->settings_tab     = sanitize_text_field($_GET['tab']) ?? Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
+        $this->settings_page    = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $this->settings_tab     = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
         $this->settings_updated = isset($_GET['settings-updated']);
         $this->fs               = $this->filesystem();
 
@@ -55,6 +58,12 @@ class Gdpress_Admin_Download
         }
 
         $this->download();
+
+        // Clear default 'Settings saved.' message.
+        delete_transient('settings_errors');
+
+        // Set our own.
+        add_settings_error('general', 'settings_updated', __('Selected files downloaded successfully.', $this->text_domain), 'success');
     }
 
     /**
@@ -138,7 +147,7 @@ class Gdpress_Admin_Download
 
         if (is_wp_error($tmp)) {
             /** @var WP_Error $tmp */
-            Gdpress_Admin_Notice::set_notice(sprintf(__('Ouch! Gdpress encountered an error while downloading <code>%s</code>', $this->plugin_text_domain), $filename) . ': ' . $tmp->get_error_message(), 'gdpress-download-failed', false, 'error', $tmp->get_error_code());
+            Gdpress_Admin_Notice::set_notice(sprintf(__('Ouch! Gdpress encountered an error while downloading <code>%s</code>', $this->plugin_text_domain), basename($url)) . ': ' . $tmp->get_error_message(), 'gdpress-download-failed', false, 'error', $tmp->get_error_code());
 
             return '';
         }
