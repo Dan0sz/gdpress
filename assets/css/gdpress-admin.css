@@ -3,6 +3,12 @@
  * @author    Daan van den Bergh
  *            https://ffw.press
  */
+#gdpress-help-form {
+  max-width: 1350px;
+}
+#gdpress-manage-form {
+  max-width: 1350px;
+}
 #gdpress-manage-form .gdpress.manage {
   padding: 25px 50px;
   max-width: 1024px;
