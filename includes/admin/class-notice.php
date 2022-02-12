@@ -47,9 +47,9 @@ class Gdpress_Admin_Notice
 
                 foreach ($notice as $type => $message) {
 ?>
-                    <div id="message" class="notice notice-<?php echo $type; ?> is-dismissible">
+                    <div id="message" class="notice notice-<?php echo esc_attr($type); ?> is-dismissible">
                         <?php foreach ($message as $line) : ?>
-                            <p><strong><?php echo $line; ?></strong></p>
+                            <p><strong><?php echo esc_html($line); ?></strong></p>
                         <?php endforeach; ?>
                     </div>
 <?php

@@ -50,7 +50,7 @@ class Gdpress_Admin_Settings_Builder
     public function do_title()
     {
     ?>
-        <h2><?php echo $this->title ?></h2>
+        <h2><?php echo esc_html($this->title); ?></h2>
     <?php
     }
 
@@ -60,7 +60,7 @@ class Gdpress_Admin_Settings_Builder
     public function do_tbody_open($class)
     {
     ?>
-        <tbody class="<?php echo $class; ?>">
+        <tbody class="<?php echo esc_attr($class); ?>">
         <?php
     }
 
@@ -92,7 +92,7 @@ class Gdpress_Admin_Settings_Builder
             <td id="<?php echo $name . '_right_column'; ?>">
                 <?php foreach ($inputs as $option => $option_label) : ?>
                     <label>
-                        <input type="radio" class="<?php echo str_replace('_', '-', $name . '_' . $option); ?>" name="<?php echo $name; ?>" value="<?php echo $option; ?>" <?php echo $option == $checked ? 'checked="checked"' : ''; ?> />
+                        <input type="radio" class="<?php echo str_replace('_', '-', $name . '_' . $option); ?>" name="<?php echo $name; ?>" value="<?php echo esc_attr($option); ?>" <?php echo $option == $checked ? 'checked="checked"' : ''; ?> />
                         <?php echo $option_label; ?>
                     </label>
                     <br />
@@ -127,7 +127,7 @@ class Gdpress_Admin_Settings_Builder
                     $options = apply_filters($select . '_setting_options', $options);
                     ?>
                     <?php foreach ($options as $option => $option_label) : ?>
-                        <option value="<?php echo $option; ?>" <?php echo ($selected == $option) ? 'selected' : ''; ?>><?php echo $option_label; ?></option>
+                        <option value="<?php echo esc_attr($option); ?>" <?php echo ($selected == $option) ? 'selected' : ''; ?>><?php echo $option_label; ?></option>
                     <?php endforeach; ?>
                 </select>
                 <p class="description">
@@ -152,7 +152,7 @@ class Gdpress_Admin_Settings_Builder
         <tr valign="top">
             <th scope="row"><?php echo apply_filters($name . '_setting_label', $label); ?></th>
             <td>
-                <input class="<?php echo str_replace('_', '-', $name); ?>" type="number" name="<?php echo $name; ?>" min="<?php echo $min; ?>" value="<?php echo $value; ?>" />
+                <input class="<?php echo str_replace('_', '-', $name); ?>" type="number" name="<?php echo $name; ?>" min="<?php echo $min; ?>" value="<?php echo esc_attr($value); ?>" />
                 <p class="description">
                     <?php echo apply_filters($name . '_setting_description', $description); ?>
                 </p>
@@ -177,7 +177,7 @@ class Gdpress_Admin_Settings_Builder
         <tr class="<?php echo str_replace('_', '-', $name); ?>-row" <?php echo $visible ? '' : 'style="display: none;"'; ?>>
             <th scope="row"><?php echo apply_filters($name . '_setting_label', $label); ?></th>
             <td>
-                <input class="<?php echo str_replace('_', '-', $name); ?>" type="text" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $value; ?>" />
+                <input class="<?php echo str_replace('_', '-', $name); ?>" type="text" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo esc_textarea($value); ?>" />
                 <p class="description">
                     <?php echo apply_filters($name . 'setting_description', $description); ?>
                 </p>

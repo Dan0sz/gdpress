@@ -113,7 +113,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
                 <?php do_action('gdpress_settings_tab'); ?>
             </h2>
 
-            <form id="<?php echo $this->active_tab; ?>-form" method="post" action="options.php?tab=<?php echo $this->active_tab; ?>">
+            <form id="<?php echo esc_attr($this->active_tab); ?>-form" method="post" action="options.php?tab=<?php echo esc_attr($this->active_tab); ?>">
                 <?php
                 settings_fields($this->active_tab);
                 do_settings_sections($this->active_tab); ?>
@@ -321,7 +321,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     private function generate_tab($id, $icon = null, $label = null)
     {
     ?>
-        <a class="nav-tab dashicons-before <?php echo $icon; ?> <?php echo $this->active_tab == $id ? 'nav-tab-active' : ''; ?>" href="<?php echo $this->generate_tab_link($id); ?>">
+        <a class="nav-tab dashicons-before <?php echo esc_attr($icon); ?> <?php echo $this->active_tab == $id ? 'nav-tab-active' : ''; ?>" href="<?php echo $this->generate_tab_link($id); ?>">
             <?php echo $label; ?>
         </a>
 <?php
@@ -336,7 +336,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     {
         $admin_page = self::GDPRESS_ADMIN_PAGE;
 
-        return admin_url("options-general.php?page=$admin_page&tab=$tab");
+        return esc_url(admin_url("options-general.php?page=$admin_page&tab=$tab"));
     }
 
     /**
@@ -344,6 +344,6 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
      */
     public function set_content()
     {
-        echo apply_filters(str_replace('-', '_', $this->active_tab) . '_content', '');
+        echo apply_filters(str_replace('-', '_', esc_attr($this->active_tab)) . '_content', '');
     }
 }

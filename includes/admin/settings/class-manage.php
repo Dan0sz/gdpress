@@ -108,7 +108,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                                 <th class="name" scope="row"><?php echo $request['name']; ?></th>
                                 <td class="href"><a href="#" title="<?php echo $request['href']; ?>"><?php echo $request['href']; ?></a></td>
                                 <td class="href"><a href="#" title="<?php echo $local_url; ?>"><?php echo $local_url; ?></a></td>
-                                <td class=" exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?php echo $type; ?>][]" value="<?php echo $request['href']; ?>" /></td>
+                                <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?php echo $type; ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
