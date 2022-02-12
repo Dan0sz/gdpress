@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: gdpr, dsvgo, avg, speed, minimize, external, requests
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,7 +30,7 @@ GDPRess scans your homepage for 3rd party scripts (JS) and stylesheets (CSS), an
 * Parses the stylesheets for loaded font files, downloads them, and rewrites the stylesheet to use the local copies,
 * Makes sure the local copies of each script/stylesheet are used in your site's frontend.
 
-Effectively removing any requests to embedded scripts and stylesheets.
+In short, it makes sure no requests are made to external/embedded/3rd party scripts and stylesheets.
 
 == Installation ==
 
@@ -52,11 +52,23 @@ GDPRess parses the stylesheet for defined src urls. But if it somehow missed it,
 
 1. GDPRess' Start screen, simply click Scan Website to start.
 2. After running the initial scan, external requests are listed. Exclude a file when e.g. you suspect it might not work properly when it's downloaded.
-3. When the selected files are downloaded, the URLs of the local copies are listed.
-4. Google Analytics is automatically excluded, because simply downloading the file is not enough to use it in compliance with GDPR. Click on the link in the tooltip for more information.
-5. Google Fonts is automatically excluded, because simply downloading the file is not enough to use it in compliance with GDPR. Click on the link in the tooltip for more information.
+3. Google Analytics is automatically excluded, because simply downloading the file is not enough to use it in compliance with GDPR. Click on the link in the tooltip for more information.
+4. Google Fonts is automatically excluded, because simply downloading the file is not enough to use it in compliance with GDPR. Click on the link in the tooltip for more information.
+5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.0.2 =
+* Added: tooltip next to success message.
+* Fixed: tooltip-icon line height.
+
+= 1.0.1 =
+* Fixed: Conflicts with several caching/optimization plugins:
+  - Autoptimize
+  - WP Rocket
+  - W3 Total Cache
+  - WP Optimize
+* Fixed: several warnings and notices.
 
 = 1.0 =
 * First release!
