@@ -11,6 +11,9 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     /** @var string $notice */
     private $notice;
 
+    /** @var string $tooltip_markup */
+    private $tooltip_markup = '<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>';
+
     /**
      * Set fields.
      * 
@@ -74,7 +77,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                 <?php if (empty(Gdpress::local())) : ?>
                     <em><?php echo sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press'), (string) $css_count, (string) $js_count); ?></em>
                 <?php else : ?>
-                    <em><?php echo sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax and enjoy your GDPR compliance.', 'gdpr-press'), count(Gdpress::local()['css']) ?? 0, count(Gdpress::local()['js'] ?? 0)); ?></em>
+                    <em><?php echo sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax and enjoy your (increased) GDPR compliance.', 'gdpr-press'), count(Gdpress::local()['css']) ?? 0, count(Gdpress::local()['js'] ?? 0)); ?></em> <?php echo sprintf($this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.'); ?>
                 <?php endif; ?>
             </p>
             <table>
@@ -104,7 +107,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                             $gf_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
                             ?>
                             <tr <?php echo $is_ga || $is_gf ? "class='" . esc_attr($classes) . "'" : ''; ?>>
-                                <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? wp_kses_post($ga_descr) : wp_kses_post($gf_descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
+                                <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf($this->tooltip_markup, $is_ga ? wp_kses_post($ga_descr) : wp_kses_post($gf_descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
                                 <th class="name" scope="row"><?php echo esc_attr($request['name']); ?></th>
                                 <td class="href"><a href="#" title="<?php echo esc_url($request['href']); ?>"><?php echo esc_url($request['href']); ?></a></td>
                                 <td class="href"><a href="#" title="<?php echo esc_url($local_url); ?>"><?php echo esc_url($local_url); ?></a></td>
