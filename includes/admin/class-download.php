@@ -173,7 +173,7 @@ class Gdpress_Admin_Download
 
         /**
          * Let's assume $font_faces[0] exists. We already checked if the stylesheet contains font faces, 
-         * so if the Regex didn't find any, then that's a bug and I'd like to know about it.
+         * so if the Regex didn't find any, then that's a bug in the regex and I'd like to know about it.
          */
         $font_faces = $font_faces[0];
 
@@ -225,16 +225,22 @@ class Gdpress_Admin_Download
 
     /**
      * Checks if $url begins with '../' or doesn't begin with either 'http', '../' or '/'.
+     * 
      * @param mixed $url 
-     * @return bool 
+     * @return bool false || true for e.g. "../fonts/file.woff2" or "/fonts/file.woff2" or "fonts/file.woff2"
      */
     private function is_rel_url($url)
     {
-        return strpos($url, '../') === 0 || (strpos($url, 'http') === false && strpos($url, '../') === false && strpos($url, '/') > 0);
+        // true: ../fonts/file.woff2
+        return strpos($url, '../') === 0
+            // true: /fonts/file.woff2 (checks for relative protocols, i.e. '//')
+            || (strpos($url, 'http') === false && strpos($url, '../') === false && strpos($url, '//') === false && strpos($url, '/') === 0)
+            // true: fonts/file.woff2
+            || (strpos($url, 'http') === false && strpos($url, '../') === false && strpos($url, '/') !== 0);
     }
 
     /**
-     * @param mixed $relative_url 
+     * @param mixed $rel_url 
      * @param mixed $url 
      * @return void 
      */
