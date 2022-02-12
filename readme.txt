@@ -1,6 +1,6 @@
 === GDPRess | Eliminate External (3rd Party) Requests ===
 Contributors: DaanvandenBergh
-Tags: gdpr, dsvgo, avg, speed, minimize, external, requests
+Tags: gdpr, dsvgo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.8
 Tested up to: 5.9
 Stable tag: 1.0.2
