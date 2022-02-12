@@ -43,8 +43,8 @@ class Gdpress_RewriteUrl
     private function init()
     {
         add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);
-        // Autoptimize at 2. OMGF at 3. CAOS Compatibility Mode runs at 4.
-        add_action('template_redirect', [$this, 'maybe_buffer_output'], 5);
+        // Autoptimize at 2. OMGF and CAOS Compatibility Mode run at 3.
+        add_action('template_redirect', [$this, 'maybe_buffer_output'], 4);
     }
 
     /**
@@ -85,15 +85,15 @@ class Gdpress_RewriteUrl
      * @action template_redirect
      *  
      * @since v4.3.1 Tested with:
-     *               - Autoptimize
+     *               - Autoptimize v2.9.5.1:
      *                 - CSS/JS/Page Optimization: On
-     *               - Cache Enabler v1.8.7
+     *               - Cache Enabler v1.8.7:
      *                 - Default Settings
      *               - W3 Total Cache v2.2.1:
      *                 - Page Cache: Disk (basic)
      *                 - Database/Object Cache: Off
      *                 - JS/CSS minify/combine: On
-     *               - WP Fastest Cache v0.9.5
+     *               - WP Fastest Cache v0.9.9:
      *                 - JS/CSS minify/combine: On
      *                 - Page Cache: On
      *               - WP Rocket v3.8.8:
