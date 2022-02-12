@@ -105,9 +105,9 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                             ?>
                             <tr <?php echo $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
                                 <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? $ga_descr : $gf_descr) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
-                                <th class="name" scope="row"><?php echo $request['name']; ?></th>
-                                <td class="href"><a href="#" title="<?php echo $request['href']; ?>"><?php echo $request['href']; ?></a></td>
-                                <td class="href"><a href="#" title="<?php echo $local_url; ?>"><?php echo $local_url; ?></a></td>
+                                <th class="name" scope="row"><?php echo esc_attr($request['name']); ?></th>
+                                <td class="href"><a href="#" title="<?php echo $request['href']; ?>"><?php echo esc_url($request['href']); ?></a></td>
+                                <td class="href"><a href="#" title="<?php echo $local_url; ?>"><?php echo esc_url($local_url); ?></a></td>
                                 <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?php echo $type; ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
