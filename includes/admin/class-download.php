@@ -20,9 +20,6 @@ class Gdpress_Admin_Download
     /** @var WP_Filesystem $filesystem */
     private $fs;
 
-    /** @var string $text_domain */
-    private $text_domain = 'gdpr-press';
-
     /**
      * Set Fields.
      * 
@@ -63,7 +60,7 @@ class Gdpress_Admin_Download
         delete_transient('settings_errors');
 
         // Set our own.
-        add_settings_error('general', 'settings_updated', __('Selected files downloaded successfully.', $this->text_domain), 'success');
+        add_settings_error('general', 'settings_updated', __('Selected files downloaded successfully.', 'gdpr-press'), 'success');
     }
 
     /**

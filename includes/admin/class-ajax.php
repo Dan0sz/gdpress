@@ -8,9 +8,6 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Ajax
 {
-    /** @var string $text_domain */
-    private $text_domain = 'gdpr-press';
-
     /**
      * Set fields.
      * 
@@ -42,7 +39,7 @@ class Gdpress_Admin_Ajax
         check_ajax_referer(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE, 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__("Sorry, you're not allowed to do this.", $this->text_domain));
+            wp_die(__("Sorry, you're not allowed to do this.", 'gdpr-press'));
         }
 
         /**
@@ -134,14 +131,14 @@ class Gdpress_Admin_Ajax
         check_ajax_referer(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE, 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__("Sorry, you're not allowed to do this.", $this->text_domain));
+            wp_die(__("Sorry, you're not allowed to do this.", 'gdpr-press'));
         }
 
         $set_path      = GDPRESS_CACHE_ABSPATH;
         $resolved_path = realpath(GDPRESS_CACHE_ABSPATH);
 
         if ($resolved_path != $set_path) {
-            wp_die(__('Attempted path traversal detected. Sorry, no script kiddies allowed!', $this->text_domain));
+            wp_die(__('Attempted path traversal detected. Sorry, no script kiddies allowed!', 'gdpr-press'));
         }
 
         try {
@@ -161,10 +158,10 @@ class Gdpress_Admin_Ajax
                 delete_option($option);
             }
 
-            Gdpress_Admin_Notice::set_notice(__('GDPRess\' cache directory successfully emptied.', $this->text_domain));
+            Gdpress_Admin_Notice::set_notice(__('GDPRess\' cache directory successfully emptied.', 'gdpr-press'));
         } catch (\Exception $e) {
             Gdpress_Admin_Notice::set_notice(
-                __('GDPRess encountered an error while emptying the cache directory: ', $this->text_domain) . $e->getMessage(),
+                __('GDPRess encountered an error while emptying the cache directory: ', 'gdpr-press') . $e->getMessage(),
                 'error',
                 'all',
                 'gdpress-cache-flush-error'

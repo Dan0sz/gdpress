@@ -32,9 +32,6 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     /** @var string $admin_page */
     private $admin_page = '';
 
-    /** @var string $text_domain */
-    private $text_domain = 'gdpr-press';
-
     /**
      * Set fields
      * 
@@ -103,11 +100,11 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     public function settings_page()
     {
         if (!current_user_can('manage_options')) {
-            wp_die(__("You're not cool enough to access this page.", $this->text_domain));
+            wp_die(__("You're not cool enough to access this page.", 'gdpr-press'));
         } ?>
 
         <div class="wrap">
-            <h1><?php _e('GDPRess | Eliminate External Requests', $this->text_domain); ?></h1>
+            <h1><?php _e('GDPRess | Eliminate External Requests', 'gdpr-press'); ?></h1>
 
             <h2 class="gpress-nav nav-tab-wrapper">
                 <?php do_action('gdpress_settings_tab'); ?>
@@ -125,8 +122,8 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
                 do_action("after_$current_section"); ?>
 
                 <?php if ($this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Gdpress::requests()) : ?>
-                    <?php submit_button(__('Save Changes & Download', $this->text_domain), 'primary', 'submit', false); ?>
-                    <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', $this->text_domain); ?></a>
+                    <?php submit_button(__('Save Changes & Download', 'gdpr-press'), 'primary', 'submit', false); ?>
+                    <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', 'gdpr-press'); ?></a>
                 <?php endif; ?>
             </form>
         </div>
@@ -190,7 +187,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     public function add_settings_link($links)
     {
         $adminUrl     = admin_url() . 'options-general.php?page=' . self::GDPRESS_ADMIN_PAGE;
-        $settingsLink = "<a href='$adminUrl'>" . __('Settings', $this->text_domain) . '</a>';
+        $settingsLink = "<a href='$adminUrl'>" . __('Settings', 'gdpr-press') . '</a>';
         array_push($links, $settingsLink);
 
         return $links;
@@ -213,7 +210,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
      */
     public function set_footer_text_left()
     {
-        $text = sprintf(__('Coded with %s in The Netherlands @ <strong>FFW.Press</strong>.', $this->text_domain), '<span class="dashicons dashicons-heart ffwp-heart"></span>');
+        $text = sprintf(__('Coded with %s in The Netherlands @ <strong>FFW.Press</strong>.', 'gdpr-press'), '<span class="dashicons dashicons-heart ffwp-heart"></span>');
 
         return '<span id="footer-thankyou">' . $text . '</span>';
     }
@@ -274,7 +271,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
             return $text;
         }
 
-        $text = sprintf(__('Recently tagged <a target="_blank" href="%s"><strong>#GDPR</strong></a> on my blog:', $this->text_domain), 'https://ffw.press/blog/tag/gdpr') . ' ';
+        $text = sprintf(__('Recently tagged <a target="_blank" href="%s"><strong>#GDPR</strong></a> on my blog:', 'gdpr-press'), 'https://ffw.press/blog/tag/gdpr') . ' ';
         $text .= '<span id="gdpress-ticker-wrap">';
         $i    = 0;
 
@@ -300,7 +297,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
      */
     public function add_manage_tab()
     {
-        $this->generate_tab(self::GDPRESS_ADMIN_SECTION_MANAGE, 'dashicons-download', __('Manage External Requests', $this->text_domain));
+        $this->generate_tab(self::GDPRESS_ADMIN_SECTION_MANAGE, 'dashicons-download', __('Manage External Requests', 'gdpr-press'));
     }
 
     /**
@@ -310,7 +307,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
      */
     public function add_help_tab()
     {
-        $this->generate_tab(self::GDPRESS_ADMIN_SECTION_HELP, 'dashicons-editor-help', __('Help & Support', $this->text_domain));
+        $this->generate_tab(self::GDPRESS_ADMIN_SECTION_HELP, 'dashicons-editor-help', __('Help & Support', 'gdpr-press'));
     }
 
     /**

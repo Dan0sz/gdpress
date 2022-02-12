@@ -10,7 +10,7 @@ class Gdpress_Admin_Settings_Help extends Gdpress_Admin_Settings_Builder
 {
     public function __construct()
     {
-        $this->title = __('Help & Support', $this->text_domain);
+        $this->title = __('Help & Support', 'gdpr-press');
 
         $this->init();
     }
