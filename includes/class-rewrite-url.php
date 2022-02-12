@@ -50,6 +50,8 @@ class Gdpress_RewriteUrl
     /**
      * Start output buffer.
      * 
+     * @action template_redirect
+     * 
      * @return void 
      */
     public function maybe_buffer_output()
@@ -66,10 +68,19 @@ class Gdpress_RewriteUrl
             }
         }
 
-        /**
-         * Customizer previews shouldn't get optimized content.
+        /** 
+         * Honor PageSpeed=off parameter as used by mod_pagespeed, in use by some pagebuilders,
+         * 
+         * @see https://www.modpagespeed.com/doc/experiment#ModPagespeed
          */
-        if (function_exists('is_customize_preview')) {
+        if (array_key_exists('PageSpeed', $_GET) && 'off' === $_GET['PageSpeed']) {
+            $start = false;
+        }
+
+        /**
+         * WP Customizer previews shouldn't get optimized content.
+         */
+        if (function_exists('is_customize_preview') && is_customize_preview()) {
             $start = !is_customize_preview();
         }
 
@@ -82,7 +93,7 @@ class Gdpress_RewriteUrl
     }
 
     /**
-     * @action template_redirect
+     * Wraps the buffer output into a filter after performing several checks.
      *  
      * @since v4.3.1 Tested with:
      *               - Autoptimize v2.9.5.1:
@@ -106,7 +117,7 @@ class Gdpress_RewriteUrl
      */
     public function return_buffer($html)
     {
-        if (!$html) {
+        if (!$this->should_process($html)) {
             return $html;
         }
 
@@ -114,10 +125,38 @@ class Gdpress_RewriteUrl
     }
 
     /**
+     * Check if given markup can be processed.
+     *
+     * @param string $content Markup.
+     *
+     * @return bool
+     */
+    public function should_process($content)
+    {
+        $process = true;
+
+        if (
+            // Has no HTML tag
+            stripos($content, '<html') === false
+            // Is XSL stylesheet
+            || (stripos($content, '<xsl:stylesheet') !== false || stripos($content, '<?xml-stylesheet') !== false)
+            // Is not a HTML5 Document
+            || preg_match('/^<!DOCTYPE.+html>/i', ltrim($content)) === 0
+        ) {
+            $process = false;
+        }
+
+        return $process;
+    }
+
+    /**
      * Rewrite all external URLs in $html.
      * 
-     * @param mixed $html 
-     * @return mixed 
+     * @filter gdpress_buffer_output
+     * 
+     * @param string $html 
+     * 
+     * @return string 
      */
     public function rewrite_urls($html)
     {
