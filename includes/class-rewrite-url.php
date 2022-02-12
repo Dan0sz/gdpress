@@ -110,7 +110,7 @@ class Gdpress_RewriteUrl
      *               - WP Rocket v3.8.8:
      *                 - Page Cache: Enabled
      *                 - JS/CSS minify/combine: Enabled
-     *               - WP Super Cache v1.7.4
+     *               - WP Super Cache v1.7.7
      *                 - Page Cache: Enabled
      *  
      * @return string $html
