@@ -6,26 +6,25 @@ defined('ABSPATH') || exit;
  * @author    Daan van den Bergh
  *            https://ffw.press
  * 
- * This classes use an alternative method to rewrite URLs in the page source. It has been
- * tested with the following page cache and JS/CSS optimization plugins:
- * 
- * Tests Passed:
- * * Autoptimize (everything on)
- * * W3 Total Cache
- *   - Page Cache: Disk (basic)
- *   - Database Cache: None
- *   - Object Cache: None
- *   - Browser Cache: Disabled
- *   - Lazy Load: Enabled
- * * WP Fastest Cache (all free options on)
- * * WP Rocket (all options on)
- * * WP Super Cache (recommended settings on)
- * 
- * Tests Failed:
- * * WP Optimize - External copies are still loaded.
+ * This class uses template_redirect's output to rewrite URLs in the page source.
  */
 class Gdpress_RewriteUrl
 {
+    /**
+     * @var array $page_builders Array of keys set by page builders when they're displaying their previews.
+     */
+    private $page_builders = [
+        'bt-beaverbuildertheme',
+        'ct_builder',
+        'elementor-preview',
+        'et_fb',
+        'fb-edit',
+        'fl_builder',
+        'siteorigin_panels_live_editor',
+        'tve',
+        'vc_action'
+    ];
+
     /**
      * Set fields.
      * 
@@ -43,11 +42,75 @@ class Gdpress_RewriteUrl
      */
     private function init()
     {
-        add_action('init', function () {
-            ob_start();
-        });
-        add_action('shutdown', [$this, 'retrieve_html'], 0);
-        add_filter('gdpress_output', [$this, 'rewrite_urls']);
+        add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);
+        // Autoptimize at 2. OMGF at 3. CAOS Compatibility Mode runs at 4.
+        add_action('template_redirect', [$this, 'maybe_buffer_output'], 5);
+    }
+
+    /**
+     * Start output buffer.
+     * 
+     * @return void 
+     */
+    public function maybe_buffer_output()
+    {
+        $start = true;
+
+        /**
+         * Make sure Page Builder previews don't get optimized content.
+         */
+        foreach ($this->page_builders as $page_builder) {
+            if (array_key_exists($page_builder, $_GET)) {
+                $start = false;
+                break;
+            }
+        }
+
+        /**
+         * Customizer previews shouldn't get optimized content.
+         */
+        if (function_exists('is_customize_preview')) {
+            $start = !is_customize_preview();
+        }
+
+        /**
+         * Let's GO!
+         */
+        if ($start) {
+            ob_start([$this, 'return_buffer']);
+        }
+    }
+
+    /**
+     * @action template_redirect
+     *  
+     * @since v4.3.1 Tested with:
+     *               - Autoptimize
+     *                 - CSS/JS/Page Optimization: On
+     *               - Cache Enabler v1.8.7
+     *                 - Default Settings
+     *               - W3 Total Cache v2.2.1:
+     *                 - Page Cache: Disk (basic)
+     *                 - Database/Object Cache: Off
+     *                 - JS/CSS minify/combine: On
+     *               - WP Fastest Cache v0.9.5
+     *                 - JS/CSS minify/combine: On
+     *                 - Page Cache: On
+     *               - WP Rocket v3.8.8:
+     *                 - Page Cache: Enabled
+     *                 - JS/CSS minify/combine: Enabled
+     *               - WP Super Cache v1.7.4
+     *                 - Page Cache: Enabled
+     *  
+     * @return string $html
+     */
+    public function return_buffer($html)
+    {
+        if (!$html) {
+            return $html;
+        }
+
+        return apply_filters('gdpress_buffer_output', $html);
     }
 
     /**
@@ -73,27 +136,10 @@ class Gdpress_RewriteUrl
                     continue;
                 }
 
-                $html = str_replace($request['href'], $local_url, $html);
+                $html = str_replace($request['href'], esc_attr($local_url), $html);
             }
         }
 
         return $html;
-    }
-
-    /**
-     * Fetches the entire buffer triggered at runtime.
-     * 
-     * @return void 
-     */
-    public function retrieve_html()
-    {
-        $output = '';
-        $level  = ob_get_level();
-
-        for ($i = 0; $i < $level; $i++) {
-            $output .= ob_get_clean();
-        }
-
-        echo apply_filters('gdpress_output', $output);
     }
 }
