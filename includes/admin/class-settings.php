@@ -319,7 +319,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
     {
     ?>
         <a class="nav-tab dashicons-before <?php echo esc_attr($icon); ?> <?php echo $this->active_tab == $id ? 'nav-tab-active' : ''; ?>" href="<?php echo $this->generate_tab_link($id); ?>">
-            <?php echo $label; ?>
+            <?php echo esc_html($label); ?>
         </a>
 <?php
     }

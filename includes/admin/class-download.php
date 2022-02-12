@@ -144,7 +144,7 @@ class Gdpress_Admin_Download
 
         if (is_wp_error($tmp)) {
             /** @var WP_Error $tmp */
-            Gdpress_Admin_Notice::set_notice(sprintf(__('Ouch! Gdpress encountered an error while downloading <code>%s</code>', $this->plugin_text_domain), basename($url)) . ': ' . $tmp->get_error_message(), 'gdpress-download-failed', false, 'error', $tmp->get_error_code());
+            Gdpress_Admin_Notice::set_notice(sprintf(__('Ouch! Gdpress encountered an error while downloading <code>%s</code>', 'gdpr-press'), basename($url)) . ': ' . $tmp->get_error_message(), 'gdpress-download-failed', false, 'error', $tmp->get_error_code());
 
             return '';
         }

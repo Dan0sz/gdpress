@@ -86,10 +86,10 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                     <th class="exclude" scope="col"><?php echo __('Exclude', 'gdpr-press'); ?></th>
                 </thead>
                 <?php foreach (Gdpress::requests() as $type => $requests) : ?>
-                    <tbody class="<?php echo $type; ?>">
+                    <tbody class="<?php echo esc_attr($type); ?>">
                         <tr>
                             <td class="title" colspan="5">
-                                <h3><?php echo strtoupper($type); ?></h3>
+                                <h3><?php echo esc_html(strtoupper($type)); ?></h3>
                             </td>
                         </tr>
                         <?php foreach ($requests as $i => $request) : ?>
@@ -103,18 +103,18 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                             $ga_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
                             $gf_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
                             ?>
-                            <tr <?php echo $is_ga || $is_gf ? "class='$classes'" : ''; ?>>
-                                <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? $ga_descr : $gf_descr) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
+                            <tr <?php echo $is_ga || $is_gf ? "class='" . esc_attr($classes) . "'" : ''; ?>>
+                                <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf('<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>', $is_ga ? wp_kses_post($ga_descr) : wp_kses_post($gf_descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
                                 <th class="name" scope="row"><?php echo esc_attr($request['name']); ?></th>
-                                <td class="href"><a href="#" title="<?php echo $request['href']; ?>"><?php echo esc_url($request['href']); ?></a></td>
-                                <td class="href"><a href="#" title="<?php echo $local_url; ?>"><?php echo esc_url($local_url); ?></a></td>
-                                <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED; ?>[<?php echo $type; ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
+                                <td class="href"><a href="#" title="<?php echo esc_url($request['href']); ?>"><?php echo esc_url($request['href']); ?></a></td>
+                                <td class="href"><a href="#" title="<?php echo esc_url($local_url); ?>"><?php echo esc_url($local_url); ?></a></td>
+                                <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED); ?>[<?php echo esc_attr($type); ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 <?php endforeach; ?>
             </table>
-            <input type="hidden" name="<?php echo Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS; ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
+            <input type="hidden" name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS); ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
         <?php endif;
     }
 
