@@ -30,7 +30,7 @@
 #gdpress-manage-form .gdpress.manage .tooltip {
   position: relative;
   font-size: 16px;
-  line-height: 25px;
+  line-height: 20px;
 }
 #gdpress-manage-form .gdpress.manage .tooltip .tooltip-text {
   visibility: hidden;
