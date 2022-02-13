@@ -49,7 +49,7 @@ class Gdpress_Admin_Notice
 ?>
                     <div id="message" class="notice notice-<?php echo esc_attr($type); ?> is-dismissible">
                         <?php foreach ($message as $line) : ?>
-                            <p><strong><?php echo esc_html($line); ?></strong></p>
+                            <p><strong><?php echo wp_kses_post($line); ?></strong></p>
                         <?php endforeach; ?>
                     </div>
 <?php
