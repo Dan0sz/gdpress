@@ -123,6 +123,7 @@ class Gdpress_Admin_Settings extends Gdpress_Admin
 
                 <?php if ($this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Gdpress::requests()) : ?>
                     <?php submit_button(__('Save Changes & Download', 'gdpr-press'), 'primary', 'submit', false); ?>
+                    <input type="button" name="button" id="gdpress-fetch" class="button" value="<?= __('Scan Again', 'gdpr-press'); ?>">
                     <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce(self::GDPRESS_ADMIN_PAGE); ?>" class="gdpress-flush button-cancel"><?php _e('Empty Cache Directory', 'gdpr-press'); ?></a>
                 <?php endif; ?>
             </form>
