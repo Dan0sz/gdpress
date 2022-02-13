@@ -110,7 +110,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                         if ($is_ga) {
                             $descr = $this->ga_notice;
                         } elseif ($is_gf) {
-                            $descr = sprintf(__($this->gf_notice, 'gdpr-press'),  'https://wordpress.org/plugins/host-webfonts-local/');
+                            $descr = sprintf(__($this->gf_notice, 'gdpr-press'), admin_url('plugin-install.php?s=OMGF&tab=search&type=term'));
                         }
                         ?>
                         <tr <?php echo "class='" . esc_attr($classes) . "'"; ?>>
