@@ -56,9 +56,10 @@ class Gdpress_Admin_Ajax
         $document = new DOMDocument();
         @$document->loadHTML($html);
 
-        $stylesheets  = $document->getElementsByTagName('link');
-        $external_css = [];
-        $i            = 0;
+        $stylesheets       = $document->getElementsByTagName('link');
+        $external_css      = [];
+        $external_requests = [];
+        $i                 = 0;
 
         foreach ($stylesheets as $stylesheet) {
             $rel  = $stylesheet->getAttribute('rel');

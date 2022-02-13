@@ -59,74 +59,75 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                 <?php endif; ?>
             </div>
         </div>
-        <?php
+    <?php
     }
 
     private function manage_screen()
     {
-        if (empty(Gdpress::requests())) : ?>
+        $css_count = isset(Gdpress::requests()['css']) ? count(Gdpress::requests()['css']) : 0;
+        $js_count  = isset(Gdpress::requests()['js']) ? count(Gdpress::requests()['js']) : 0;
+    ?>
+        <?php if (empty(Gdpress::local())) : ?>
             <p>
-                <em><?php echo sprintf(__('Does not compute! 😱 GDPRess experienced issues while scanning the website. If you\'re certain your site contains 3rd party resources, try <a href="%s">contacting the support human</a>?', 'gdpr-press'), 'https://wordpress.org/support/plugin/gdpr-press/'); ?></em>
+                <em><?php echo sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press'), (string) $css_count, (string) $js_count); ?></em>
             </p>
         <?php else : ?>
-            <?php
-            $css_count = isset(Gdpress::requests()['css']) ? count(Gdpress::requests()['css']) : 0;
-            $js_count  = isset(Gdpress::requests()['js']) ? count(Gdpress::requests()['js']) : 0;
-            ?>
             <p>
-                <?php if (empty(Gdpress::local())) : ?>
-                    <em><?php echo sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press'), (string) $css_count, (string) $js_count); ?></em>
-                <?php else : ?>
-                    <em><?php echo sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax and enjoy your (increased) GDPR compliance.', 'gdpr-press'), count(Gdpress::local()['css']) ?? 0, count(Gdpress::local()['js'] ?? 0)); ?></em> <?php echo sprintf($this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.'); ?>
-                <?php endif; ?>
+                <em><?php echo sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax, enjoy your (increased) GDPR compliance and <a href="%s" target="_blank">maybe oil my circuits with a 5 ⭐ rating</a>?', 'gdpr-press'), count(Gdpress::local()['css'] ?? []), count(Gdpress::local()['js'] ?? []), 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post'); ?></em> <?php echo sprintf($this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.'); ?>
             </p>
-            <table>
-                <thead>
-                    <th class="downloaded" scope="col"><?php /** Header for Downloaded Status column */; ?></th>
-                    <th class="name" scope="col"><?php echo __('Filename', 'gdpr-press'); ?></th>
-                    <th class="href" scope="col"><?php echo __('External URL', 'gdpr-press'); ?></th>
-                    <th class="href" scope="col"><?php echo __('Local URL', 'gdpr-press'); ?></th>
-                    <th class="exclude" scope="col"><?php echo __('Exclude', 'gdpr-press'); ?></th>
-                </thead>
-                <?php foreach (Gdpress::requests() as $type => $requests) : ?>
-                    <tbody class="<?php echo esc_attr($type); ?>">
-                        <tr>
-                            <td class="title" colspan="5">
-                                <h3><?php echo esc_html(strtoupper($type)); ?></h3>
-                            </td>
+        <?php endif; ?>
+        <table>
+            <thead>
+                <th class="downloaded" scope="col"><?php /** Header for Downloaded Status column */; ?></th>
+                <th class="name" scope="col"><?php echo __('Filename', 'gdpr-press'); ?></th>
+                <th class="href" scope="col"><?php echo __('External URL', 'gdpr-press'); ?></th>
+                <th class="href" scope="col"><?php echo __('Local URL', 'gdpr-press'); ?></th>
+                <th class="exclude" scope="col"><?php echo __('Exclude', 'gdpr-press'); ?></th>
+            </thead>
+            <?php foreach (Gdpress::requests() as $type => $requests) : ?>
+                <tbody class="<?php echo esc_attr($type); ?>">
+                    <tr>
+                        <td class="title" colspan="5">
+                            <h3><?php echo esc_html(strtoupper($type)); ?></h3>
+                        </td>
+                    </tr>
+                    <?php foreach ($requests as $i => $request) : ?>
+                        <?php
+                        $is_ga      = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
+                        $is_gf      = strpos($request['href'], 'fonts.googleapis.com/css') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                        $classes    = $i % 2 ? 'even ' : '';
+                        $classes    .= $is_ga || $is_gf ? 'suggestion' : '';
+                        $local_url  = Gdpress::get_local_url($request['href'], $type);
+                        $downloaded = file_exists(Gdpress::get_local_path($request['href'], $type));
+                        $ga_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
+                        $gf_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
+                        ?>
+                        <tr <?php echo $is_ga || $is_gf ? "class='" . esc_attr($classes) . "'" : ''; ?>>
+                            <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf($this->tooltip_markup, $is_ga ? wp_kses_post($ga_descr) : wp_kses_post($gf_descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
+                            <th class="name" scope="row"><?php echo esc_attr($request['name']); ?></th>
+                            <td class="href"><a href="#" title="<?php echo esc_url($request['href']); ?>"><?php echo esc_url($request['href']); ?></a></td>
+                            <td class="href"><a href="#" title="<?php echo esc_url($local_url); ?>"><?php echo esc_url($local_url); ?></a></td>
+                            <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED); ?>[<?php echo esc_attr($type); ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
                         </tr>
-                        <?php foreach ($requests as $i => $request) : ?>
-                            <?php
-                            $is_ga      = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
-                            $is_gf      = strpos($request['href'], 'fonts.googleapis.com/css') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
-                            $classes    = $i % 2 ? 'even ' : '';
-                            $classes    .= $is_ga || $is_gf ? 'suggestion' : '';
-                            $local_url  = Gdpress::get_local_url($request['href'], $type);
-                            $downloaded = file_exists(Gdpress::get_local_path($request['href'], $type));
-                            $ga_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
-                            $gf_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
-                            ?>
-                            <tr <?php echo $is_ga || $is_gf ? "class='" . esc_attr($classes) . "'" : ''; ?>>
-                                <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf($this->tooltip_markup, $is_ga ? wp_kses_post($ga_descr) : wp_kses_post($gf_descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
-                                <th class="name" scope="row"><?php echo esc_attr($request['name']); ?></th>
-                                <td class="href"><a href="#" title="<?php echo esc_url($request['href']); ?>"><?php echo esc_url($request['href']); ?></a></td>
-                                <td class="href"><a href="#" title="<?php echo esc_url($local_url); ?>"><?php echo esc_url($local_url); ?></a></td>
-                                <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED); ?>[<?php echo esc_attr($type); ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                <?php endforeach; ?>
-            </table>
-            <input type="hidden" name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS); ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
-        <?php endif;
+                    <?php endforeach; ?>
+                </tbody>
+            <?php endforeach; ?>
+        </table>
+        <input type="hidden" name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS); ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
+        <?php
     }
 
     private function start_screen()
     {
-        ?>
-        <p>
-            <em><?php echo __('Wow, such empty! 🐼 Try giving this big button a steady push.', 'gdpr-press'); ?></em>
-        </p>
+        if (empty(Gdpress::requests())) : ?>
+            <p>
+                <em><?php echo sprintf(__('Does not compute! 😱 GDPRess experienced issues while scanning the website. If you\'re certain your site contains 3rd party resources, try <a href="%s" target="_blank">contacting my support human</a>?', 'gdpr-press'), 'https://wordpress.org/support/plugin/gdpr-press/'); ?></em>
+            </p>
+        <?php else : ?>
+            <p>
+                <em><?php echo __('Wow, such empty! 🐼 Try giving this big button a steady push.', 'gdpr-press'); ?></em>
+            </p>
+        <?php endif; ?>
         <p>
             <button data-nonce="<?php echo wp_create_nonce(Gdpress_Admin_Settings::GDPRESS_ADMIN_PAGE); ?>" id="gdpress-fetch" class="button button-primary button-hero"><?php echo __('Scan Website', 'gdpr-press'); ?></button>
         </p>
