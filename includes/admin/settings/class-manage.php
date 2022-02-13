@@ -66,7 +66,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         if (empty(Gdpress::requests())) : ?>
             <p>
-                <em><?php echo __('Uh-oh! 😱 Something must\'ve gone wrong while scanning the website.', 'gdpr-press'); ?></em>
+                <em><?php echo sprintf(__('Does not compute! 😱 GDPRess experienced issues while scanning the website. If you\'re certain your site contains 3rd party resources, try <a href="%s">contacting the support human</a>?', 'gdpr-press'), 'https://wordpress.org/support/plugin/gdpr-press/'); ?></em>
             </p>
         <?php else : ?>
             <?php
