@@ -168,8 +168,13 @@ class Gdpress_RewriteUrl
                     continue;
                 }
 
-                $local_url = Gdpress::get_local_url($request['href'], $type);
-                $local_dir = str_replace(content_url(), WP_CONTENT_DIR, $local_url);
+                if (Gdpress::is_google_fonts_request($request['href'])) {
+                    $local_url = Gdpress::get_local_url_google_font($request['name']);
+                    $local_dir = Gdpress::get_local_path_google_font($request['name']);
+                } else {
+                    $local_url = Gdpress::get_local_url($request['href'], $type);
+                    $local_dir = Gdpress::get_local_path($request['href'], $type);
+                }
 
                 if (!file_exists($local_dir)) {
                     continue;

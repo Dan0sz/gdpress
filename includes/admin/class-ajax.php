@@ -1,4 +1,7 @@
 <?php
+
+use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -77,12 +80,12 @@ class Gdpress_Admin_Ajax
 
             $external_css[$i]['href'] = $href;
 
-            if (strpos($href, '?') !== false) {
+            if (strpos($href, '?') !== false && !Gdpress::is_google_fonts_request($href)) {
                 $parsed_url = parse_url($href);
                 $href       = $parsed_url['path'];
             }
 
-            $external_css[$i]['name'] = basename($href);
+            $external_css[$i]['name'] = $this->generate_file_name($href);
             $i++;
         }
 
@@ -120,6 +123,82 @@ class Gdpress_Admin_Ajax
         update_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $external_requests);
 
         wp_send_json_success();
+    }
+
+    /**
+     * Return the basename, unless it's a Google Fonts URL.
+     * 
+     * @param mixed $url 
+     * @return string|void 
+     */
+    private function generate_file_name($url)
+    {
+        if (!Gdpress::is_google_fonts_request($url)) {
+            return basename($url);
+        }
+
+        $parts = parse_url($url);
+
+        if ($parts['path'] == '/css2') {
+            return $this->google_fonts_css2_filename($parts['query']);
+        } else {
+            return $this->google_fonts_filename($parts['query']);
+        }
+    }
+
+    /**
+     * Generate a readable filename from a Google Fonts API v2 request.
+     * 
+     * @param mixed $query 
+     * @return string limited to 30 chars
+     */
+    private function google_fonts_css2_filename($query)
+    {
+        preg_match_all('/family=(?P<font_family>.*?)[&:]/', $query, $families);
+
+        if (!isset($families['font_family'])) {
+            return 'google-fonts-css';
+        }
+
+        foreach ($families['font_family'] as $font_family) {
+            $font_families[] = str_replace(['+', ' '], '-', $font_family);
+        }
+
+        $filename = strtolower(implode('-', $font_families));
+
+        return substr($filename, 0, 30);
+    }
+
+    /**
+     * Generate a readable filename from a Google Fonts API request.
+     * 
+     * @param mixed $query
+     * @return string limited to 30 chars long.
+     */
+    private function google_fonts_filename($query)
+    {
+        parse_str($query, $parts);
+
+        if (!isset($parts['family'])) {
+            // Let's just do a default name, assuming this won't be in use at all.
+            return 'google-fonts-css';
+        }
+
+        $families = explode('|', $parts['family']);
+        $filename = '';
+        $max      = count($families);
+
+        foreach ($families as $i => $family) {
+            list($family_name) = explode(':', $family);
+
+            $filename .= strtolower($family_name);
+
+            if (++$i < $max) {
+                $filename .= '-';
+            }
+        }
+
+        return substr($filename, 0, 30);
     }
 
     /**

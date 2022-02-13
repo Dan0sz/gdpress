@@ -96,22 +96,35 @@ class Gdpress_Admin_Download
     /**
      * Downloade $filename from $url.
      * 
-     * @param mixed $type 
-     * @param mixed $filename 
-     * @param mixed $url 
+     * @param mixed $type The type of file to download.
+     * @param mixed $filename The name of the file to download.
+     * @param mixed $url The url of the file to download.
+     * 
      * @return string 
+     * 
      * @throws SodiumException 
      */
     private function download_file($filename, $type, $url)
     {
-        $file_path = Gdpress::get_local_path($url, $type);
-        $file_url  = Gdpress::get_local_url($url, $type, true);
+        if (Gdpress::is_google_fonts_request($url)) {
+            $file_path = Gdpress::get_local_path_google_font($filename);
+            $file_url  = Gdpress::get_local_url_google_font($filename, true);
+        } else {
+            $file_path = Gdpress::get_local_path($url, $type);
+            $file_url  = Gdpress::get_local_url($url, $type, true);
+        }
 
         if (file_exists($file_path)) {
             return $file_url;
         }
 
-        $tmp = $this->download_to_tmp(str_replace($filename, '', $file_path), $url);
+        if (Gdpress::is_google_fonts_request($url)) {
+            $path = str_replace('google-fonts.css', '', $file_path);
+        } else {
+            $path = str_replace($filename, '', $file_path);
+        }
+
+        $tmp = $this->download_to_tmp($path, $url);
 
         if (!$tmp) {
             return $file_url;
@@ -130,6 +143,14 @@ class Gdpress_Admin_Download
 
     /**
      * Downloads file to temporary storage and creates directories recursively where necessary.
+     *
+     * @param string $path The path to create.
+     * @param string $url The URL of the file to download.
+     * 
+     * @return string|WP_Error 
+     * 
+     * @throws SodiumException 
+     * @throws SodiumException 
      */
     private function download_to_tmp($path, $url)
     {

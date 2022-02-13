@@ -22,8 +22,8 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     public function __construct()
     {
         $this->title     = __('Manage External Requests', 'gdpr-press');
-        $this->ga_notice = __('<strong>Warning!</strong> 🤖 Because many extra measures are needed to comply with GDPR while using %s, GDPRess Bot will ignore this file automatically. <a target="_blank" href="%s">How do I fix this?</a>', 'gdpr-press');
-        $this->gf_notice = __('<strong>Stack Overflow!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing these requests beforing downloading them using <a href="%s" target="_blank">this free tool</a>.', 'gdpr-press');
+        $this->ga_notice = __('<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically.', 'gdpr-press');
+        $this->gf_notice = __('<strong>Stack Overflow!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing these requests beforing downloading them using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press');
 
         $this->init();
     }
@@ -95,42 +95,20 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                     <?php foreach ($requests as $i => $request) : ?>
                         <?php
                         $is_ga = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
-                        $is_gf = strpos($request['href'], 'fonts.googleapis.com/css') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
-                        $google_fonts_count     = 0;
-                        $google_fonts_var_count = 0;
+                        $is_gf = Gdpress::is_google_fonts_request($request['href']);
 
+                        // Only suggest OMGF if there's a serious amount of fonts in use.
                         if ($is_gf) {
-                            // Count fonts.
-                            $google_fonts = parse_url($request['href']);
-
-                            if ($google_fonts['path'] == '/css2') {
-                                // CSS2
-                                $google_fonts_count     = substr_count($google_fonts['query'] ?? '', 'family');
-                                $google_fonts_var_count = substr_count($google_fonts['query'] ?? '', ';');
-                            } else {
-                                // Regular ("legacy") API
-                                parse_str($google_fonts['query'], $params);
-
-                                $google_fonts_count     = substr_count($params['family'] ?? '', '|') + 1;
-                                $google_fonts_var_count = substr_count($params['family'] ?? '', ',');
-                            }
-
-                            // This means all variations are loaded, which is never good. So manually bump up the value to display the suggestion.
-                            if ($google_fonts_var_count == 0) {
-                                $google_fonts_var_count = 6;
-                            }
+                            $is_gf = $this->count_gf($request['href']) > 2 || $this->count_gf_variations($request['href']) > 5;
                         }
-
-                        // Only suggest OMGF is there's a serious amount of fonts in use.
-                        $is_gf      = $google_fonts_count > 2 || $google_fonts_var_count > 5;
                         $classes    = $i % 2 ? 'even ' : '';
                         $classes    .= $is_ga ? 'warning' : ($is_gf ? 'info' : '');
-                        $local_url  = Gdpress::get_local_url($request['href'], $type);
+                        $local_url  = Gdpress::is_google_fonts_request($request['href']) ? Gdpress::get_local_url_google_font($request['name']) : Gdpress::get_local_url($request['href'], $type);
                         $downloaded = file_exists(Gdpress::get_local_path($request['href'], $type));
                         $descr      = '';
 
                         if ($is_ga) {
-                            $descr = sprintf(__($this->ga_notice, 'gdpr-press'), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
+                            $descr = $this->ga_notice;
                         } elseif ($is_gf) {
                             $descr = sprintf(__($this->gf_notice, 'gdpr-press'),  'https://wordpress.org/plugins/host-webfonts-local/');
                         }
@@ -148,6 +126,61 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
         </table>
         <input type="hidden" name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS); ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
         <?php
+    }
+
+    /**
+     * Count Google Fonts families in an URL.
+     * 
+     * @param string $url 
+     * @return int 
+     */
+    private function count_gf($url)
+    {
+        $count = 0;
+        $parts = parse_url($url);
+
+        if ($parts['path'] == '/css2') {
+            // CSS2
+            $count = substr_count($parts['query'] ?? '', 'family');
+        } else {
+            // Regular ("legacy") API
+            parse_str($parts['query'], $params);
+
+            $count = substr_count($params['family'] ?? '', '|') + 1;
+        }
+
+        return $count;
+    }
+
+    /**
+     * Count Google Fonts variations in an URL
+     * 
+     * @param string $url 
+     * @return int 
+     */
+    private function count_gf_variations($url)
+    {
+        $google_fonts_var_count = 0;
+
+        // Count fonts.
+        $google_fonts = parse_url($url);
+
+        if ($google_fonts['path'] == '/css2') {
+            // CSS2
+            $google_fonts_var_count = substr_count($google_fonts['query'] ?? '', ';');
+        } else {
+            // Regular ("legacy") API
+            parse_str($google_fonts['query'], $params);
+
+            $google_fonts_var_count = substr_count($params['family'] ?? '', ',');
+        }
+
+        // This means all variations are loaded, which is never good. So manually bump up the value to display the suggestion.
+        if ($google_fonts_var_count == 0) {
+            $google_fonts_var_count = 6;
+        }
+
+        return $google_fonts_var_count;
     }
 
     private function start_screen()

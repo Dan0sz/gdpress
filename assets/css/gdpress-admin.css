@@ -102,8 +102,12 @@
 }
 #gdpress-manage-form .gdpress.manage table td.name,
 #gdpress-manage-form .gdpress.manage table th.name {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   max-width: 250px;
-  width: 10%;
+  width: 15%;
 }
 #gdpress-manage-form .gdpress.manage table td.href,
 #gdpress-manage-form .gdpress.manage table th.href {

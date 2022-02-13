@@ -212,6 +212,19 @@ class Gdpress
     }
 
     /**
+     * Generates a local path for Google Fonts.
+     * 
+     * @since v1.1.0
+     * 
+     * @param mixed $filename 
+     * @return string 
+     */
+    public static function get_local_path_google_font($filename)
+    {
+        return GDPRESS_CACHE_ABSPATH . "/css/$filename/google-fonts.css";
+    }
+
+    /**
      * Generates a local URL from $url.
      * 
      * @param string $url
@@ -227,5 +240,37 @@ class Gdpress
         }
 
         return content_url(GDPRESS_CACHE_DIR . "/$type" . parse_url($url)['path']);
+    }
+
+    /**
+     * Generate a local URL from $filename.
+     * 
+     * @since v1.1.0
+     * 
+     * @param mixed $filename 
+     * @param bool $bypass Force returning the URL even when the file doesn't exist.
+     * 
+     * @return string 
+     */
+    public static function get_local_url_google_font($filename, $bypass = false)
+    {
+        if (!file_exists(self::get_local_path_google_font($filename)) && !$bypass) {
+            return '';
+        }
+
+        return content_url(GDPRESS_CACHE_DIR . "/css/$filename/google-fonts.css");
+    }
+
+    /**
+     * Check if $url is Google Fonts API request.
+     * 
+     * @since v1.1.0
+     * 
+     * @param mixed $url 
+     * @return bool 
+     */
+    public static function is_google_fonts_request($url)
+    {
+        return strpos($url, 'fonts.googleapis.com/css') !== false || strpos($url, 'fonts.gstatic.com') !== false;
     }
 }
