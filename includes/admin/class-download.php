@@ -8,6 +8,8 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Download
 {
+    const WOFF2_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0';
+
     /** @var string $settings_page */
     private $settings_page = '';
 
@@ -161,11 +163,20 @@ class Gdpress_Admin_Download
             $url = 'https:' . $url;
         }
 
+        /**
+         * We set this user agent to retrieve WOFF2 files from the Google Fonts API.
+         * 
+         * @since v1.1.0 This doesn't affect other requests at all.
+         */
+        add_filter('http_headers_useragent', function () {
+            return self::WOFF2_USER_AGENT;
+        });
+
         $tmp = download_url($url);
 
         if (is_wp_error($tmp)) {
             /** @var WP_Error $tmp */
-            Gdpress_Admin_Notice::set_notice(sprintf(__('Ouch! Gdpress encountered an error while downloading <code>%s</code>', 'gdpr-press'), basename($url)) . ': ' . $tmp->get_error_message(), 'gdpress-download-failed', false, 'error', $tmp->get_error_code());
+            Gdpress_Admin_Notice::set_notice(sprintf(__('Ouch! Gdpress encountered an error while downloading <code>%s</code>', 'gdpr-press'), basename($url)) . ': ' . $tmp->get_error_message(), 'error', 'all', 'gdpress-download-failed');
 
             return '';
         }
