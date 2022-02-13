@@ -159,10 +159,10 @@ class Gdpress_Admin_Ajax
                 delete_option($option);
             }
 
-            Gdpress_Admin_Notice::set_notice(__('GDPRess\' cache directory successfully emptied.', 'gdpr-press'));
+            Gdpress_Admin_Notice::set_notice(__('GDPRess Bot has successfully cleared its cache.', 'gdpr-press'));
         } catch (\Exception $e) {
             Gdpress_Admin_Notice::set_notice(
-                __('GDPRess encountered an error while emptying the cache directory: ', 'gdpr-press') . $e->getMessage(),
+                __('GDPRess Bot could not empty the cache directory: ', 'gdpr-press') . $e->getMessage(),
                 'error',
                 'all',
                 'gdpress-cache-flush-error'

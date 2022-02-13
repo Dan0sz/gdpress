@@ -83,15 +83,17 @@ class Gdpress
      * 
      * @return array 
      */
-    public static function requests()
+    public static function requests($raw = false)
     {
         static $requests;
 
         /**
          * Get a fresh copy from the database if $requests is empty|null|false (on 1st run)
          */
-        if (empty($requests)) {
+        if (empty($requests) && $raw == false) {
             $requests = get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, []) ?: [];
+        } elseif (empty($requests)) {
+            $requests = get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS);
         }
 
         /**

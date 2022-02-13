@@ -125,8 +125,11 @@
 #gdpress-manage-form .gdpress.manage table tbody tr.even {
   background-color: #f0f0f1;
 }
-#gdpress-manage-form .gdpress.manage table tbody tr.suggestion {
-  background-color: #FFF2A0;
+#gdpress-manage-form .gdpress.manage table tbody tr.info {
+  background-color: #C2EEFF;
+}
+#gdpress-manage-form .gdpress.manage table tbody tr.warning {
+  background-color: #FFEF87;
 }
 #gdpress-manage-form .button-cancel {
   color: #a00;

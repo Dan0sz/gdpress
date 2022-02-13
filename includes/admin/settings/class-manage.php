@@ -8,8 +8,8 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
 {
-    /** @var string $notice */
-    private $notice;
+    /** @var string $ga_notice */
+    private $ga_notice;
 
     /** @var string $tooltip_markup */
     private $tooltip_markup = '<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>';
@@ -21,8 +21,9 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
      */
     public function __construct()
     {
-        $this->title  = __('Manage External Requests', 'gdpr-press');
-        $this->notice = __('Because many extra measures are needed to comply with GDPR while using %s, GDPRess ignores this file automatically. <a target="_blank" href="%s">How do I fix this?</a>', 'gdpr-press');
+        $this->title     = __('Manage External Requests', 'gdpr-press');
+        $this->ga_notice = __('<strong>Warning!</strong> 🤖 Because many extra measures are needed to comply with GDPR while using %s, GDPRess Bot will ignore this file automatically. <a target="_blank" href="%s">How do I fix this?</a>', 'gdpr-press');
+        $this->gf_notice = __('<strong>Stack Overflow!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing these requests beforing downloading them using <a href="%s" target="_blank">this free tool</a>.', 'gdpr-press');
 
         $this->init();
     }
@@ -69,11 +70,11 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     ?>
         <?php if (empty(Gdpress::local())) : ?>
             <p>
-                <em><?php echo sprintf(__('Beep-boop! 🤖 GDPRess has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press'), (string) $css_count, (string) $js_count); ?></em>
+                <em><?php echo sprintf(__('Beep-boop! 🤖 GDPRess Bot has detected %s stylesheets and %s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press'), (string) $css_count, (string) $js_count); ?></em>
             </p>
         <?php else : ?>
             <p>
-                <em><?php echo sprintf(__('Hurray! 🎉 GDPRess has downloaded %s stylesheets and %s scripts. Kickback, relax, enjoy your (increased) GDPR compliance and <a href="%s" target="_blank">maybe oil my circuits with a 5 ⭐ rating</a>?', 'gdpr-press'), count(Gdpress::local()['css'] ?? []), count(Gdpress::local()['js'] ?? []), 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post'); ?></em> <?php echo sprintf($this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.'); ?>
+                <em><?php echo sprintf(__('Hurray! 🎉 GDPRess Bot has downloaded %s stylesheets and %s scripts. Kickback, relax, enjoy your (increased) GDPR compliance and <a href="%s" target="_blank">maybe oil my circuits with a 5 ⭐ rating</a>?', 'gdpr-press'), count(Gdpress::local()['css'] ?? []), count(Gdpress::local()['js'] ?? []), 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post'); ?></em> <?php echo sprintf($this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.'); ?>
             </p>
         <?php endif; ?>
         <table>
@@ -93,21 +94,53 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                     </tr>
                     <?php foreach ($requests as $i => $request) : ?>
                         <?php
-                        $is_ga      = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
-                        $is_gf      = strpos($request['href'], 'fonts.googleapis.com/css') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                        $is_ga = strpos($request['href'], 'google-analytics') !== false || strpos($request['href'], 'googletagmanager') !== false;
+                        $is_gf = strpos($request['href'], 'fonts.googleapis.com/css') !== false || strpos($request['href'], 'fonts.gstatic.com') !== false;
+                        $google_fonts_count     = 0;
+                        $google_fonts_var_count = 0;
+
+                        if ($is_gf) {
+                            // Count fonts.
+                            $google_fonts = parse_url($request['href']);
+
+                            if ($google_fonts['path'] == '/css2') {
+                                // CSS2
+                                $google_fonts_count     = substr_count($google_fonts['query'] ?? '', 'family');
+                                $google_fonts_var_count = substr_count($google_fonts['query'] ?? '', ';');
+                            } else {
+                                // Regular ("legacy") API
+                                parse_str($google_fonts['query'], $params);
+
+                                $google_fonts_count     = substr_count($params['family'] ?? '', '|') + 1;
+                                $google_fonts_var_count = substr_count($params['family'] ?? '', ',');
+                            }
+
+                            // This means all variations are loaded, which is never good. So manually bump up the value to display the suggestion.
+                            if ($google_fonts_var_count == 0) {
+                                $google_fonts_var_count = 6;
+                            }
+                        }
+
+                        // Only suggest OMGF is there's a serious amount of fonts in use.
+                        $is_gf      = $google_fonts_count > 2 || $google_fonts_var_count > 5;
                         $classes    = $i % 2 ? 'even ' : '';
-                        $classes    .= $is_ga || $is_gf ? 'suggestion' : '';
+                        $classes    .= $is_ga ? 'warning' : ($is_gf ? 'info' : '');
                         $local_url  = Gdpress::get_local_url($request['href'], $type);
                         $downloaded = file_exists(Gdpress::get_local_path($request['href'], $type));
-                        $ga_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
-                        $gf_descr   = sprintf(__($this->notice, 'gdpr-press'), 'Google Fonts', 'https://ffw.press/blog/how-to/google-fonts-gdpr/');
+                        $descr      = '';
+
+                        if ($is_ga) {
+                            $descr = sprintf(__($this->ga_notice, 'gdpr-press'), 'Google Analytics', 'https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/');
+                        } elseif ($is_gf) {
+                            $descr = sprintf(__($this->gf_notice, 'gdpr-press'),  'https://wordpress.org/plugins/host-webfonts-local/');
+                        }
                         ?>
-                        <tr <?php echo $is_ga || $is_gf ? "class='" . esc_attr($classes) . "'" : ''; ?>>
-                            <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf($this->tooltip_markup, $is_ga ? wp_kses_post($ga_descr) : wp_kses_post($gf_descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
+                        <tr <?php echo "class='" . esc_attr($classes) . "'"; ?>>
+                            <td class="downloaded"><?php echo $is_ga || $is_gf ? sprintf($this->tooltip_markup, wp_kses_post($descr)) : ($downloaded ? '<i class="dashicons dashicons-yes"></i>' : ''); ?></td>
                             <th class="name" scope="row"><?php echo esc_attr($request['name']); ?></th>
                             <td class="href"><a href="#" title="<?php echo esc_url($request['href']); ?>"><?php echo esc_url($request['href']); ?></a></td>
                             <td class="href"><a href="#" title="<?php echo esc_url($local_url); ?>"><?php echo esc_url($local_url); ?></a></td>
-                            <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga || $is_gf ? 'checked' : ''; ?> <?php echo $is_ga || $is_gf ? 'class="locked"' : ''; ?> name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED); ?>[<?php echo esc_attr($type); ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
+                            <td class="exclude"><input type="checkbox" <?php echo Gdpress::is_excluded($type, $request['href']) || $is_ga ? 'checked' : ''; ?> <?php echo $is_ga ? 'class="locked"' : ''; ?> name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_EXCLUDED); ?>[<?php echo esc_attr($type); ?>][]" value="<?php echo esc_url($request['href']); ?>" /></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -119,13 +152,13 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
 
     private function start_screen()
     {
-        if (empty(Gdpress::requests())) : ?>
+        if (is_array(Gdpress::requests(true))) : ?>
             <p>
-                <em><?php echo sprintf(__('Does not compute! 😱 GDPRess experienced issues while scanning the website. If you\'re certain your site contains 3rd party resources, try <a href="%s" target="_blank">contacting my support human</a>?', 'gdpr-press'), 'https://wordpress.org/support/plugin/gdpr-press/'); ?></em>
+                <em><?php echo sprintf(__('Does not compute! 😱 GDPRess Bot experienced issues while scanning the website. If you\'re certain your site contains 3rd party resources, try <a href="%s" target="_blank">contacting my support human</a>?', 'gdpr-press'), 'https://wordpress.org/support/plugin/gdpr-press/'); ?></em>
             </p>
         <?php else : ?>
             <p>
-                <em><?php echo __('Wow, such empty! 🐼 Try giving this big button a steady push.', 'gdpr-press'); ?></em>
+                <em><?php echo __('Wow, such empty! 🐼 GDPRess Bot suggests you try giving this big button a steady push.', 'gdpr-press'); ?></em>
             </p>
         <?php endif; ?>
         <p>
