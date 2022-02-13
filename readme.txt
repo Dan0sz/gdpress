@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-In January, 2022 a German court ruled that a website owner should pay a € 100,- fine, because embedded Google Fonts were used, essentially transferring the user's personal data (IP address) without the user's prior consent.
+In January, 2022 [a German court ruled](https://ffw.press/blog/gdpr/google-fonts-violates-gdpr-germany/) that a website owner was in breach of GDPR and should pay a € 100,- fine, because embedded Google Fonts were used, essentially transferring the user's personal data (IP address) without the user's prior consent.
 
 = What's embedding? =
 
@@ -18,7 +18,7 @@ When an external (i.e. loaded from another server, besides your own) resource is
 
 = Why is using embedded resources in breach of GDPR? =
 
-Because of the way the internet works. When a browser (i.e. computer) requests a file (e.g. an image or a font file), the server needs the IP address of that computer to send it back. All these requests (including the IP address) are logged in a so-called `access.log`.
+Because of [the way the internet works](https://ffw.press/blog/how-to/google-fonts-gdpr/). When a browser (i.e. computer) requests a file (e.g. an image or a font file), the server needs the IP address of that computer to send it back. All these requests (including the IP address) are logged in a so-called `access.log`.
 
 Once this IP address leaves the European Union, your website is violating the GDPR.
 
@@ -47,6 +47,10 @@ No, because there are other plugins (like Asset Cleanup or Autoptimize) that are
 = GDPRess downloaded a stylesheet/script, but I'm still seeing requests to font files loaded by the stylesheet? =
 
 GDPRess parses the stylesheet for defined src urls. But if it somehow missed it, I'd love to hear about that, because that might be a bug. Please head over to the support forum and submit a ticket, and include the full URL to the external stylesheet.
+
+= Will this plugin allow me to use Google Analytics in compliance with GDPR? =
+
+No, because much more is needed than *just* downloading analytics.js/gtag.js to your server. To [use Google Analytics in compliance with GDPR](https://ffw.press/blog/gdpr/google-analytics-compliance-gdpr/), you need [CAOS Pro](https://ffw.press/wordpress/caos-pro/).
 
 == Screenshots ==
 
