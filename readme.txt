@@ -57,7 +57,7 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 1. GDPRess' Start screen, simply click Scan Website to start.
 2. After running the initial scan, external requests are listed. Exclude a file when e.g. you suspect it might not work properly when it's downloaded.
 3. Google Analytics is automatically excluded, because simply downloading the file is not enough to use it in compliance with GDPR. Click on the link in the tooltip for more information.
-4. Google Fonts is automatically excluded, because simply downloading the file is not enough to use it in compliance with GDPR. Click on the link in the tooltip for more information.
+4. Google Fonts is supported, but when many font families and/or font styles are detected, GDPRess will offer an alternative approach to optimize the request.
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
