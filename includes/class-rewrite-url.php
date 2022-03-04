@@ -56,15 +56,12 @@ class Gdpress_RewriteUrl
      */
     public function maybe_buffer_output()
     {
-        $start = true;
-
         /**
          * Make sure Page Builder previews don't get optimized content.
          */
         foreach ($this->page_builders as $page_builder) {
             if (array_key_exists($page_builder, $_GET)) {
-                $start = false;
-                break;
+                return false;
             }
         }
 
@@ -74,22 +71,20 @@ class Gdpress_RewriteUrl
          * @see https://www.modpagespeed.com/doc/experiment#ModPagespeed
          */
         if (array_key_exists('PageSpeed', $_GET) && 'off' === $_GET['PageSpeed']) {
-            $start = false;
+            return false;
         }
 
         /**
          * WP Customizer previews shouldn't get optimized content.
          */
         if (function_exists('is_customize_preview') && is_customize_preview()) {
-            $start = !is_customize_preview();
+            return false;
         }
 
         /**
          * Let's GO!
          */
-        if ($start) {
-            ob_start([$this, 'return_buffer']);
-        }
+        ob_start([$this, 'return_buffer']);
     }
 
     /**
