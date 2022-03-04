@@ -4,7 +4,7 @@ defined('ABSPATH') || exit;
  * Plugin Name: GDPR Press
  * Plugin URI: https://wordpress.org/plugins/gdpr-press/
  * Description: Easily eliminate external requests with GDPRess.
- * Version: 1.0.2
+ * Version: 1.1.0
  * Author: Daan from FFW.Press
  * Author URI: https://ffw.press
  * License: GPL2v2 or later
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 define('GDPRESS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('GDPRESS_PLUGIN_FILE', __FILE__);
 define('GDPRESS_PLUGIN_BASENAME', plugin_basename(GDPRESS_PLUGIN_FILE));
-define('GDPRESS_STATIC_VERSION', '1.0.2');
+define('GDPRESS_STATIC_VERSION', '1.1.0');
 define('GDPRESS_DB_VERSION', '1.0.2');
 
 /**

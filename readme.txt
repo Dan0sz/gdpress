@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: gdpr, dsvgo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,11 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added: Google Fonts support
+  - When many Font Families or Font Styles are detected, GDPR Press will suggest to use OMGF to optimize the request before downloading it.
+* Fixed several bugs, notices and warnings.
 
 = 1.0.2 =
 * Added: tooltip next to success message.
