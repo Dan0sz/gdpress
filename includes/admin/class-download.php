@@ -255,17 +255,19 @@ class Gdpress_Admin_Download
     /**
      * Checks if $url begins with '../' or doesn't begin with either 'http', '../' or '/'.
      * 
-     * @param mixed $url 
+     * @param string $source 
      * @return bool false || true for e.g. "../fonts/file.woff2" or "/fonts/file.woff2" or "fonts/file.woff2"
      */
-    private function is_rel_url($url)
+    private function is_rel_url(string $source)
     {
         // true: ../fonts/file.woff2
-        return strpos($url, '../') === 0
+        return strpos($source, '../') === 0
             // true: /fonts/file.woff2 (checks for relative protocols, i.e. '//')
-            || (strpos($url, 'http') === false && strpos($url, '../') === false && strpos($url, '//') === false && strpos($url, '/') === 0)
+            || (strpos($source, 'http') === false && strpos($source, '../') === false && strpos($source, '//') === false && strpos($source, '/') === 0)
             // true: fonts/file.woff2
-            || (strpos($url, 'http') === false && strpos($url, '../') === false && strpos($url, '/') !== 0);
+            || (strpos($source, 'http') === false && strpos($source, '../') === false && strpos($source, '/') > 0)
+            // true: file.woff2
+            || (strpos($source, 'http') === false && strpos($source, '../') === false && strpos($source, '/') === false && preg_match('/^[a-zA-Z]/', $source) === 1);
     }
 
     /**
