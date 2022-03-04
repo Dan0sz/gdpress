@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') || exit;
 /**
- * Plugin Name: GDPR Press
+ * Plugin Name: GDPRess
  * Plugin URI: https://wordpress.org/plugins/gdpr-press/
  * Description: Easily eliminate external requests with GDPRess.
  * Version: 1.1.0
