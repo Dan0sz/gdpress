@@ -11,6 +11,9 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     /** @var string $ga_notice */
     private $ga_notice;
 
+    /** @var string $gf_notice */
+    private $gf_notice;
+
     /** @var string $tooltip_markup */
     private $tooltip_markup = '<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>';
 
@@ -22,8 +25,8 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     public function __construct()
     {
         $this->title     = __('Manage External Requests', 'gdpr-press');
-        $this->ga_notice = __('<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically.', 'gdpr-press');
-        $this->gf_notice = __('<strong>Stack Overflow!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing these requests beforing downloading them using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press');
+        $this->ga_notice = __('<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank">CAOS</a> (free).', 'gdpr-press');
+        $this->gf_notice = __('<strong>Stack Overflow!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press');
 
         $this->init();
     }
@@ -108,9 +111,9 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                         $descr      = '';
 
                         if ($is_ga) {
-                            $descr = $this->ga_notice;
+                            $descr = sprintf($this->ga_notice, admin_url('plugin-install.php?s=CAOS&tab=search&type=term'));
                         } elseif ($is_gf) {
-                            $descr = sprintf(__($this->gf_notice, 'gdpr-press'), admin_url('plugin-install.php?s=OMGF&tab=search&type=term'));
+                            $descr = sprintf($this->gf_notice, admin_url('plugin-install.php?s=OMGF&tab=search&type=term'));
                         }
                         ?>
                         <tr <?php echo "class='" . esc_attr($classes) . "'"; ?>>
