@@ -42,9 +42,9 @@ class Gdpress_RewriteUrl
      */
     private function init()
     {
-        add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);
         // Autoptimize at 2. OMGF and CAOS Compatibility Mode run at 3.
         add_action('template_redirect', [$this, 'maybe_buffer_output'], 4);
+        add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);
     }
 
     /**
@@ -155,30 +155,244 @@ class Gdpress_RewriteUrl
      */
     public function rewrite_urls($html)
     {
-        $external_urls = Gdpress::requests();
+        $site_url = get_home_url();
 
-        foreach ($external_urls as $type => $requests) {
-            foreach ($requests as $request) {
-                if (Gdpress::is_excluded($type, $request['href'])) {
-                    continue;
-                }
+        preg_match_all('/<link.*?(preload|stylesheet).*?[\/]?>/', $html, $stylesheets);
 
-                if (Gdpress::is_google_fonts_request($request['href'])) {
-                    $local_url = Gdpress::get_local_url_google_font($request['name']);
-                    $local_dir = Gdpress::get_local_path_google_font($request['name']);
-                } else {
-                    $local_url = Gdpress::get_local_url($request['href'], $type);
-                    $local_dir = Gdpress::get_local_path($request['href'], $type);
-                }
+        $stylesheets = $this->parse_stylesheets($stylesheets[0] ?? [], $site_url);
 
-                if (!file_exists($local_dir)) {
-                    continue;
-                }
+        preg_match_all('/<script.*?src.*?<\/script>/', $html, $scripts);
 
-                $html = str_replace($request['href'], esc_attr($local_url), $html);
+        $scripts = $this->parse_scripts($scripts[0] ?? [], $site_url);
+
+        $external_reqs = [];
+
+        if (!empty($external_css)) {
+            $external_reqs['css'] = $external_css;
+        }
+
+        if (!empty($external_js)) {
+            $external_reqs['js'] = $external_js;
+        }
+
+        if (json_encode(Gdpress::requests()) !== json_encode($external_reqs)) {
+            update_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $external_reqs);
+        }
+
+        $html = $this->process_requests($external_reqs, $html);
+
+        return $html;
+    }
+
+    /**
+     * Build processable array from $stylesheets.
+     * 
+     * @since v1.2.0
+     * 
+     * @param array  $stylesheets 
+     * @param string $site_url
+     *  
+     * @return array { int => { 'name' => string, 'href' => string } }
+     */
+    private function parse_stylesheets($stylesheets, $site_url)
+    {
+        $external_css  = [];
+        $i             = 0;
+
+        foreach ($stylesheets as $stylesheet) {
+            preg_match('/href=[\'"](?P<href>.*?)[\'"]/', $stylesheet, $href);
+
+            $href = $href['href'] ?? '';
+
+            // If the resource is already locally loaded or it's an inline style block, move along.
+            if (strpos($href, $site_url) !== false || !$href) {
+                continue;
             }
+
+            $external_css[$i]['href'] = $href;
+
+            if (strpos($href, '?') !== false && !Gdpress::is_google_fonts_request($href)) {
+                $parsed_url = parse_url($href);
+                $href       = $parsed_url['path'];
+            }
+
+            $external_css[$i]['name'] = $this->generate_file_name($href);
+            $i++;
+        }
+
+        return $external_css;
+    }
+
+    /**
+     * Build processable array from scripts.
+     * 
+     * @since v1.2.0
+     * 
+     * @param array  $scripts 
+     * @param string $site_url
+     *  
+     * @return array { int => { 'name' => string, 'href' => string } }
+     */
+    private function parse_scripts($scripts, $site_url)
+    {
+        $external_js = [];
+        $i           = 0;
+
+        foreach ($scripts as $script) {
+            preg_match('/src=[\'"](?P<src>.*?)[\'"]/', $script, $src);
+
+            $src = $src['src'] ?? '';
+
+            // If the resource is already locally loaded or it's an inline style block, move along.
+            if (strpos($src, $site_url) !== false || !$src) {
+                continue;
+            }
+
+            $external_js[$i]['href'] = $src;
+
+            if (strpos($src, '?') !== false) {
+                $parsed_url = parse_url($src);
+                $src        = $parsed_url['path'];
+            }
+
+            $external_js[$i]['name'] = basename($src);
+            $i++;
+        }
+
+        return $external_js;
+    }
+
+    /**
+     * Processes the found external requests in $html. Download files and update DB when needed.
+     * 
+     * @since v1.2.0
+     * 
+     * @param array  $requests { 'css' => int { 'name' => string, 'href' => string }, 'js' => int { 'name' => string, 'href' => string } }
+     * @param string $html     Valid HTML 
+     * 
+     * @return string Valid HTML 
+     * 
+     * @throws SodiumException 
+     * @throws SodiumException 
+     * @throws SodiumException 
+     * @throws SodiumException 
+     * @throws SodiumException 
+     */
+    private function process_requests($requests, $html)
+    {
+        $download  = new Gdpress_Download();
+        $added_new = false;
+
+        foreach ($requests as $type => $request) {
+            if (Gdpress::is_excluded($type, $request['href'])) {
+                continue;
+            }
+
+            if (Gdpress::is_google_fonts_request($request['href'])) {
+                $local_url = Gdpress::get_local_url_google_font($request['name']);
+                $local_dir = Gdpress::get_local_path_google_font($request['name']);
+            } else {
+                $local_url = Gdpress::get_local_url($request['href'], $type);
+                $local_dir = Gdpress::get_local_path($request['href'], $type);
+            }
+
+            /**
+             * If it doesn't exist, download it.
+             */
+            if (!file_exists($local_dir)) {
+                $download->download_file($request['name'], $type, $request['href']);
+
+                Gdpress::set_local_url($type, $request['href']);
+
+                $added_new = true;
+            }
+
+            $html = str_replace($request['href'], esc_attr($local_url), $html);
+        }
+
+        if ($added_new) {
+            Gdpress::set_local_url('', '', true);
         }
 
         return $html;
+    }
+
+    /**
+     * Return the basename, unless it's a Google Fonts URL.
+     * 
+     * @param string $url 
+     * 
+     * @return string 
+     */
+    private function generate_file_name($url)
+    {
+        if (!Gdpress::is_google_fonts_request($url)) {
+            return basename($url);
+        }
+
+        $parts = parse_url($url);
+
+        if ($parts['path'] == '/css2') {
+            return $this->google_fonts_css2_filename($parts['query']);
+        } else {
+            return $this->google_fonts_filename($parts['query']);
+        }
+    }
+
+    /**
+     * Generate a readable filename from a Google Fonts API v2 request.
+     * 
+     * @param string $query 
+     * 
+     * @return string limited to 30 chars
+     */
+    private function google_fonts_css2_filename($query)
+    {
+        preg_match_all('/family=(?P<font_family>.*?)[&:]/', $query, $families);
+
+        if (!isset($families['font_family'])) {
+            return 'google-fonts-css';
+        }
+
+        foreach ($families['font_family'] as $font_family) {
+            $font_families[] = str_replace(['+', ' '], '-', $font_family);
+        }
+
+        $filename = strtolower(implode('-', $font_families));
+
+        return substr($filename, 0, 30);
+    }
+
+    /**
+     * Generate a readable filename from a Google Fonts API request.
+     * 
+     * @param string $query
+     * 
+     * @return string limited to 30 chars long.
+     */
+    private function google_fonts_filename($query)
+    {
+        parse_str($query, $parts);
+
+        if (!isset($parts['family'])) {
+            // Let's just do a default name, assuming this won't be in use at all.
+            return 'google-fonts-css';
+        }
+
+        $families = explode('|', $parts['family']);
+        $filename = '';
+        $max      = count($families);
+
+        foreach ($families as $i => $family) {
+            list($family_name) = explode(':', $family);
+
+            $filename .= strtolower($family_name);
+
+            if (++$i < $max) {
+                $filename .= '-';
+            }
+        }
+
+        return substr($filename, 0, 30);
     }
 }
