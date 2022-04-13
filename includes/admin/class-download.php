@@ -8,8 +8,6 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Admin_Download
 {
-    const WOFF2_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0';
-
     /** @var string $settings_page */
     private $settings_page = '';
 
@@ -18,9 +16,6 @@ class Gdpress_Admin_Download
 
     /** @var bool $settings_updated */
     private $settings_updated = false;
-
-    /** @var WP_Filesystem $filesystem */
-    private $fs;
 
     /**
      * Set Fields.
@@ -32,7 +27,6 @@ class Gdpress_Admin_Download
         $this->settings_page    = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
         $this->settings_tab     = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : Gdpress_Admin_Settings::GDPRESS_ADMIN_SECTION_MANAGE;
         $this->settings_updated = isset($_GET['settings-updated']);
-        $this->fs               = $this->filesystem();
 
         $this->maybe_download();
     }
