@@ -8,6 +8,19 @@ defined('ABSPATH') || exit;
  */
 class Gdpress_Download
 {
+    const WOFF2_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0';
+
+    /** @var WP_Filesystem $filesystem */
+    private $fs;
+
+    /**
+     * Build Class
+     */
+    public function __construct()
+    {
+        $this->fs = $this->filesystem();
+    }
+
     /**
      * Download $filename from $url.
      * 
