@@ -58,7 +58,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
             __('Test Mode', 'gdpr-press'),
             Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_TEST_MODE,
             GDPRESS_TEST_MODE == 'on',
-            __('With this setting enabled, any changes made by GDPRess will only be visible to logged in administrators or when <code>?gdpress</code> is added to an URL in the frontend. <strong>Test thoroughly, before disabling this option!</strong>', 'gdpr-press')
+            __('<strong>Warning!</strong> Test thoroughly, before disabling this option. While this setting is enabled, any changes made by GDPRess will only be visible to logged in administrators or when <code>?gdpress</code> is added to an URL in the frontend.', 'gdpr-press')
         );
     }
 
