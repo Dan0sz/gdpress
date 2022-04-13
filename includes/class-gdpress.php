@@ -137,7 +137,7 @@ class Gdpress
     }
 
     /**
-     * Contains all URLs marked as excluded.
+     * Contains all localized file URLs.
      * 
      * @return array 
      */
