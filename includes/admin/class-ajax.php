@@ -47,8 +47,12 @@ class Gdpress_Admin_Ajax
 
         /**
          * Trigger a request to the frontend, so the 'template_redirect' action is initiated.
+         * 
+         * We're adding the gdpress parameter to ensure proper execution.
+         * 
+         * @see Gdpress_Rewrite_Url::init()
          */
-        $site_url = get_home_url();
+        $site_url = get_home_url() . '?gdpress';
         $response = wp_remote_get($site_url, ['timeout' => 60]);
 
         if (is_wp_error($response)) {

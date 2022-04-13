@@ -33,7 +33,7 @@ class Gdpress
         }
 
         if (!is_admin()) {
-            $this->rewrite_urls();
+            add_action('init', [$this, 'rewrite_urls']);
         }
     }
 
@@ -74,7 +74,7 @@ class Gdpress
      * 
      * @return void 
      */
-    private function rewrite_urls()
+    public function rewrite_urls()
     {
         new Gdpress_RewriteUrl();
     }
