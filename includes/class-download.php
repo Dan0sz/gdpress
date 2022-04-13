@@ -197,9 +197,10 @@ class Gdpress_Download
     }
 
     /**
-     * @param mixed $rel_url 
-     * @param mixed $url 
-     * @return void 
+     * @param string $rel_url Relative URL to rewrite, e.g. '/fonts/file.woff2'
+     * @param string $url     URL to be used for rewriting relative URL to an absolute URL.
+     *  
+     * @return string Absolute URL
      */
     private function get_abs_url($rel_url, $source)
     {
@@ -234,7 +235,7 @@ class Gdpress_Download
     private function replace_abs_urls($contents, $path)
     {
         $parts     = parse_url($path);
-        $local_url = content_url(GDPRESS_CACHE_DIR . $parts['path']);
+        $local_url = content_url(GDPRESS_CACHE_DIR . '/css/' . $parts['path']);
 
         return str_replace($path, $local_url, $contents);
     }
