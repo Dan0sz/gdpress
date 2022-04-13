@@ -157,7 +157,7 @@ class Gdpress_RewriteUrl
     {
         $site_url = get_home_url();
 
-        preg_match_all('/<link.*?(preload|stylesheet).*?[\/]?>/', $html, $stylesheets);
+        preg_match_all('/<link.*?stylesheet.*?[\/]?>/', $html, $stylesheets);
 
         $stylesheets = $this->parse_stylesheets($stylesheets[0] ?? [], $site_url);
 
@@ -167,12 +167,12 @@ class Gdpress_RewriteUrl
 
         $external_reqs = [];
 
-        if (!empty($external_css)) {
-            $external_reqs['css'] = $external_css;
+        if (!empty($stylesheets)) {
+            $external_reqs['css'] = $stylesheets;
         }
 
-        if (!empty($external_js)) {
-            $external_reqs['js'] = $external_js;
+        if (!empty($scripts)) {
+            $external_reqs['js'] = $scripts;
         }
 
         if (json_encode(Gdpress::requests()) !== json_encode($external_reqs)) {
@@ -283,31 +283,33 @@ class Gdpress_RewriteUrl
         $download  = new Gdpress_Download();
         $added_new = false;
 
-        foreach ($requests as $type => $request) {
-            if (Gdpress::is_excluded($type, $request['href'])) {
-                continue;
+        foreach ($requests as $type => $type_requests) {
+            foreach ($type_requests as $request) {
+                if (Gdpress::is_excluded($type, $request['href'])) {
+                    continue;
+                }
+
+                if (Gdpress::is_google_fonts_request($request['href'])) {
+                    $local_url = Gdpress::get_local_url_google_font($request['name']);
+                    $local_dir = Gdpress::get_local_path_google_font($request['name']);
+                } else {
+                    $local_url = Gdpress::get_local_url($request['href'], $type);
+                    $local_dir = Gdpress::get_local_path($request['href'], $type);
+                }
+
+                /**
+                 * If it doesn't exist, download it.
+                 */
+                if (!file_exists($local_dir)) {
+                    $download->download_file($request['name'], $type, $request['href']);
+
+                    Gdpress::set_local_url($type, $request['href']);
+
+                    $added_new = true;
+                }
+
+                $html = str_replace($request['href'], esc_attr($local_url), $html);
             }
-
-            if (Gdpress::is_google_fonts_request($request['href'])) {
-                $local_url = Gdpress::get_local_url_google_font($request['name']);
-                $local_dir = Gdpress::get_local_path_google_font($request['name']);
-            } else {
-                $local_url = Gdpress::get_local_url($request['href'], $type);
-                $local_dir = Gdpress::get_local_path($request['href'], $type);
-            }
-
-            /**
-             * If it doesn't exist, download it.
-             */
-            if (!file_exists($local_dir)) {
-                $download->download_file($request['name'], $type, $request['href']);
-
-                Gdpress::set_local_url($type, $request['href']);
-
-                $added_new = true;
-            }
-
-            $html = str_replace($request['href'], esc_attr($local_url), $html);
         }
 
         if ($added_new) {
