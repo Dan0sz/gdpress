@@ -35,6 +35,8 @@ class Gdpress
         if (!is_admin()) {
             add_action('init', [$this, 'rewrite_urls']);
         }
+
+        add_filter('pre_update_option_' . Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [$this, 'base64_decode_value']);
     }
 
     /**
@@ -78,6 +80,24 @@ class Gdpress
     {
         new Gdpress_RewriteUrl();
     }
+
+    /**
+     * @since v1.2.0 gdpress_external_requests is base64_encoded in the frontend, to bypass firewall restrictions on
+     * some servers, as well as prevent offset errors while unserializing.
+     * 
+     * @param $value
+     *
+     * @return string
+     */
+    public function base64_decode_value($value)
+    {
+        if (is_string($value) && base64_decode($value, true)) {
+            return base64_decode($value);
+        }
+
+        return $value;
+    }
+
 
     /**
      * Contains all fetched external requests.
@@ -272,6 +292,8 @@ class Gdpress
      */
     public static function is_google_fonts_request($url)
     {
-        return strpos($url, 'fonts.googleapis.com/css') !== false || strpos($url, 'fonts.gstatic.com') !== false;
+        return strpos($url, 'fonts.googleapis.com/css') !== false
+            || strpos($url, 'fonts.googleapis.com/icon') !== false
+            || strpos($url, 'fonts.gstatic.com') !== false;
     }
 }

@@ -144,7 +144,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
                 </tbody>
             <?php endforeach; ?>
         </table>
-        <input type="hidden" name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS); ?>" value='<?php echo serialize(Gdpress::requests()); ?>' />
+        <input type="hidden" name="<?php echo esc_attr(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_REQUESTS); ?>" value="<?php echo base64_encode(serialize(Gdpress::requests())); ?>" />
         <?php
     }
 
