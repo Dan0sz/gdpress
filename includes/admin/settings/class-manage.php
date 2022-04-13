@@ -26,7 +26,7 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     {
         $this->title     = __('Manage External Requests', 'gdpr-press');
         $this->ga_notice = __('<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank">CAOS</a> (free).', 'gdpr-press');
-        $this->gf_notice = __('<strong>Stack Overflow!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press');
+        $this->gf_notice = __('<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press');
 
         $this->init();
     }
@@ -39,13 +39,30 @@ class Gdpress_Admin_Settings_Manage extends Gdpress_Admin_Settings_Builder
     private function init()
     {
         // Open
-        add_filter('gdpress_manage_content', [$this, 'do_title']);
+        add_filter('gdpress_manage_content', [$this, 'do_title'], 1);
 
         // Content
-        add_filter('gdpress_manage_content', [$this, 'manage_section']);
+        add_filter('gdpress_manage_content', [$this, 'manage_section'], 2);
+
+        add_filter('gdpress_manage_content', [$this, 'do_before'], 3);
+        add_filter('gdpress_manage_content', [$this, 'test_mode'], 4);
+        add_filter('gdpress_manage_content', [$this, 'do_after'], 5);
     }
 
     /**
+     * Add Test Mode setting.
+     */
+    public function test_mode()
+    {
+        $this->do_checkbox(
+            __('Test Mode', 'gdpr-press'),
+            Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_TEST_MODE,
+            GDPRESS_TEST_MODE == 'on',
+            __('With this setting enabled, any changes made by GDPRess will only be visible to logged in administrators or when <code>?gdpress</code> is added to an URL in the frontend.', 'gdpr-press')
+        );
+    }
+
+    /** 
      * Add Manage section contents.
      * 
      * @return void 

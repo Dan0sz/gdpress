@@ -42,6 +42,18 @@ class Gdpress_RewriteUrl
      */
     private function init()
     {
+        /**
+         * Halt execution if:
+         * * Test Mode is enabled and current user is not an admin.
+         * * Test Mode is enabled and `gdpress` GET-parameter is not set.
+         */
+        if (
+            ((GDPRESS_TEST_MODE == 'on' && !current_user_can('manage_options'))
+                && (GDPRESS_TEST_MODE == 'on' && !current_user_can('manage_options') && !isset($_GET['gdpress'])))
+        ) {
+            return;
+        }
+
         // Autoptimize at 2. OMGF and CAOS Compatibility Mode run at 3.
         add_action('template_redirect', [$this, 'maybe_buffer_output'], 4);
         add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);

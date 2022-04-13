@@ -88,7 +88,7 @@ class Gdpress_Admin_Settings_Builder
             <td>
                 <label for="<?php echo esc_attr($name); ?>">
                     <input <?php echo apply_filters($name . '_setting_disabled', $disabled) ? 'disabled' : ''; ?> type="checkbox" class="<?php echo str_replace('_', '-', esc_attr($name)); ?>" name="<?php echo esc_attr($name); ?>" <?php echo $checked == "on" ? 'checked = "checked"' : ''; ?> />
-                    <?php echo apply_filters($name . '_setting_description', esc_html($description)); ?>
+                    <?php echo apply_filters($name . '_setting_description', wp_kses($description, 'code')); ?>
                 </label>
             </td>
         </tr>

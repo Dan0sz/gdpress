@@ -46,6 +46,7 @@ class Gdpress
     {
         define('GDPRESS_CACHE_DIR', '/uploads/gdpr-press');
         define('GDPRESS_CACHE_ABSPATH', WP_CONTENT_DIR . GDPRESS_CACHE_DIR);
+        define('GDPRESS_TEST_MODE', get_option(Gdpress_Admin_Settings::GDPRESS_MANAGE_SETTING_TEST_MODE));
     }
 
     /**
