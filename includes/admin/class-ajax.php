@@ -49,7 +49,7 @@ class Gdpress_Admin_Ajax
          * Trigger a request to the frontend, so the 'template_redirect' action is initiated.
          */
         $site_url = get_home_url();
-        $response = wp_remote_get($site_url);
+        $response = wp_remote_get($site_url, ['timeout' => 60]);
 
         if (is_wp_error($response)) {
             /**
@@ -57,7 +57,7 @@ class Gdpress_Admin_Ajax
              * 
              * @var WP_Error $response
              */
-            wp_send_json_error($response->get_error_code . ': ' . $response->get_error_message);
+            wp_send_json_error($response->get_error_code() . ': ' . $response->get_error_message());
         }
 
         wp_send_json_success();
