@@ -1,9 +1,9 @@
-=== GDPRess | Eliminate External (3rd Party) Requests ===
+=== GDPRess | Eliminate external requests to increase GDPR compliance ===
 Contributors: DaanvandenBergh
 Tags: gdpr, dsvgo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,11 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.2.0 =
+* Added: Run a quick scan on each page to see if new external (3rd party) requests are present on that page!
+* Added: Test Mode (enabled by Default) to allow users to first test the optimizations before releasing them to the public.
+* Fixed: Don't use WP_Filesystem to get and put file contents.
 
 = 1.1.0 =
 * Added: Google Fonts support
