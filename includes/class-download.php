@@ -10,17 +10,6 @@ class Gdpress_Download
 {
     const WOFF2_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0';
 
-    /** @var WP_Filesystem $filesystem */
-    private $fs;
-
-    /**
-     * Build Class
-     */
-    public function __construct()
-    {
-        $this->fs = $this->filesystem();
-    }
-
     /**
      * Download $filename from $url.
      * 
@@ -118,7 +107,7 @@ class Gdpress_Download
      */
     private function parse_font_faces($file, $ext_url)
     {
-        $contents = $this->fs->get_contents($file);
+        $contents = file_get_contents($file);
 
         if (strpos($contents, '@font-face') === false) {
             return false;
@@ -175,7 +164,7 @@ class Gdpress_Download
             }
         }
 
-        return $this->fs->put_contents($file, $contents);
+        return file_put_contents($file, $contents);
     }
 
     /**
@@ -238,22 +227,5 @@ class Gdpress_Download
         $local_url = content_url(GDPRESS_CACHE_DIR . '/css/' . $parts['path']);
 
         return str_replace($path, $local_url, $contents);
-    }
-
-    /**
-     * Gets filesystem instance.
-     * 
-     * @return WP_Filesystem_Base 
-     */
-    private function filesystem()
-    {
-        global $wp_filesystem;
-
-        if (is_null($wp_filesystem)) {
-            require_once ABSPATH . '/wp-admin/includes/file.php';
-            WP_Filesystem();
-        }
-
-        return $wp_filesystem;
     }
 }
