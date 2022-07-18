@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: gdpr, dsvgo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,9 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.2.2 =
+* Fixed: GDPRess now runs before OMGF/CAOS, so e.g. OMGF Pro can optimize previously externally hosted stylesheets.
 
 = 1.2.1 =
 * Fixed: Protocol (//) and Root (/) relative URLs shouldn't be interpreted as external URLs.
