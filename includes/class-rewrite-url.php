@@ -54,9 +54,17 @@ class Gdpress_RewriteUrl
             return;
         }
 
+        /**
+         * Step in after CAOS and/or OMGF if these plugins are installed.
+         */
+        if (!function_exists('caos_init') && !function_exists('omgf_init')) {
+            add_action('template_redirect', [$this, 'maybe_buffer_output'], 4);
+        }
+
         // Autoptimize at 2. OMGF and CAOS Compatibility Mode run at 3.
-        add_action('template_redirect', [$this, 'maybe_buffer_output'], 4);
         add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);
+        add_filter('omgf_buffer_output', [$this, 'rewrite_urls'], 11);
+        add_filter('caos_buffer_output', [$this, 'rewrite_urls'], 11);
     }
 
     /**
@@ -217,7 +225,7 @@ class Gdpress_RewriteUrl
             $href = $href['href'] ?? '';
 
             // If the resource is already locally loaded or it's an inline style block, move along.
-            if (strpos($href, $site_url) !== false || !$href) {
+            if (!$href || strpos($href, '/') === 0 || strpos($href, $site_url) !== false) {
                 continue;
             }
 
