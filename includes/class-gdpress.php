@@ -292,8 +292,13 @@ class Gdpress
      */
     public static function is_google_fonts_request($url)
     {
-        return strpos($url, 'fonts.googleapis.com/css') !== false
-            || strpos($url, 'fonts.googleapis.com/icon') !== false
-            || strpos($url, 'fonts.gstatic.com') !== false;
+        /**
+         * Is OMGF active? If so, bail.
+         */
+        return !function_exists('omgf_init')
+            && (strpos($url, 'fonts.googleapis.com/css') !== false
+                || strpos($url, 'fonts.googleapis.com/icon') !== false
+                || strpos($url, 'fonts.gstatic.com') !== false
+            );
     }
 }
