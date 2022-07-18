@@ -54,7 +54,12 @@ class Gdpress_RewriteUrl
             return;
         }
 
-        // Autoptimize at 2. OMGF and CAOS Compatibility Mode run at 3.
+        /**
+         * Make sure GDPRess runs first, this allows:
+         * - Plugins like Autoptimize to capture the locally hosted stylesheets for compression.
+         * - OMGF Pro to optimize previously externally hosted stylesheets, containing Google Fonts.
+         * - Etc.
+         */
         add_action('template_redirect', [$this, 'maybe_buffer_output'], 1);
 
         add_filter('gdpress_buffer_output', [$this, 'rewrite_urls']);
