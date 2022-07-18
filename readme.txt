@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: gdpr, dsvgo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,10 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed: Protocol (//) and Root (/) relative URLs shouldn't be interpreted as external URLs.
+* Fixed: Let CAOS/OMGF handle their files, if these plugins are active.
 
 = 1.2.0 =
 * Added: Run a quick scan on each page to see if new external (3rd party) requests are present on that page!
