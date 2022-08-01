@@ -71,6 +71,10 @@ class Gdpress_Download
      */
     private function download_to_tmp($path, $url)
     {
+        if (!function_exists('download_url')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
         wp_mkdir_p($path);
 
         // Is relative protocol?
