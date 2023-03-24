@@ -1,0 +1,15 @@
+{
+    "name": "GDPRess",
+    "version": "1.2.3",
+    "description": "",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Dan0sz/gdpress.git"
+    },
+    "author": "Daan van den Bergh",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://wordpress.org/support/plugin/gdpr-press/"
+    },
+    "homepage": "https://wordpress.org/plugins/gdpr-press/"
+}
