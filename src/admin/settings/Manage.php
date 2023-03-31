@@ -7,7 +7,7 @@
 namespace GDPRess\Admin\Settings;
 
 use GDPRess\Admin\Settings;
-use GDPRess\HElper;
+use GDPRess\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
