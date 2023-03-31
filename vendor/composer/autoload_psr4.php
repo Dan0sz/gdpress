@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Gdpress\\' => array($baseDir . '/includes'),
+    'GDPRess\\' => array($baseDir . '/src'),
 );

@@ -2,7 +2,7 @@
     "name": "daandev/gdpress",
     "autoload": {
         "psr-4": {
-            "Gdpress\\": "src/"
+            "GDPRess\\": "src/"
         }
     },
     "authors": [

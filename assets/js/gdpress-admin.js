@@ -1,7 +1,7 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
 jQuery(document).ready(function ($) {
     var gdpress_admin = {

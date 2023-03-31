@@ -32,4 +32,4 @@ require_once GDPRESS_PLUGIN_DIR . 'vendor/autoload.php';
  *
  * @return Plugin
  */
-$gdpress = new Gdpress\Plugin();
+$gdpress = new GDPRess\Plugin();

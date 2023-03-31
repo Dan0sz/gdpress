@@ -2,10 +2,10 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
 
-namespace Gdpress\Admin;
+namespace GDPRess\Admin;
 
 defined( 'ABSPATH' ) || exit;
 

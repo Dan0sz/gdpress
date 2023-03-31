@@ -2,12 +2,13 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
 
-namespace Gdpress;
+namespace GDPRess;
 
-use Gdpress\Admin\Notice;
+use GDPRess\Admin\Notice;
+use GDPRess\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,19 +28,19 @@ class Download {
 	 * @throws SodiumException 
 	 */
 	public function download_file( $filename, $type, $url ) {
-		if ( Plugin::is_google_fonts_request( $url ) ) {
-			$file_path = Plugin::get_local_path_google_font( $filename );
-			$file_url  = Plugin::get_local_url_google_font( $filename, true );
+		if ( Helper::is_google_fonts_request( $url ) ) {
+			$file_path = Helper::get_local_path_google_font( $filename );
+			$file_url  = Helper::get_local_url_google_font( $filename, true );
 		} else {
-			$file_path = Plugin::get_local_path( $url, $type );
-			$file_url  = Plugin::get_local_url( $url, $type, true );
+			$file_path = Helper::get_local_path( $url, $type );
+			$file_url  = Helper::get_local_url( $url, $type, true );
 		}
 
 		if ( file_exists( $file_path ) ) {
 			return $file_url;
 		}
 
-		if ( Plugin::is_google_fonts_request( $url ) ) {
+		if ( Helper::is_google_fonts_request( $url ) ) {
 			$path = str_replace( 'google-fonts.css', '', $file_path );
 		} else {
 			$path = str_replace( $filename, '', $file_path );
@@ -101,7 +102,7 @@ class Download {
 
 		if ( is_wp_error( $tmp ) ) {
 			/** @var WP_Error $tmp */
-			Notice::set_notice( sprintf( __( 'Ouch! Gdpress encountered an error while downloading <code>%s</code>', 'gdpr-press' ), basename( $url ) ) . ': ' . $tmp->get_error_message(), 'error', 'all', 'gdpress-download-failed' );
+			Notice::set_notice( sprintf( __( 'Ouch! GDPRess encountered an error while downloading <code>%s</code>', 'gdpr-press' ), basename( $url ) ) . ': ' . $tmp->get_error_message(), 'error', 'all', 'gdpress-download-failed' );
 
 			return '';
 		}
@@ -149,7 +150,7 @@ class Download {
 
 				list($filename) = explode( '?', basename( $url ) );
 				$dir            = str_replace( $filename, '', $url );
-				$path           = Plugin::get_local_path( $dir, 'css' );
+				$path           = Helper::get_local_path( $dir, 'css' );
 
 				$tmp = $this->download_to_tmp( $path, $url );
 

@@ -2,13 +2,13 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
 
-namespace Gdpress\Admin;
+namespace GDPRess\Admin;
 
-use Gdpress\Admin;
-use Gdpress\Plugin;
+use GDPRess\Admin;
+use GDPRess\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -126,7 +126,7 @@ class Settings extends Admin {
 				do_action( "after_$current_section" ); 
 				?>
 
-				<?php if ( $this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Plugin::requests() ) : ?>
+				<?php if ( $this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Helper::requests() ) : ?>
 					<?php submit_button( __( 'Save Changes & Download', 'gdpr-press' ), 'primary', 'submit', false ); ?>
 					<input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan Again', 'gdpr-press' ); ?>">
 					<a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( self::GDPRESS_ADMIN_PAGE ); ?>" class="gdpress-flush button-cancel"><?php _e( 'Empty Cache Directory', 'gdpr-press' ); ?></a>
@@ -271,7 +271,7 @@ class Settings extends Admin {
 			return $text;
 		}
 
-		$text  = sprintf( __( 'Recently tagged <a target="_blank" href="%s"><strong>#GDPR</strong></a> on my blog:', 'gdpr-press' ), 'https://ffw.press/blog/tag/gdpr' ) . ' ';
+		$text  = sprintf( __( 'Recently tagged <a target="_blank" href="%s"><strong>#GDPR</strong></a> on my blog:', 'gdpr-press' ), 'https://daan.dev/blog/tag/gdpr' ) . ' ';
 		$text .= '<span id="gdpress-ticker-wrap">';
 		$i     = 0;
 

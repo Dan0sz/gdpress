@@ -2,13 +2,13 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
 
-namespace Gdpress\Admin;
+namespace GDPRess\Admin;
 
-use Gdpress\Plugin;
-use Gdpress\Download as DownloadHelper;
+use GDPRess\Helper;
+use GDPRess\Download as DownloadHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,11 +42,11 @@ class Download {
 	 * @return void 
 	 */
 	private function maybe_download() {
-		if ( Settings::GDPRESS_ADMIN_PAGE != $this->settings_page ) {
+		if ( Settings::GDPRESS_ADMIN_PAGE !== $this->settings_page ) {
 			return;
 		}
 
-		if ( Settings::GDPRESS_ADMIN_SECTION_MANAGE != $this->settings_tab ) {
+		if ( Settings::GDPRESS_ADMIN_SECTION_MANAGE !== $this->settings_tab ) {
 			return;
 		}
 
@@ -76,21 +76,21 @@ class Download {
 
 		$downloader = new DownloadHelper();
 
-		foreach ( Plugin::requests() as $type => $requests ) {
+		foreach ( Helper::requests() as $type => $requests ) {
 			foreach ( $requests as $request ) {
-				if ( Plugin::is_excluded( $type, $request['href'] ) ) {
+				if ( Helper::is_excluded( $type, $request['href'] ) ) {
 					continue;
 				}
 
 				$url = $downloader->download_file( $request['name'], $type, $request['href'] );
 
-				Plugin::set_local_url( $type, $url );
+				Helper::set_local_url( $type, $url );
 			}
 		}
 
 		/**
 		 * Write everything to the database.
 		 */
-		Plugin::set_local_url( '', '', true );
+		Helper::set_local_url( '', '', true );
 	}
 }

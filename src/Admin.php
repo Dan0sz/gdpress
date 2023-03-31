@@ -2,16 +2,16 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
 
-namespace Gdpress;
+namespace GDPRess;
 
-use Gdpress\Admin\Ajax;
-use Gdpress\Admin\Download;
-use Gdpress\Admin\Settings\Help;
-use Gdpress\Admin\Settings\Manage;
-use Gdpress\Admin\Notice;
+use GDPRess\Admin\Ajax;
+use GDPRess\Admin\Download;
+use GDPRess\Admin\Settings\Help;
+use GDPRess\Admin\Settings\Manage;
+use GDPRess\Admin\Notice;
 
 defined( 'ABSPATH' ) || exit;
 
