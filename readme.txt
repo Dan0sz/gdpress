@@ -10,6 +10,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
+**GDPRess can be downloaded for free without any paid subscription from [the official WordPress repository](https://wordpress.org/plugins/gdpr-press/).**
+
 In January, 2022 [a German court ruled](https://ffw.press/blog/gdpr/google-fonts-violates-gdpr-germany/) that a website owner was in breach of GDPR and should pay a € 100,- fine, because embedded Google Fonts were used, essentially transferring the user's personal data (IP address) without the user's prior consent.
 
 = What's embedding? =
