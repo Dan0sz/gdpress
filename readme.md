@@ -1,5 +1,7 @@
 # GDPRess
 
+![WordPress version](https://img.shields.io/wordpress/plugin/v/gdpr-press.svg) ![WordPress Rating](https://img.shields.io/wordpress/plugin/r/gdpr-press.svg) ![WordPress Downloads](https://img.shields.io/wordpress/plugin/dt/gdpr-press.svg)
+
 Eliminate external (3rd party) requests and increase GDPR compliance with GDPRess.
 
 ## Description
