@@ -173,6 +173,15 @@
     padding: 6px 12px;
 }
 
+.gdpress-manage-container table .gdpress-manage-cache {
+    border-top: 1px solid #ccc;
+}
+
+.gdpress-manage-container table .gdpress-manage-cache th {
+    font-size: 14px;
+    padding: 0;
+}
+
 .gdpress-manage-container table td.title,
 .gdpress-manage-container table th.title {
     padding: 0;
