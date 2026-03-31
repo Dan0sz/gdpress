@@ -8,7 +8,6 @@
 namespace GDPRess;
 
 use GDPRess\Admin\Notice;
-use GDPRess\Helper;
 
 class Download {
 	
@@ -23,7 +22,7 @@ class Download {
 	 *
 	 * @return string
 	 *
-	 * @throws SodiumException
+	 * @throws \SodiumException
 	 */
 	public function download_file( $filename, $type, $url ) {
 		if ( Helper::is_google_fonts_request( $url ) ) {
@@ -67,10 +66,9 @@ class Download {
 	 * @param string $path The path to create.
 	 * @param string $url  The URL of the file to download.
 	 *
-	 * @return string|WP_Error
+	 * @return string|\WP_Error
 	 *
-	 * @throws SodiumException
-	 * @throws SodiumException
+	 * @throws \SodiumException
 	 */
 	private function download_to_tmp( $path, $url ) {
 		if ( ! function_exists( 'download_url' ) ) {
@@ -80,7 +78,7 @@ class Download {
 		wp_mkdir_p( $path );
 		
 		// Is relative protocol?
-		if ( strpos( $url, '//' ) === 0 ) {
+		if ( str_starts_with( $url, '//' ) ) {
 			$url = 'https:' . $url;
 		}
 		
@@ -99,7 +97,7 @@ class Download {
 		$tmp = download_url( $url );
 		
 		if ( is_wp_error( $tmp ) ) {
-			/** @var WP_Error $tmp */
+			/** @var \WP_Error $tmp */
 			Notice::set_notice( sprintf( __( 'Ouch! GDPRess encountered an error while downloading <code>%s</code>', 'gdpr-press' ), basename( $url ) ) . ': ' . $tmp->get_error_message(), 'error', 'all', 'gdpress-download-failed' );
 			
 			return '';
@@ -113,7 +111,9 @@ class Download {
 	 *
 	 * @param mixed $file
 	 *
-	 * @return void
+	 * @return false|int
+	 *
+	 * @throws \SodiumException
 	 */
 	private function parse_font_faces( $file, $ext_url ) {
 		$contents = file_get_contents( $file );
@@ -185,18 +185,16 @@ class Download {
 	 */
 	private function is_rel_url( string $source ) {
 		// true: ../fonts/file.woff2
-		return strpos( $source, '../' ) === 0
-		       // true: /fonts/file.woff2 (checks for relative protocols, i.e. '//')
-		       || ( strpos( $source, 'http' ) === false && strpos( $source, '../' ) === false && strpos( $source, '//' ) === false && strpos( $source, '/' ) === 0 )
+		return str_starts_with( $source, '../' )
 		       // true: fonts/file.woff2
-		       || ( strpos( $source, 'http' ) === false && strpos( $source, '../' ) === false && strpos( $source, '/' ) > 0 )
+		       || ( ! str_contains( $source, 'http' ) && ! str_contains( $source, '../' ) && strpos( $source, '/' ) > 0 )
 		       // true: file.woff2
-		       || ( strpos( $source, 'http' ) === false && strpos( $source, '../' ) === false && strpos( $source, '/' ) === false && preg_match( '/^[a-zA-Z]/', $source ) === 1 );
+		       || ( ! str_contains( $source, 'http' ) && ! str_contains( $source, '../' ) && ! str_contains( $source, '/' ) && preg_match( '/^[a-zA-Z]/', $source ) === 1 );
 	}
 	
 	/**
 	 * @param string $rel_url Relative URL to rewrite, e.g. '/fonts/file.woff2'
-	 * @param string $url     URL to be used for rewriting relative URL to an absolute URL.
+	 * @param string $source  URL to be used for rewriting relative URL to an absolute URL.
 	 *
 	 * @return string Absolute URL
 	 */
@@ -217,9 +215,8 @@ class Download {
 		}
 		
 		$path = ltrim( $rel_url, './' );
-		$abs  = $url_to_insert . '/' . $path;
 		
-		return $abs;
+		return $url_to_insert . '/' . $path;
 	}
 	
 	/**
@@ -228,7 +225,7 @@ class Download {
 	 * @param string $contents
 	 * @param string $path
 	 *
-	 * @return void
+	 * @return array|string|string[]
 	 */
 	private function replace_abs_urls( $contents, $path ) {
 		$parts     = parse_url( $path );

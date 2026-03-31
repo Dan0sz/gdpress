@@ -1,7 +1,7 @@
 === GDPRess | Eliminate external requests to increase GDPR compliance ===
 Contributors: DaanvandenBergh
 Tags: gdpr, dsvgo, avg, external, 3rd party, requests, minimize
-Requires at least: 5.8
+Requires at least: 5.9
 Tested up to: 6.2
 Stable tag: 1.2.3
 Requires PHP: 7.2
