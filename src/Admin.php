@@ -31,7 +31,6 @@ class Admin {
 	 */
 	private function init() {
 		add_action( 'admin_notices', [ $this, 'print_notices' ] );
-		add_action( 'admin_init', [ $this, 'download_files' ] );
 		
 		$this->add_ajax_hooks();
 		$this->build_manage_section();
@@ -63,15 +62,6 @@ class Admin {
 	 */
 	private function build_help_section() {
 		new Help();
-	}
-	
-	/**
-	 * File Downloader
-	 *
-	 * @return void
-	 */
-	public function download_files() {
-		new Download();
 	}
 	
 	/**

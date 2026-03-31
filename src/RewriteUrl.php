@@ -46,7 +46,7 @@ class RewriteUrl {
 	private function init() {
 		/**
 		 * Halt execution if:
-		 * * Test Mode is enabled and current user is not an admin.
+		 * * Test Mode is enabled and the current user is not an admin.
 		 * * Test Mode is enabled and `gdpress` GET-parameter is not set.
 		 */
 		if (
@@ -57,7 +57,7 @@ class RewriteUrl {
 		}
 		
 		/**
-		 * Make sure GDPRess runs first, this allows:
+		 * Make sure GDPRess runs first; this allows:
 		 * - Plugins like Autoptimize to capture the locally hosted stylesheets for compression.
 		 * - OMGF Pro to optimize previously externally hosted stylesheets, containing Google Fonts.
 		 * - Etc.
@@ -68,11 +68,11 @@ class RewriteUrl {
 	}
 	
 	/**
-	 * Start output buffer.
+	 * Start the output buffer.
 	 *
 	 * @action template_redirect
 	 *
-	 * @return void
+	 * @return void|bool
 	 */
 	public function maybe_buffer_output() {
 		/**
@@ -377,11 +377,7 @@ class RewriteUrl {
 	 *
 	 * @return string Valid HTML
 	 *
-	 * @throws SodiumException
-	 * @throws SodiumException
-	 * @throws SodiumException
-	 * @throws SodiumException
-	 * @throws SodiumException
+	 * @throws \SodiumException
 	 */
 	private function process_requests( $requests, $html ) {
 		$download  = new Download();

@@ -27,9 +27,6 @@ class Manage extends Builder {
      * @return void
      */
     public function __construct() {
-        $this->ga_notice = __( '<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank">CAOS</a> (free).', 'gdpr-press' );
-        $this->gf_notice = __( '<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press' );
-
         $this->init();
     }
 
@@ -39,12 +36,28 @@ class Manage extends Builder {
      * @return void
      */
     private function init() {
+        add_action( 'init', [ $this, 'set_translations']);
+
         // Content
         add_filter( 'gdpress_manage_content', [ $this, 'manage_section' ], 2 );
 
-        add_filter( 'gdpress_manage_content', [ $this, 'do_before' ], 3 );
-        add_filter( 'gdpress_manage_content', [ $this, 'test_mode' ], 4 );
-        add_filter( 'gdpress_manage_content', [ $this, 'do_after' ], 5 );
+        add_filter( 'gdpress_manage_content', [ $this, 'before_settings_section' ], 3);
+        add_filter( 'gdpress_manage_content', [ $this, 'do_before' ], 5 );
+        add_filter( 'gdpress_manage_content', [ $this, 'test_mode' ], 7 );
+        add_filter( 'gdpress_manage_content', [ $this, 'do_after' ], 9 );
+        add_filter( 'gdpress_manage_content', [ $this, 'after_settings_section' ]);
+    }
+
+    public function after_settings_section() {
+        ?>
+        </div>
+        <?php
+    }
+
+    public function before_settings_section() {
+        ?>
+        <div class="gdpress-settings-container">
+        <?php
     }
 
     /**
@@ -129,6 +142,17 @@ class Manage extends Builder {
                 <?php endforeach; ?>
                 </tbody>
             <?php endforeach; ?>
+            <tbody class="gdpress-manage-cache">
+                <tr>
+                    <th>
+                        <?php echo esc_html__('Manage cache', 'gdpr-press') ;?>
+                    </th>
+                    <td>
+                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan Again', 'gdpr-press' ); ?>">
+                <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" class="gdpress-flush button button-cancel"><?php _e( 'Empty Cache Directory', 'gdpr-press' ); ?></a>
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <input type="hidden" name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_REQUESTS ); ?>" value="<?php echo base64_encode( serialize( Helper::requests() ) ); ?>"/>
         <?php
@@ -205,6 +229,11 @@ class Manage extends Builder {
                     class="button button-primary button-hero"><?php echo __( 'Scan Website', 'gdpr-press' ); ?></button>
         </p>
         <?php
+    }
+
+    public function set_translations() {
+        $this->ga_notice = __( '<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank">CAOS</a> (free).', 'gdpr-press' );
+        $this->gf_notice = __( '<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press' );
     }
 
     /**

@@ -334,12 +334,7 @@ class Settings extends Admin {
                 do_action( "after_$current_section" );
                 ?>
 
-                <?php if ( $this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Helper::requests() ) : ?>
-                    <?php submit_button( __( 'Save Changes & Download', 'gdpr-press' ), 'primary', 'submit', false ); ?>
-                    <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan Again', 'gdpr-press' ); ?>">
-                    <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( self::GDPRESS_ADMIN_PAGE ); ?>"
-                       class="gdpress-flush button button-cancel"><?php _e( 'Empty Cache Directory', 'gdpr-press' ); ?></a>
-                <?php endif; ?>
+                <?php submit_button( __( 'Save Changes', 'gdpr-press' ), 'primary', 'submit', false ); ?>
             </form>
         </div>
         <?php

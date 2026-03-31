@@ -54,7 +54,7 @@ class Ajax {
 			/**
 			 * Dies eventually, so no need to return.
 			 *
-			 * @var WP_Error $response
+			 * @var \WP_Error $response
 			 */
 			wp_send_json_error( $response->get_error_code() . ': ' . $response->get_error_message() );
 		}
@@ -63,7 +63,7 @@ class Ajax {
 	}
 	
 	/**
-	 * Flush cache directory and remove DB settings.
+	 * Flush the cache directory and remove DB settings.
 	 *
 	 * @return void
 	 */
