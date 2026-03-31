@@ -219,8 +219,8 @@ class RewriteUrl {
 			
 			$href = $href['href'] ?? '';
 			
-			// If the resource is already locally loaded or it's an inline style block, move along.
-			if ( ! $href || strpos( $href, '/' ) === 0 || strpos( $href, $site_url ) !== false ) {
+			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
+			if ( ! $href || strpos( $href, '/' ) === 0 || strpos( $href, $site_url ) !== false || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
 				continue;
 			}
 			
@@ -340,8 +340,8 @@ class RewriteUrl {
 			
 			$src = $src['src'] ?? '';
 			
-			// If the resource is already locally loaded or it's an inline style block, move along.
-			if ( strpos( $src, $site_url ) !== false || ! $src ) {
+			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
+			if ( strpos( $src, $site_url ) !== false || ! $src || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $src ) ) {
 				continue;
 			}
 			
