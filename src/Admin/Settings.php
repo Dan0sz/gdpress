@@ -325,7 +325,7 @@ class Settings extends Admin {
                 do_action( "after_$current_section" );
                 ?>
 
-                <?php submit_button( __( 'Save Changes', 'gdpr-press' ), 'primary', 'submit', false ); ?>
+                <?php submit_button( __( 'Save changes & download', 'gdpr-press' ), 'primary', 'submit', false ); ?>
             </form>
         </div>
         <?php
