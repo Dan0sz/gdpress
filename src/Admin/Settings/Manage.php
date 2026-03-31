@@ -221,8 +221,7 @@ class Manage extends Builder {
     }
 
     private function start_screen() {
-        if ( is_array( Helper::requests( true ) ) ) :
-            ?>
+        if ( is_array( Helper::requests( true ) ) ) : ?>
             <p>
                 <em><?php echo sprintf( __( 'Does not compute! 😱 GDPRess Bot experienced issues while scanning the website. If you\'re certain your site contains 3rd party resources, try <a href="%s" target="_blank">contacting my support human</a>?', 'gdpr-press' ), 'https://wordpress.org/support/plugin/gdpr-press/' ); ?></em>
             </p>
