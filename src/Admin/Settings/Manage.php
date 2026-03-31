@@ -149,7 +149,7 @@ class Manage extends Builder {
                         <?php echo esc_html__('Manage cache', 'gdpr-press') ;?>
                     </th>
                     <td>
-                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan again', 'gdpr-press' ); ?>">
+                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan again', 'gdpr-press' ); ?>" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>">
                         <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" class="gdpress-flush button button-cancel"><?php _e( 'Empty cache directory', 'gdpr-press' ); ?></a>
                     </td>
                 </tr>

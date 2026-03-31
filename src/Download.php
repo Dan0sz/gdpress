@@ -25,6 +25,11 @@ class Download {
 	 * @throws \SodiumException
 	 */
 	public function download_file( $filename, $type, $url ) {
+		// Normalize protocol-relative URLs.
+		if ( str_starts_with( $url, '//' ) ) {
+			$url = 'https:' . $url;
+		}
+		
 		if ( Helper::is_google_fonts_request( $url ) ) {
 			$file_path = Helper::get_local_path_google_font( $filename );
 			$file_url  = Helper::get_local_url_google_font( $filename, true );
@@ -142,6 +147,11 @@ class Download {
 			 * Download each file (defined as @font-face src) to the appropriate dir.
 			 */
 			foreach ( $urls as $url ) {
+				// Normalize protocol-relative URLs.
+				if ( str_starts_with( $url, '//' ) ) {
+					$url = 'https:' . $url;
+				}
+				
 				// Save a copy of $is_rel_url for later down the road.
 				if ( $is_rel_url = $this->is_rel_url( $url ) ) {
 					$url = $this->get_abs_url( $url, $ext_url );
