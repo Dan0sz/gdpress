@@ -10,8 +10,6 @@ namespace GDPRess\Admin\Settings;
 use GDPRess\Admin\Settings;
 use GDPRess\Helper;
 
-defined( 'ABSPATH' ) || exit;
-
 class Manage extends Builder {
 
     /** @var string $ga_notice */
@@ -56,7 +54,7 @@ class Manage extends Builder {
      */
     public function manage_section() {
         ?>
-        <div class="gdpress-manage-container postbox">
+        <div class="gdpress-manage-container">
             <span class="option-title"><?php echo __( 'External Requests Manager', 'gdpr-press' ); ?></span>
             <div class="gdpress-container">
                 <?php if ( Helper::requests() ) : ?>

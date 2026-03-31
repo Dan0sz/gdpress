@@ -10,8 +10,6 @@ namespace GDPRess\Admin;
 use GDPRess\Admin;
 use GDPRess\Helper;
 
-defined( 'ABSPATH' ) || exit;
-
 class Settings extends Admin {
 
     const GDPRESS_ADMIN_PAGE = 'gdpr-press';
@@ -99,15 +97,6 @@ class Settings extends Admin {
     }
 
     /**
-     * Adds the Manage Tab to the settings screen.
-     *
-     * @return void
-     */
-    public function add_manage_tab() {
-        $this->generate_tab( self::GDPRESS_ADMIN_SECTION_MANAGE, 'dashicons-download', __( 'Manage External Requests', 'gdpr-press' ) );
-    }
-
-    /**
      * @param      $id
      * @param null $icon
      * @param null $label
@@ -129,6 +118,15 @@ class Settings extends Admin {
         $admin_page = self::GDPRESS_ADMIN_PAGE;
 
         return esc_url( admin_url( "options-general.php?page=$admin_page&tab=$tab" ) );
+    }
+
+    /**
+     * Adds the Manage Tab to the settings screen.
+     *
+     * @return void
+     */
+    public function add_manage_tab() {
+        $this->generate_tab( self::GDPRESS_ADMIN_SECTION_MANAGE, 'dashicons-download', __( 'Manage External Requests', 'gdpr-press' ) );
     }
 
     /**
@@ -319,32 +317,30 @@ class Settings extends Admin {
         <div class="wrap gdpress">
             <h1><?php _e( 'GDPRess | Eliminate External Requests', 'gdpr-press' ); ?></h1>
 
-            <div class="settings-column">
-                <h2 class="gdpress-nav nav-tab-wrapper">
-                    <?php do_action( 'gdpress_settings_tab' ); ?>
-                </h2>
+            <h2 class="gdpress-nav nav-tab-wrapper">
+                <?php do_action( 'gdpress_settings_tab' ); ?>
+            </h2>
 
-                <form id="<?php echo esc_attr( $this->active_tab ); ?>-form" method="post" action="options.php?tab=<?php echo esc_attr( $this->active_tab ); ?>">
-                    <?php
-                    settings_fields( $this->active_tab );
-                    do_settings_sections( $this->active_tab );
-                    ?>
+            <form id="<?php echo esc_attr( $this->active_tab ); ?>-form" method="post" action="options.php?tab=<?php echo esc_attr( $this->active_tab ); ?>">
+                <?php
+                settings_fields( $this->active_tab );
+                do_settings_sections( $this->active_tab );
+                ?>
 
-                    <?php do_action( 'gdpress_settings_content' ); ?>
+                <?php do_action( 'gdpress_settings_content' ); ?>
 
-                    <?php
-                    $current_section = str_replace( '-', '_', $this->active_tab );
-                    do_action( "after_$current_section" );
-                    ?>
+                <?php
+                $current_section = str_replace( '-', '_', $this->active_tab );
+                do_action( "after_$current_section" );
+                ?>
 
-                    <?php if ( $this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Helper::requests() ) : ?>
-                        <?php submit_button( __( 'Save Changes & Download', 'gdpr-press' ), 'primary', 'submit', false ); ?>
-                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan Again', 'gdpr-press' ); ?>">
-                        <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( self::GDPRESS_ADMIN_PAGE ); ?>"
-                           class="gdpress-flush button-cancel"><?php _e( 'Empty Cache Directory', 'gdpr-press' ); ?></a>
-                    <?php endif; ?>
-                </form>
-            </div>
+                <?php if ( $this->active_tab == self::GDPRESS_ADMIN_SECTION_MANAGE && Helper::requests() ) : ?>
+                    <?php submit_button( __( 'Save Changes & Download', 'gdpr-press' ), 'primary', 'submit', false ); ?>
+                    <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan Again', 'gdpr-press' ); ?>">
+                    <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( self::GDPRESS_ADMIN_PAGE ); ?>"
+                       class="gdpress-flush button button-cancel"><?php _e( 'Empty Cache Directory', 'gdpr-press' ); ?></a>
+                <?php endif; ?>
+            </form>
         </div>
         <?php
     }

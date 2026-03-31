@@ -36,9 +36,27 @@
  * Buttons
  */
 .gdpress .button {
+    color: #00adda;
     font-family: Poppins, Verdana, sans-serif;
     border-radius: 10px;
+    border: none;
     font-weight: 500;
+    padding: 7px 20px;
+    margin-right: 1em;
+    background-color: transparent;
+}
+
+.gdpress .button:hover {
+    background-color: transparent;
+}
+
+.gdpress .button-primary {
+    color: white;
+    background-color: #00adda;
+}
+
+.gdpress .button-primary:hover {
+    background-color: #09c;
 }
 
 .gdpress .button-cancel {
@@ -48,7 +66,6 @@
     box-shadow: none;
     background: 0 0;
     white-space: nowrap;
-    padding: 1px 10px !important;
 }
 
 .gdpress .button-cancel:hover {
@@ -56,12 +73,12 @@
     background: #d54e21;
     color: #fff;
     border-color: #d54e21;
+    border-radius: 10px;
 }
 
 .gdpress #submit {
     background: #00adda;
     border: 0;
-    padding: 7px 20px;
     color: #fff;
     cursor: pointer;
 }
@@ -113,8 +130,8 @@
 /**
  * Containers
  */
-.gdpress-manage-container,
-.gdpress-help-container {
+#gdpress-manage-form,
+#gdpress-help-form {
     padding: 5px 25px 25px;
     margin-bottom: 30px;
     box-shadow: 0 10px 20px 1px #ccc;
@@ -122,6 +139,11 @@
     border-top: 4px solid #00adda;
     border-radius: 10px;
     background: #fff;
+}
+
+.gdpress-manage-container,
+.gdpress-help-container {
+    border: none;
 }
 
 .gdpress-manage-container .option-title {
