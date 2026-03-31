@@ -24,7 +24,16 @@ class Helper {
 			return '';
 		}
 		
-		return content_url( GDPRESS_CACHE_DIR . "/$type" . wp_parse_url( $url )['path'] );
+		$path = wp_parse_url( $url, PHP_URL_PATH );
+		
+		if ( ! $path ) {
+			/**
+			 * @TODO: Generate a unique path a different way.
+			 */
+			return '';
+		}
+		
+		return content_url( GDPRESS_CACHE_DIR . "/$type" . $path );
 	}
 	
 	/**
@@ -36,11 +45,20 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_path( $url, $type ) {
-		if ( ! isset( $url['path'] ) ) {
+		if ( ! isset( $url ) ) {
 			return '';
 		}
 		
-		return GDPRESS_CACHE_ABSPATH . "/$type" . wp_parse_url( $url )['path'];
+		$path = wp_parse_url( $url, PHP_URL_PATH );
+		
+		if ( ! $path ) {
+			/**
+			 * @TODO: Generate a unique path a different way.
+			 */
+			return '';
+		}
+		
+		return GDPRESS_CACHE_ABSPATH . "/$type" . $path;
 	}
 	
 	/**
