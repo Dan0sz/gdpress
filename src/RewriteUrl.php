@@ -46,12 +46,12 @@ class RewriteUrl {
 	private function init() {
 		/**
 		 * Halt execution if:
-		 * * Test Mode is enabled and the current user is not an admin.
+		 * * Test Mode is enabled and the current user is not an admin or,
 		 * * Test Mode is enabled and `gdpress` GET-parameter is not set.
 		 */
 		if (
-			( ( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) )
-			  && ( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) && ! isset( $_GET['gdpress'] ) ) )
+			( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) ) ||
+			( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) && ! isset( $_GET['gdpress'] ) )
 		) {
 			return;
 		}
@@ -220,7 +220,7 @@ class RewriteUrl {
 			$href = $href['href'] ?? '';
 			
 			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
-			if ( ! $href || strpos( $href, '/' ) === 0 || strpos( $href, $site_url ) !== false || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
+			if ( ! $href || str_starts_with( $href, '/' ) || str_contains( $href, $site_url ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
 				continue;
 			}
 			
@@ -231,7 +231,7 @@ class RewriteUrl {
 			
 			$external_css[ $i ]['href'] = $href;
 			
-			if ( strpos( $href, '?' ) !== false && ! Helper::is_google_fonts_request( $href ) ) {
+			if ( str_contains( $href, '?' ) && ! Helper::is_google_fonts_request( $href ) ) {
 				$parsed_url = wp_parse_url( $href );
 				$href       = $parsed_url['path'];
 			}
@@ -341,21 +341,20 @@ class RewriteUrl {
 			$src = $src['src'] ?? '';
 			
 			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
-			if ( strpos( $src, $site_url ) !== false || ! $src || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $src ) ) {
+			if ( str_contains( $src, $site_url ) || ! $src || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $src ) ) {
 				continue;
 			}
 			
 			// If CAOS is active, let's ignore any files related to Google Analytics.
-			if (
-				function_exists( 'caos_init' ) &&
-				( strpos( $src, 'google-analytics.com' ) !== false || strpos( $src, 'googletagmanager.com' ) !== false )
+			if ( function_exists( 'caos_init' ) &&
+			     ( str_contains( $src, 'google-analytics.com' ) || str_contains( $src, 'googletagmanager.com' ) )
 			) {
 				continue;
 			}
 			
 			$external_js[ $i ]['href'] = $src;
 			
-			if ( strpos( $src, '?' ) !== false ) {
+			if ( str_contains( $src, '?' ) ) {
 				$parsed_url = wp_parse_url( $src );
 				$src        = $parsed_url['path'];
 			}
