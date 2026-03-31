@@ -48,11 +48,12 @@ class Help extends Builder {
                         </ul>
                     </div>
                     <div class="column last">
-                        <h3 class="signature"><?php echo sprintf( __( 'Coded with %s by', 'gdpr-press' ), '<i class="dashicons dashicons-heart"></i>' ); ?> </h3>
+                        <h3 class="signature"><?php echo __( 'Coded with ❤️ by', 'gdpr-press' ); ?> </h3>
                         <p class="signature">
-                            <a target="_blank" title="<?php echo __( 'Visit FFW Press', 'gdpr-press' ); ?>" href="https://daan.dev/wordpress-plugins/"><img class="signature-image"
-                                                                                                                                                            alt="<?php echo __( 'Visit FFW Press', 'gdpr-press' ); ?>"
-                                                                                                                                                            src="<?php echo esc_url( plugin_dir_url( GDPRESS_PLUGIN_FILE ) . 'assets/images/logo-color.png' ); ?>"/></a>
+                            <a target="_blank" title="<?php echo __( 'Visit Daan.dev', 'gdpr-press' ); ?>" href="https://daan.dev/wordpress-plugins/">
+                                <img class="signature-image" alt="<?php echo __( 'Visit Daan.dev', 'gdpr-press' ); ?>"
+                                     src="<?php echo esc_url( plugin_dir_url( GDPRESS_PLUGIN_FILE ) . 'assets/images/logo-color@2x.png' ); ?>"/>
+                            </a>
                         </p>
                     </div>
                 </div>

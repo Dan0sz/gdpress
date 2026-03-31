@@ -106,6 +106,10 @@
     color: #000;
 }
 
+.gdpress h2.gdpress-nav .nav-tab:last-child {
+    float: right;
+}
+
 .gdpress h2.gdpress-nav .nav-tab-active {
     color: #00adda;
 }
@@ -319,8 +323,8 @@
     text-align: center;
 }
 
-.gdpress-help-container .column.last .signature .dashicons-heart {
-    color: #FF4136;
+.gdpress-help-container .column.last .signature-image {
+    width: 185px;
 }
 
 /**

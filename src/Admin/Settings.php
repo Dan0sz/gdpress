@@ -93,7 +93,7 @@ class Settings extends Admin {
      * @return void
      */
     public function add_help_tab() {
-        $this->generate_tab( self::GDPRESS_ADMIN_SECTION_HELP, 'dashicons-editor-help', __( 'Help & Support', 'gdpr-press' ) );
+        $this->generate_tab( self::GDPRESS_ADMIN_SECTION_HELP, 'dashicons-editor-help', __( 'Help', 'gdpr-press' ) );
     }
 
     /**
@@ -194,7 +194,7 @@ class Settings extends Admin {
      * Get all settings for the current section using the constants in this class.
      *
      * @return array
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     private function get_settings() {
         $reflection = new \ReflectionClass( $this );
@@ -227,7 +227,7 @@ class Settings extends Admin {
      * @return string
      */
     public function set_footer_text_left() {
-        $text = sprintf( __( 'Coded with %s in The Netherlands @ <strong>FFW.Press</strong>.', 'gdpr-press' ), '<span class="dashicons dashicons-heart ffwp-heart"></span>' );
+        $text = __( 'Coded with ❤️ in The Netherlands @ <strong>Daan.dev</strong>.', 'gdpr-press' );
 
         return '<span id="footer-thankyou">' . $text . '</span>';
     }
