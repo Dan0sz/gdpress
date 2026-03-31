@@ -169,6 +169,8 @@ class RewriteUrl {
 	 * @param string $html
 	 *
 	 * @return string
+	 *
+	 * @throws \SodiumException
 	 */
 	public function rewrite_urls( $html ) {
 		$site_url = get_home_url();
@@ -191,8 +193,38 @@ class RewriteUrl {
 			$external_reqs['js'] = $scripts;
 		}
 		
-		if ( wp_json_encode( Helper::requests() ) !== wp_json_encode( $external_reqs ) ) {
-			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $external_reqs );
+		$existing_requests = Helper::requests();
+		$has_new_items     = false;
+		
+		foreach ( [ 'css', 'js' ] as $type ) {
+			if ( empty( $external_reqs[ $type ] ) ) {
+				continue;
+			}
+			
+			$existing_hrefs = array_column( $existing_requests[ $type ] ?? [], 'href' );
+			
+			foreach ( $external_reqs[ $type ] as $item ) {
+				if ( ! in_array( $item['href'], $existing_hrefs ) ) {
+					$has_new_items = true;
+					break 2;
+				}
+			}
+		}
+		
+		if ( $has_new_items ) {
+			$merged = $existing_requests;
+			
+			foreach ( [ 'css', 'js' ] as $type ) {
+				if ( empty( $external_reqs[ $type ] ) ) {
+					continue;
+				}
+				
+				$existing_hrefs  = array_column( $merged[ $type ] ?? [], 'href' );
+				$new_items       = array_filter( $external_reqs[ $type ], fn( $item ) => ! in_array( $item['href'], $existing_hrefs ) );
+				$merged[ $type ] = array_merge( $merged[ $type ] ?? [], array_values( $new_items ) );
+			}
+			
+			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $merged );
 		}
 		
 		$html = $this->process_requests( $external_reqs, $html );
