@@ -241,7 +241,7 @@ class Manage extends Builder {
     public function set_translations() {
         $this->ga_notice      = __( '<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank">CAOS</a> (free).', 'gdpr-press' );
         $this->gf_notice      = __( '<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press' );
-        $this->webfont_notice = __( 'Heads up! 🔍 GDPRess Bot has detected a Web Font Loader script. I can download it for you, but the Google Fonts it loads will still be requested externally. Want to optimize those too? <a href="%s" target="_blank">OMGF Pro</a> can automatically preload, swap or unload individual font families — without any manual configuration.', 'gdpr-press' );
+        $this->webfont_notice = __( '<strong>Heads up!</strong> 🔍 GDPRess Bot has detected a Web Font Loader script. I can download it for you, but the Google Fonts it loads will still be requested externally. Want to optimize those too? <a href="%s" target="_blank">OMGF Pro</a> can automatically preload, swap or unload individual font families — without any manual configuration.', 'gdpr-press' );
     }
 
     /**
