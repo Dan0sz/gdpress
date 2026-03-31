@@ -30,6 +30,7 @@ class Admin {
 	 * @return void
 	 */
 	private function init() {
+		add_action( 'admin_init', [ $this, 'download_files' ] );
 		add_action( 'admin_notices', [ $this, 'print_notices' ] );
 		
 		$this->add_ajax_hooks();
@@ -63,6 +64,16 @@ class Admin {
 	private function build_help_section() {
 		new Help();
 	}
+	
+	/**
+	 * File Downloader
+	 *
+	 * @return void
+	 */
+	public function download_files() {
+		new Download();
+	}
+	
 	
 	/**
 	 * Print onscreen notices, if any.
