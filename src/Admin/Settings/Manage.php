@@ -231,8 +231,9 @@ class Manage extends Builder {
             </p>
         <?php endif; ?>
         <p>
-            <button data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" id="gdpress-fetch"
-                    class="button button-primary button-hero"><?php echo __( 'Scan website', 'gdpr-press' ); ?></button>
+            <button data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" id="gdpress-fetch" class="button button-primary button-hero">
+                <?php echo __( 'Scan website', 'gdpr-press' ); ?>
+            </button>
         </p>
         <?php
     }
