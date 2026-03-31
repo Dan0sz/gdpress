@@ -150,6 +150,19 @@ class Helper {
 	}
 	
 	/**
+	 * Check if $url is Web Font Loader script.
+	 *
+	 * @since v1.3.1
+	 *
+	 * @param mixed $url
+	 *
+	 * @return bool
+	 */
+	public static function is_webfont_loader_request( $url ) {
+		return strpos( $url, 'webfont.js' ) !== false;
+	}
+	
+	/**
 	 * Contains all localized file URLs.
 	 *
 	 * @return array
