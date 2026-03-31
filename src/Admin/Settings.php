@@ -171,18 +171,13 @@ class Settings extends Admin {
 
     /**
      * Register all settings.
-     *
-     * @throws ReflectionException
      */
     public function register_settings() {
-        if (
-                $this->active_tab !== self::GDPRESS_ADMIN_SECTION_MANAGE
-                && $this->active_tab !== self::GDPRESS_ADMIN_SECTION_HELP
-        ) {
+        if ( $this->active_tab !== self::GDPRESS_ADMIN_SECTION_MANAGE && $this->active_tab !== self::GDPRESS_ADMIN_SECTION_HELP ) {
             $this->active_tab = self::GDPRESS_ADMIN_SECTION_MANAGE;
         }
 
-        foreach ( $this->get_settings() as $constant => $value ) {
+        foreach ( $this->get_settings() as $value ) {
             register_setting(
                     $this->active_tab,
                     $value
@@ -194,21 +189,16 @@ class Settings extends Admin {
      * Get all settings for the current section using the constants in this class.
      *
      * @return array
-     * @throws \ReflectionException
      */
     private function get_settings() {
         $reflection = new \ReflectionClass( $this );
         $constants  = apply_filters( 'gdpress_register_settings', $reflection->getConstants() );
-
-        switch ( $this->active_tab ) {
-            default:
-                $needle = apply_filters( 'gdpress_register_settings_needle', 'GDPRESS_MANAGE_SETTING' );
-        }
+        $needle     = apply_filters( 'gdpress_register_settings_needle', 'GDPRESS_MANAGE_SETTING' );
 
         return array_filter(
                 $constants,
                 function ( $key ) use ( $needle ) {
-                    return strpos( $key, $needle ) !== false;
+                    return str_contains( $key, $needle );
                 },
                 ARRAY_FILTER_USE_KEY
         );
@@ -242,14 +232,14 @@ class Settings extends Admin {
      * @return mixed
      */
     public function set_footer_text_right( $text ) {
-        if ( ! extension_loaded( 'simplexml' ) ) {
+        if ( ! extension_loaded( 'simplexml' ) || ! extension_loaded( 'mbstring' ) ) {
             return $text;
         }
 
         /**
          * If a WordPress update is available, show the original text.
          */
-        if ( strpos( $text, 'Get Version' ) !== false ) {
+        if ( str_contains( $text, 'Get Version' ) ) {
             return $text;
         }
 
@@ -274,7 +264,8 @@ class Settings extends Admin {
         /**
          * Make sure the XML is properly encoded.
          */
-        $xml = utf8_encode( html_entity_decode( $xml ) );
+        libxml_use_internal_errors( true );
+        $xml = mb_convert_encoding( html_entity_decode( $xml ), 'UTF-8' );
         $xml = simplexml_load_string( $xml );
 
         if ( ! $xml ) {
@@ -307,7 +298,7 @@ class Settings extends Admin {
     }
 
     /**
-     * Create settings page
+     * Create the settings page
      */
     public function settings_page() {
         if ( ! current_user_can( 'manage_options' ) ) {
