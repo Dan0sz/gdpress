@@ -110,10 +110,10 @@ class Manage extends Builder {
                 </tr>
                 <?php foreach ( $requests as $i => $request ) : ?>
                     <?php
-                    $is_ga = strpos( $request['href'], 'google-analytics' ) !== false || strpos( $request['href'], 'googletagmanager' ) !== false;
+                    $is_ga = str_contains($request['href'], 'google-analytics') || str_contains($request['href'], 'googletagmanager');
                     $is_gf = Helper::is_google_fonts_request( $request['href'] );
 
-                    // Only suggest OMGF if there's a serious amount of fonts in use.
+                    // Only suggest OMGF if there's a serious number of fonts in use.
                     if ( $is_gf ) {
                         $is_gf = $this->count_gf( $request['href'] ) > 2 || $this->count_gf_variations( $request['href'] ) > 5;
                     }
@@ -134,9 +134,10 @@ class Manage extends Builder {
                         <th class="name" scope="row"><?php echo esc_attr( $request['name'] ); ?></th>
                         <td class="href"><a href="#" title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></a></td>
                         <td class="href"><a href="#" title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></a></td>
-                        <td class="exclude"><input
-                                    type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $is_ga ? 'checked' : ''; ?> <?php echo $is_ga ? 'class="locked"' : ''; ?>
-                                    name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] ); ?>"/>
+                        <td class="exclude">
+                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $is_ga ? 'checked' : ''; ?> <?php echo $is_ga ? 'class="locked"' : ''; ?>
+                                    name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] );
+                                    ?>" />
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -148,8 +149,8 @@ class Manage extends Builder {
                         <?php echo esc_html__('Manage cache', 'gdpr-press') ;?>
                     </th>
                     <td>
-                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan Again', 'gdpr-press' ); ?>">
-                <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" class="gdpress-flush button button-cancel"><?php _e( 'Empty Cache Directory', 'gdpr-press' ); ?></a>
+                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan again', 'gdpr-press' ); ?>">
+                        <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" class="gdpress-flush button button-cancel"><?php _e( 'Empty cache directory', 'gdpr-press' ); ?></a>
                     </td>
                 </tr>
             </tbody>
@@ -226,7 +227,7 @@ class Manage extends Builder {
         <?php endif; ?>
         <p>
             <button data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" id="gdpress-fetch"
-                    class="button button-primary button-hero"><?php echo __( 'Scan Website', 'gdpr-press' ); ?></button>
+                    class="button button-primary button-hero"><?php echo __( 'Scan website', 'gdpr-press' ); ?></button>
         </p>
         <?php
     }
@@ -241,7 +242,7 @@ class Manage extends Builder {
      */
     public function test_mode() {
         $this->do_checkbox(
-                __( 'Test Mode', 'gdpr-press' ),
+                __( 'Test mode', 'gdpr-press' ),
                 Settings::GDPRESS_MANAGE_SETTING_TEST_MODE,
                 GDPRESS_TEST_MODE == 'on',
                 __( '<strong>Warning!</strong> Test thoroughly, before disabling this option. While this setting is enabled, any changes made by GDPRess will only be visible to logged in administrators or when <code>?gdpress</code> is added to an URL in the frontend.', 'gdpr-press' )
