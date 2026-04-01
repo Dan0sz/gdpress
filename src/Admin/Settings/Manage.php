@@ -154,22 +154,22 @@ class Manage extends Builder {
 
                     $local_url  = Helper::is_google_fonts_request( $request['href'] ) ? Helper::get_local_url_google_font( $request['name'] ) : Helper::get_local_url( $request['href'], $type );
                     $downloaded = file_exists( Helper::get_local_path( $request['href'], $type ) );
-                    $descr      = '';
+                    $tooltip_text      = '';
 
                     if ( $is_ga ) {
-                        $descr = sprintf( $this->ga_notice, admin_url( 'plugin-install.php?s=CAOS&tab=search&type=term' ) );
+                        $tooltip_text = sprintf( $this->ga_notice, admin_url( 'plugin-install.php?s=CAOS&tab=search&type=term' ) );
                     } elseif ( $is_excl ) {
-                        $descr = $this->exclusion_notice;
+                        $tooltip_text = $this->exclusion_notice;
                     } elseif ( $is_upsell ) {
-                        $descr = $this->upsell_notice;
+                        $tooltip_text = $this->upsell_notice;
                     } elseif ( $is_gf ) {
-                        $descr = sprintf( $this->gf_notice, admin_url( 'plugin-install.php?s=OMGF&tab=search&type=term' ) );
+                        $tooltip_text = sprintf( $this->gf_notice, admin_url( 'plugin-install.php?s=OMGF&tab=search&type=term' ) );
                     } elseif ( $is_webfont ) {
-                        $descr = sprintf( $this->webfont_notice, 'https://daan.dev/wordpress/omgf-pro/' );
+                        $tooltip_text = sprintf( $this->webfont_notice, 'https://daan.dev/wordpress/omgf-pro/' );
                     }
                     ?>
                     <tr <?php echo "class='" . esc_attr( $classes ) . "'"; ?>>
-                        <td class="downloaded"><?php echo $is_ga || $is_excl || $is_upsell || $is_gf || $is_webfont ? sprintf( $this->tooltip_markup, wp_kses_post( $descr ) ) : ( $downloaded ? '<i class="dashicons dashicons-yes"></i>' : '' ); ?></td>
+                        <td class="downloaded"><?php echo $is_ga || $is_excl || $is_upsell || $is_gf || $is_webfont ? sprintf( $this->tooltip_markup, wp_kses_post( $tooltip_text ) ) : ( $downloaded ? '<i class="dashicons dashicons-yes"></i>' : '' ); ?></td>
                         <th class="name" scope="row"><?php echo esc_attr( $request['name'] ); ?></th>
                         <td class="href"><a href="#" title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></a></td>
                         <td class="href"><a href="#" title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></a></td>
@@ -275,11 +275,11 @@ class Manage extends Builder {
      * @return void
      */
     public function set_translations() {
-        $this->ga_notice        = __( '<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank">CAOS</a> (free).', 'gdpr-press' );
-        $this->gf_notice        = __( '<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank">OMGF</a> (free).', 'gdpr-press' );
-        $this->webfont_notice   = __( '<strong>Heads up!</strong> 🔍 GDPRess Bot has detected a Web Font Loader script. I can download it for you, but the Google Fonts it loads will still be requested externally. Want to optimize those too? <a href="%s" target="_blank">OMGF Pro</a> can automatically preload, swap or unload individual font families — without any manual configuration.', 'gdpr-press' );
-        $this->exclusion_notice = __( 'Beep-boop! 🤖 GDPRess Bot has automatically marked this resource as excluded, because it\'s known to break when locally hosted. You\'re welcome!', 'gdpr-press' );
-        $this->upsell_notice    = __( '💡 This resource is served by Google Fonts. OMGF Pro can automatically preload, swap or unload individual font families — without any manual configuration.', 'gdpr-press' );
+        $this->ga_notice        = __( '<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank" rel="noopener noreferrer">CAOS</a> (free).', 'gdpr-press' );
+        $this->gf_notice        = __( '<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank" rel="noopener noreferrer">OMGF</a> (free).', 'gdpr-press' );
+        $this->webfont_notice   = __( '<strong>Heads up!</strong> 🔍 GDPRess Bot has detected a Web Font Loader script. I can download it for you, but the Google Fonts it loads will still be requested externally. Want to optimize those too? <a href="%s" target="_blank" rel="noopener noreferrer">OMGF Pro</a> can automatically preload, swap or unload individual font families — without any manual configuration.', 'gdpr-press' );
+        $this->exclusion_notice = __( '<strong>Beep-boop!</strong> 🤖 GDPRess Bot has automatically marked this resource as excluded, because it\'s known to break when locally hosted. You\'re welcome!', 'gdpr-press' );
+        $this->upsell_notice    = __( '<strong>Psst!</strong> 💡 GDPRess Bot detected a Google Fonts request. I can download it — but humans shouldn\'t be trusted with font optimization. <a href="%s" target="_blank" rel="noopener noreferrer">OMGF Pro</a> automatically preloads, unloads and subsets your fonts. No human error.', 'gdpr-press' );
     }
 
     /**
