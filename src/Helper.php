@@ -101,7 +101,19 @@ class Helper {
 	 * @return bool
 	 */
 	public static function is_excluded( $type, $url ) {
-		return isset( self::excluded()[ $type ] ) && in_array( $url, self::excluded()[ $type ] );
+		$is_excluded = isset( self::excluded()[ $type ] ) && in_array( $url, self::excluded()[ $type ] );
+		
+		if ( $is_excluded ) {
+			return true;
+		}
+		
+		foreach ( self::exclusion_list() as $pattern ) {
+			if ( str_contains( $url, $pattern ) ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -129,6 +141,26 @@ class Helper {
 		}
 		
 		return $excluded;
+	}
+	
+	/**
+	 * Contains a list of URL patterns that are automatically marked as excluded.
+	 *
+	 * @since v1.4.0
+	 *
+	 * @return array
+	 */
+	public static function exclusion_list() {
+		return apply_filters(
+			'gdpress_exclusion_list',
+			[
+				'gtag.js',
+				'analytics.js',
+				'maps.googleapis.com',
+				'js.stripe.com',
+				'app.usercentrics.eu',
+			]
+		);
 	}
 	
 	/**
@@ -238,5 +270,24 @@ class Helper {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Contains a list of URL patterns that are displayed as an upsell.
+	 *
+	 * @since v1.4.0
+	 *
+	 * @return array
+	 */
+	public static function upsell_list() {
+		return apply_filters(
+			'gdpress_upsell_list',
+			[
+				'fonts.googleapis.com/css',
+				'fonts.googleapis.com/icon',
+				'fonts.gstatic.com',
+				'webfont.js',
+			]
+		);
 	}
 }
