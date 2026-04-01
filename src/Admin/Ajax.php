@@ -45,7 +45,7 @@ class Ajax {
 		 *
 		 * We're adding the gdpress parameter to ensure proper execution.
 		 *
-		 * @see RewriteUrl::init()
+		 * @see OutputProcessor::init()
 		 */
 		$site_url = get_home_url() . '?gdpress';
 		$response = wp_remote_get( $site_url, [ 'timeout' => 60 ] );

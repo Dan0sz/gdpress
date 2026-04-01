@@ -66,6 +66,6 @@ class Plugin {
 	 * @return void
 	 */
 	public function rewrite_urls() {
-		new RewriteUrl();
+		new OutputProcessor();
 	}
 }

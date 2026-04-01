@@ -9,10 +9,9 @@
 
 namespace GDPRess;
 
-use GDPRess\Helper;
 use GDPRess\Admin\Settings;
 
-class RewriteUrl {
+class OutputProcessor {
 	
 	/**
 	 * @var array $page_builders Array of keys set by page builders when they're displaying their previews.
@@ -47,9 +46,10 @@ class RewriteUrl {
 		/**
 		 * Halt execution if:
 		 * * Test Mode is enabled and,
-		 * * `gdpress` GET-parameter is not set.
+		 * * Current user is not an admin and,
+		 * * gdpress parameter is not set.
 		 */
-		if ( GDPRESS_TEST_MODE === 'on' && ! isset( $_GET['gdpress'] ) ) {
+		if ( GDPRESS_TEST_MODE === 'on' && ! current_user_can( 'manage_options' ) && ! isset( $_GET['gdpress'] ) ) {
 			return;
 		}
 		
