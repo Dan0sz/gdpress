@@ -61,7 +61,7 @@ class Plugin {
 	}
 	
 	/**
-	 * Initiate URL rewriting in frontend.
+	 * Initiate URL rewriting in the frontend.
 	 *
 	 * @return void
 	 */
