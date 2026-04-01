@@ -61,7 +61,7 @@ class OutputProcessor {
 		 */
 		add_action( 'template_redirect', [ $this, 'maybe_buffer_output' ], 1 );
 		
-		add_filter( 'gdpress_buffer_output', [ $this, 'rewrite_urls' ] );
+		add_filter( 'gdpress_buffer_output', [ $this, 'process_output' ] );
 	}
 	
 	/**
@@ -104,61 +104,6 @@ class OutputProcessor {
 	}
 	
 	/**
-	 * Wraps the buffer output into a filter after performing several checks.
-	 *
-	 * @since v4.3.1 Tested with:
-	 *               - Autoptimize v2.9.5.1:
-	 *                 - CSS/JS/Page Optimization: On
-	 *               - Cache Enabler v1.8.7:
-	 *                 - Default Settings
-	 *               - W3 Total Cache v2.2.1:
-	 *                 - Page Cache: Disk (basic)
-	 *                 - Database/Object Cache: Off
-	 *                 - JS/CSS minify/combine: On
-	 *               - WP Fastest Cache v0.9.9:
-	 *                 - JS/CSS minify/combine: On
-	 *                 - Page Cache: On
-	 *               - WP Rocket v3.8.8:
-	 *                 - Page Cache: Enabled
-	 *                 - JS/CSS minify/combine: Enabled
-	 *               - WP Super Cache v1.7.7
-	 *                 - Page Cache: Enabled
-	 *
-	 * @return string $html
-	 */
-	public function return_buffer( $html ) {
-		if ( ! $this->should_process( $html ) ) {
-			return $html;
-		}
-		
-		return apply_filters( 'gdpress_buffer_output', $html );
-	}
-	
-	/**
-	 * Check if given markup can be processed.
-	 *
-	 * @param string $content Markup.
-	 *
-	 * @return bool
-	 */
-	public function should_process( $content ) {
-		$process = true;
-		
-		if (
-			// Has no HTML tag
-			stripos( $content, '<html' ) === false
-			// Is XSL stylesheet
-			|| ( stripos( $content, '<xsl:stylesheet' ) !== false || stripos( $content, '<?xml-stylesheet' ) !== false )
-			// Is not a HTML5 Document
-			|| preg_match( '/^<!DOCTYPE.+html>/i', ltrim( $content ) ) === 0
-		) {
-			$process = false;
-		}
-		
-		return $process;
-	}
-	
-	/**
 	 * Rewrite all external URLs in $html.
 	 *
 	 * @filter gdpress_buffer_output
@@ -169,7 +114,22 @@ class OutputProcessor {
 	 *
 	 * @throws \SodiumException
 	 */
-	public function rewrite_urls( $html ) {
+	public function process_output( $html ) {
+		$external_reqs = $this->get_external_requests( $html );
+		
+		$this->update_managed_requests( $external_reqs );
+		
+		return $this->process_requests( $external_reqs, $html );
+	}
+	
+	/**
+	 * Extract external requests from $html.
+	 *
+	 * @param string $html
+	 *
+	 * @return array
+	 */
+	private function get_external_requests( $html ) {
 		$site_url = get_home_url();
 		
 		preg_match_all( '/<link.*?stylesheet.*?[\/]?>/', $html, $stylesheets );
@@ -190,47 +150,11 @@ class OutputProcessor {
 			$external_reqs['js'] = $scripts;
 		}
 		
-		$existing_requests = Helper::requests();
-		$has_new_items     = false;
-		
-		foreach ( [ 'css', 'js' ] as $type ) {
-			if ( empty( $external_reqs[ $type ] ) ) {
-				continue;
-			}
-			
-			$existing_hrefs = array_column( $existing_requests[ $type ] ?? [], 'href' );
-			
-			foreach ( $external_reqs[ $type ] as $item ) {
-				if ( ! in_array( $item['href'], $existing_hrefs ) ) {
-					$has_new_items = true;
-					break 2;
-				}
-			}
-		}
-		
-		if ( $has_new_items ) {
-			$merged = $existing_requests;
-			
-			foreach ( [ 'css', 'js' ] as $type ) {
-				if ( empty( $external_reqs[ $type ] ) ) {
-					continue;
-				}
-				
-				$existing_hrefs  = array_column( $merged[ $type ] ?? [], 'href' );
-				$new_items       = array_filter( $external_reqs[ $type ], fn( $item ) => ! in_array( $item['href'], $existing_hrefs ) );
-				$merged[ $type ] = array_merge( $merged[ $type ] ?? [], array_values( $new_items ) );
-			}
-			
-			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $merged );
-		}
-		
-		$html = $this->process_requests( $external_reqs, $html );
-		
-		return $html;
+		return $external_reqs;
 	}
 	
 	/**
-	 * Build processable array from $stylesheets.
+	 * Build a processable array from $stylesheets.
 	 *
 	 * @since v1.2.0
 	 *
@@ -400,6 +324,49 @@ class OutputProcessor {
 	}
 	
 	/**
+	 * Update the managed requests option if new items are found.
+	 *
+	 * @param array $external_reqs
+	 *
+	 * @return void
+	 */
+	private function update_managed_requests( $external_reqs ) {
+		$existing_requests = Helper::requests();
+		$has_new_items     = false;
+		
+		foreach ( [ 'css', 'js' ] as $type ) {
+			if ( empty( $external_reqs[ $type ] ) ) {
+				continue;
+			}
+			
+			$existing_hrefs = array_column( $existing_requests[ $type ] ?? [], 'href' );
+			
+			foreach ( $external_reqs[ $type ] as $item ) {
+				if ( ! in_array( $item['href'], $existing_hrefs ) ) {
+					$has_new_items = true;
+					break 2;
+				}
+			}
+		}
+		
+		if ( $has_new_items ) {
+			$merged = $existing_requests;
+			
+			foreach ( [ 'css', 'js' ] as $type ) {
+				if ( empty( $external_reqs[ $type ] ) ) {
+					continue;
+				}
+				
+				$existing_hrefs  = array_column( $merged[ $type ] ?? [], 'href' );
+				$new_items       = array_filter( $external_reqs[ $type ], fn( $item ) => ! in_array( $item['href'], $existing_hrefs ) );
+				$merged[ $type ] = array_merge( $merged[ $type ] ?? [], array_values( $new_items ) );
+			}
+			
+			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $merged );
+		}
+	}
+	
+	/**
 	 * Processes the found external requests in $html. Download files and update DB when needed.
 	 *
 	 * @since v1.2.0
@@ -449,5 +416,60 @@ class OutputProcessor {
 		}
 		
 		return $html;
+	}
+	
+	/**
+	 * Wraps the buffer output into a filter after performing several checks.
+	 *
+	 * @since v4.3.1 Tested with:
+	 *               - Autoptimize v2.9.5.1:
+	 *                 - CSS/JS/Page Optimization: On
+	 *               - Cache Enabler v1.8.7:
+	 *                 - Default Settings
+	 *               - W3 Total Cache v2.2.1:
+	 *                 - Page Cache: Disk (basic)
+	 *                 - Database/Object Cache: Off
+	 *                 - JS/CSS minify/combine: On
+	 *               - WP Fastest Cache v0.9.9:
+	 *                 - JS/CSS minify/combine: On
+	 *                 - Page Cache: On
+	 *               - WP Rocket v3.8.8:
+	 *                 - Page Cache: Enabled
+	 *                 - JS/CSS minify/combine: Enabled
+	 *               - WP Super Cache v1.7.7
+	 *                 - Page Cache: Enabled
+	 *
+	 * @return string $html
+	 */
+	public function return_buffer( $html ) {
+		if ( ! $this->should_process( $html ) ) {
+			return $html;
+		}
+		
+		return apply_filters( 'gdpress_buffer_output', $html );
+	}
+	
+	/**
+	 * Check if given markup can be processed.
+	 *
+	 * @param string $content Markup.
+	 *
+	 * @return bool
+	 */
+	public function should_process( $content ) {
+		$process = true;
+		
+		if (
+			// Has no HTML tag
+			stripos( $content, '<html' ) === false
+			// Is XSL stylesheet
+			|| ( stripos( $content, '<xsl:stylesheet' ) !== false || stripos( $content, '<?xml-stylesheet' ) !== false )
+			// Is not a HTML5 Document
+			|| preg_match( '/^<!DOCTYPE.+html>/i', ltrim( $content ) ) === 0
+		) {
+			$process = false;
+		}
+		
+		return $process;
 	}
 }
