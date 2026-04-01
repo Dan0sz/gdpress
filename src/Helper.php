@@ -283,7 +283,6 @@ class Helper {
 		return apply_filters(
 			'gdpress_upsell_list',
 			[
-				'fonts.googleapis.com/css',
 				'fonts.googleapis.com/icon',
 				'fonts.gstatic.com',
 				'webfont.js',
