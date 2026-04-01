@@ -73,7 +73,7 @@ class Settings extends Admin {
         }
 
         // Scripts
-        add_action( 'admin_head', [ $this, 'enqueue_admin_assets' ] );
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
 
         // Footer Text
         add_filter( 'admin_footer_text', [ $this, 'set_footer_text_left' ], 99 );
