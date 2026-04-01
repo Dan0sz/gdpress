@@ -40,6 +40,8 @@ class Ajax {
 			wp_die( __( "Sorry, you're not allowed to do this.", 'gdpr-press' ) );
 		}
 		
+		$this->do_flush();
+		
 		/**
 		 * Trigger a request to the frontend, so the 'template_redirect' action is initiated.
 		 *
@@ -63,42 +65,23 @@ class Ajax {
 	}
 	
 	/**
-	 * Flush the cache directory and remove DB settings.
-	 *
 	 * @return void
 	 */
-	public function flush() {
-		check_ajax_referer( Settings::GDPRESS_ADMIN_PAGE, 'nonce' );
+	private function do_flush() {
+		$entries = array_filter( (array) glob( GDPRESS_CACHE_ABSPATH . '/*' ) );
 		
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( "Sorry, you're not allowed to do this.", 'gdpr-press' ) );
+		foreach ( $entries as $entry ) {
+			$this->delete( $entry );
 		}
 		
-		try {
-			$entries = array_filter( (array) glob( GDPRESS_CACHE_ABSPATH . '/*' ) );
-			
-			foreach ( $entries as $entry ) {
-				$this->delete( $entry );
-			}
-			
-			$db_cleanup = [
-				Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
-				Settings::GDPRESS_MANAGE_SETTING_LOCAL,
-				Settings::GDPRESS_MANAGE_SETTING_EXCLUDED,
-			];
-			
-			foreach ( $db_cleanup as $option ) {
-				delete_option( $option );
-			}
-			
-			Notice::set_notice( __( 'GDPRess Bot has successfully cleared its cache.', 'gdpr-press' ) );
-		} catch ( \Exception $e ) {
-			Notice::set_notice(
-				__( 'GDPRess Bot could not empty the cache directory: ', 'gdpr-press' ) . $e->getMessage(),
-				'error',
-				'all',
-				'gdpress-cache-flush-error'
-			);
+		$db_cleanup = [
+			Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
+			Settings::GDPRESS_MANAGE_SETTING_LOCAL,
+			Settings::GDPRESS_MANAGE_SETTING_EXCLUDED,
+		];
+		
+		foreach ( $db_cleanup as $option ) {
+			delete_option( $option );
 		}
 	}
 	
@@ -118,6 +101,32 @@ class Ajax {
 			rmdir( $entry );
 		} else {
 			unlink( $entry );
+		}
+	}
+	
+	/**
+	 * Flush the cache directory and remove DB settings.
+	 *
+	 * @return void
+	 */
+	public function flush() {
+		check_ajax_referer( Settings::GDPRESS_ADMIN_PAGE, 'nonce' );
+		
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( "Sorry, you're not allowed to do this.", 'gdpr-press' ) );
+		}
+		
+		try {
+			$this->do_flush();
+			
+			Notice::set_notice( __( 'GDPRess Bot has successfully cleared its cache.', 'gdpr-press' ) );
+		} catch ( \Exception $e ) {
+			Notice::set_notice(
+				__( 'GDPRess Bot could not empty the cache directory: ', 'gdpr-press' ) . $e->getMessage(),
+				'error',
+				'all',
+				'gdpress-cache-flush-error'
+			);
 		}
 	}
 }
