@@ -10,7 +10,7 @@ namespace GDPRess\Admin;
 use GDPRess\Helper;
 use GDPRess\Download as DownloadHelper;
 
-class Download {
+class CacheManager {
 	
 	/** @var string $settings_page */
 	private $settings_page = '';
@@ -33,7 +33,7 @@ class Download {
 		$this->settings_tab     = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : Settings::GDPRESS_ADMIN_SECTION_MANAGE;
 		$this->settings_updated = isset( $_GET['settings-updated'] );
 		
-		$this->maybe_download();
+		$this->maybe_manage_cache();
 	}
 	
 	/**
@@ -43,7 +43,7 @@ class Download {
 	 *
 	 * @throws \SodiumException
 	 */
-	private function maybe_download() {
+	private function maybe_manage_cache() {
 		if ( Settings::GDPRESS_ADMIN_PAGE !== $this->settings_page ) {
 			return;
 		}
@@ -56,7 +56,7 @@ class Download {
 			return;
 		}
 		
-		$this->download();
+		$this->manage_cache();
 		
 		// Clear the default 'Settings saved.' message.
 		delete_transient( 'settings_errors' );
@@ -72,7 +72,7 @@ class Download {
 	 *
 	 * @throws \SodiumException
 	 */
-	private function download() {
+	private function manage_cache() {
 		if ( ! function_exists( 'download_url' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
@@ -81,7 +81,7 @@ class Download {
 		
 		foreach ( Helper::requests() as $type => $requests ) {
 			foreach ( $requests as $request ) {
-				if ( Helper::is_excluded( $type, $request['href'] ) ) {
+				if ( $this->maybe_delete_excluded_file( $type, $request ) ) {
 					continue;
 				}
 				
@@ -95,5 +95,31 @@ class Download {
 		 * Write everything to the database.
 		 */
 		Helper::set_local_url( '', '', true );
+	}
+	
+	/**
+	 * Deletes the local file for the excluded resource, if it exists.
+	 *
+	 * @param string $type
+	 * @param array  $request
+	 *
+	 * @return bool
+	 */
+	private function maybe_delete_excluded_file( $type, $request ) {
+		if ( ! Helper::is_excluded( $type, $request['href'] ) ) {
+			return false;
+		}
+		
+		if ( Helper::is_google_fonts_request( $request['href'] ) ) {
+			$file_path = Helper::get_local_path_google_font( $request['name'] );
+		} else {
+			$file_path = Helper::get_local_path( $request['href'], $type );
+		}
+		
+		if ( file_exists( $file_path ) ) {
+			wp_delete_file( $file_path );
+		}
+		
+		return true;
 	}
 }

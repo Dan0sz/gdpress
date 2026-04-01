@@ -8,7 +8,7 @@
 namespace GDPRess;
 
 use GDPRess\Admin\Ajax;
-use GDPRess\Admin\Download;
+use GDPRess\Admin\CacheManager;
 use GDPRess\Admin\Settings\Help;
 use GDPRess\Admin\Settings\Manage;
 use GDPRess\Admin\Notice;
@@ -71,7 +71,7 @@ class Admin {
 	 * @return void
 	 */
 	public function download_files() {
-		new Download();
+		new CacheManager();
 	}
 	
 	/**
