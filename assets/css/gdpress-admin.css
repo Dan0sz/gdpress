@@ -29,7 +29,7 @@
 .gdpress h5,
 .gdpress h6 {
     font-family: Poppins, Verdana, sans-serif;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /**
@@ -174,7 +174,7 @@
 }
 
 .gdpress-manage-container table .gdpress-manage-cache {
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #c3c4c7;
 }
 
 .gdpress-manage-container table .gdpress-manage-cache th {
@@ -187,7 +187,7 @@
 .gdpress-manage-container table th.title {
     padding: 0;
     line-height: 1;
-    border-bottom: 1px solid #c3c4c7;
+    border-top: 1px solid #c3c4c7;
 }
 
 .gdpress-manage-container table td.downloaded,
