@@ -119,62 +119,26 @@ class Manage extends Builder {
                 </tr>
                 <?php foreach ( $requests as $i => $request ) : ?>
                     <?php
-                    $is_ga      = str_contains( $request['href'], 'google-analytics' ) || str_contains( $request['href'], 'googletagmanager' );
-                    $is_gf      = Helper::is_google_fonts_request( $request['href'] );
-                    $is_webfont = Helper::is_webfont_loader_request( $request['href'] );
-                    $is_excl    = false;
-                    $is_upsell  = false;
+                    $request_type = $this->get_request_type( $request );
+                    $classes      = $i % 2 ? 'even ' : '';
 
-                    foreach ( Helper::exclusion_list() as $pattern ) {
-                        if ( str_contains( $request['href'], $pattern ) ) {
-                            $is_excl = true;
-                            break;
-                        }
-                    }
-
-                    foreach ( Helper::upsell_list() as $pattern ) {
-                        if ( str_contains( $request['href'], $pattern ) ) {
-                            $is_upsell = true;
-                            break;
-                        }
-                    }
-
-                    // Only suggest OMGF if there's a serious number of fonts in use.
-                    if ( $is_gf && ! $is_upsell ) {
-                        $is_gf = $this->count_gf( $request['href'] ) > 2 || $this->count_gf_variations( $request['href'] ) > 5;
-                    }
-
-                    $classes = $i % 2 ? 'even ' : '';
-
-                    if ( $is_ga || $is_excl ) {
+                    if ( $request_type === 'google_analytics' || $request_type === 'excluded' ) {
                         $classes .= 'warning';
-                    } elseif ( $is_gf || $is_webfont || $is_upsell ) {
+                    } elseif ( $request_type === 'google_fonts' || $request_type === 'webfont_js' || $request_type === 'upsell' ) {
                         $classes .= 'info';
                     }
 
-                    $local_url  = Helper::is_google_fonts_request( $request['href'] ) ? Helper::get_local_url_google_font( $request['name'] ) : Helper::get_local_url( $request['href'], $type );
-                    $downloaded = file_exists( Helper::get_local_path( $request['href'], $type ) );
-                    $tooltip_text      = '';
-
-                    if ( $is_ga ) {
-                        $tooltip_text = sprintf( $this->ga_notice, admin_url( 'plugin-install.php?s=CAOS&tab=search&type=term' ) );
-                    } elseif ( $is_excl ) {
-                        $tooltip_text = $this->exclusion_notice;
-                    } elseif ( $is_upsell ) {
-                        $tooltip_text = $this->upsell_notice;
-                    } elseif ( $is_gf ) {
-                        $tooltip_text = sprintf( $this->gf_notice, admin_url( 'plugin-install.php?s=OMGF&tab=search&type=term' ) );
-                    } elseif ( $is_webfont ) {
-                        $tooltip_text = sprintf( $this->webfont_notice, 'https://daan.dev/wordpress/omgf-pro/' );
-                    }
+                    $local_url    = Helper::is_google_fonts_request( $request['href'] ) ? Helper::get_local_url_google_font( $request['name'] ) : Helper::get_local_url( $request['href'], $type );
+                    $downloaded   = file_exists( Helper::get_local_path( $request['href'], $type ) );
+                    $tooltip_text = $this->get_tooltip_text( $request_type );
                     ?>
                     <tr <?php echo "class='" . esc_attr( $classes ) . "'"; ?>>
-                        <td class="downloaded"><?php echo $is_ga || $is_excl || $is_upsell || $is_gf || $is_webfont ? sprintf( $this->tooltip_markup, wp_kses_post( $tooltip_text ) ) : ( $downloaded ? '<i class="dashicons dashicons-yes"></i>' : '' ); ?></td>
+                        <td class="downloaded"><?php echo $request_type ? sprintf( $this->tooltip_markup, wp_kses_post( $tooltip_text ) ) : ( $downloaded ? '<i class="dashicons dashicons-yes"></i>' : '' ); ?></td>
                         <th class="name" scope="row"><?php echo esc_attr( $request['name'] ); ?></th>
                         <td class="href"><a href="#" title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></a></td>
                         <td class="href"><a href="#" title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></a></td>
                         <td class="exclude">
-                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $is_ga || $is_excl ? 'checked' : ''; ?> <?php echo $is_ga || $is_excl ? 'class="locked"' : ''; ?>
+                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $request_type === 'google_analytics' || $request_type === 'excluded' ? 'checked' : ''; ?> <?php echo $request_type === 'google_analytics' || $request_type === 'excluded' ? 'class="locked"' : ''; ?>
                                     name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] );
                                     ?>" />
                         </td>
@@ -188,7 +152,7 @@ class Manage extends Builder {
                         <?php echo esc_html__('Manage cache', 'gdpr-press') ;?>
                     </th>
                     <td>
-                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Scan again', 'gdpr-press' ); ?>" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>">
+                        <input type="button" name="button" id="gdpress-fetch" class="button" value="<?php echo __( 'Re-scan', 'gdpr-press' ); ?>" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>">
                         <a href="#" id="gdpress-flush" data-nonce="<?php echo wp_create_nonce( Settings::GDPRESS_ADMIN_PAGE ); ?>" class="gdpress-flush button button-cancel"><?php _e( 'Empty cache directory', 'gdpr-press' ); ?></a>
                     </td>
                 </tr>
@@ -199,6 +163,60 @@ class Manage extends Builder {
     }
 
     /**
+     * @param array $request
+     *
+     * @return string
+     */
+    private function get_request_type( $request ) {
+        $is_ga      = str_contains( $request['href'], 'google-analytics' ) || str_contains( $request['href'], 'googletagmanager' );
+        $is_gf      = Helper::is_google_fonts_request( $request['href'] );
+        $is_webfont = Helper::is_webfont_loader_request( $request['href'] );
+        $is_excl    = false;
+        $is_upsell  = false;
+
+        foreach ( Helper::exclusion_list() as $pattern ) {
+            if ( str_contains( $request['href'], $pattern ) ) {
+                $is_excl = true;
+                break;
+            }
+        }
+
+        foreach ( Helper::upsell_list() as $pattern ) {
+            if ( str_contains( $request['href'], $pattern ) ) {
+                $is_upsell = true;
+                break;
+            }
+        }
+
+        // Only suggest OMGF if there's a serious number of fonts in use.
+        if ( $is_gf && ! $is_upsell ) {
+            $is_gf = $this->count_gf( $request['href'] ) > 2 || $this->count_gf_variations( $request['href'] ) > 5;
+        }
+
+        if ( $is_ga ) {
+            return 'google_analytics';
+        }
+
+        if ( $is_excl ) {
+            return 'excluded';
+        }
+
+        if ( $is_upsell ) {
+            return 'upsell';
+        }
+
+        if ( $is_gf ) {
+            return 'google_fonts';
+        }
+
+        if ( $is_webfont ) {
+            return 'webfont_js';
+        }
+
+        return '';
+    }
+
+    /**
      * Count Google Fonts families in an URL.
      *
      * @param string $url
@@ -206,7 +224,6 @@ class Manage extends Builder {
      * @return int
      */
     private function count_gf( $url ) {
-        $count = 0;
         $parts = parse_url( $url );
 
         if ( $parts['path'] == '/css2' ) {
@@ -230,8 +247,6 @@ class Manage extends Builder {
      * @return int
      */
     private function count_gf_variations( $url ) {
-        $google_fonts_var_count = 0;
-
         // Count fonts.
         $google_fonts = parse_url( $url );
 
@@ -251,6 +266,28 @@ class Manage extends Builder {
         }
 
         return $google_fonts_var_count;
+    }
+
+    /**
+     * @param string $request_type
+     *
+     * @return string
+     */
+    private function get_tooltip_text( $request_type ) {
+        switch ( $request_type ) {
+            case 'google_analytics':
+                return sprintf( $this->ga_notice, admin_url( 'plugin-install.php?s=CAOS&tab=search&type=term' ) );
+            case 'excluded':
+                return $this->exclusion_notice;
+            case 'upsell':
+                return $this->upsell_notice;
+            case 'google_fonts':
+                return sprintf( $this->gf_notice, admin_url( 'plugin-install.php?s=OMGF&tab=search&type=term' ) );
+            case 'webfont_js':
+                return sprintf( $this->webfont_notice, 'https://daan.dev/wordpress/omgf-pro/' );
+            default:
+                return '';
+        }
     }
 
     private function start_screen() {
