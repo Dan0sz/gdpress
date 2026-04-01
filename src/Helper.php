@@ -273,7 +273,7 @@ class Helper {
 	}
 	
 	/**
-	 * Contains a list of URL patterns that are displayed as an upsell.
+	 * Contains a list of URL patterns that should be marked as upsells.
 	 *
 	 * @since v1.4.0
 	 *
