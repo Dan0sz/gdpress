@@ -247,9 +247,15 @@ class Settings extends Admin {
         $xml = get_transient( self::GDPRESS_TRANSIENT_NEWS_REEL );
 
         if ( ! $xml ) {
-            $response = wp_remote_get( 'https://daan.dev/blog/tag/gdpr/feed' );
+            $response = wp_safe_remote_get(
+                'https://daan.dev/blog/tag/gdpr/feed',
+                [
+                    'timeout'     => 3,
+                    'redirection' => 3,
+                ]
+            );
 
-            if ( ! is_wp_error( $response ) ) {
+            if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
                 $xml = wp_remote_retrieve_body( $response );
 
                 // Refresh the feed once a day to prevent bashing of the API.
