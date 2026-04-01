@@ -46,12 +46,12 @@ class RewriteUrl {
 	private function init() {
 		/**
 		 * Halt execution if:
-		 * * Test Mode is enabled and the current user is not an admin.
+		 * * Test Mode is enabled and the current user is not an admin or,
 		 * * Test Mode is enabled and `gdpress` GET-parameter is not set.
 		 */
 		if (
-			( ( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) )
-			  && ( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) && ! isset( $_GET['gdpress'] ) ) )
+			( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) ) ||
+			( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) && ! isset( $_GET['gdpress'] ) )
 		) {
 			return;
 		}
@@ -175,7 +175,7 @@ class RewriteUrl {
 	public function rewrite_urls( $html ) {
 		$site_url = get_home_url();
 		
-		preg_match_all( '/<link.*?stylesheet.*?\/?>/', $html, $stylesheets );
+		preg_match_all( '/<link.*?stylesheet.*?[\/]?>/', $html, $stylesheets );
 		
 		$stylesheets = $this->parse_stylesheets( $stylesheets[0] ?? [], $site_url );
 		
@@ -193,8 +193,38 @@ class RewriteUrl {
 			$external_reqs['js'] = $scripts;
 		}
 		
-		if ( wp_json_encode( Helper::requests() ) !== wp_json_encode( $external_reqs ) ) {
-			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $external_reqs );
+		$existing_requests = Helper::requests();
+		$has_new_items     = false;
+		
+		foreach ( [ 'css', 'js' ] as $type ) {
+			if ( empty( $external_reqs[ $type ] ) ) {
+				continue;
+			}
+			
+			$existing_hrefs = array_column( $existing_requests[ $type ] ?? [], 'href' );
+			
+			foreach ( $external_reqs[ $type ] as $item ) {
+				if ( ! in_array( $item['href'], $existing_hrefs ) ) {
+					$has_new_items = true;
+					break 2;
+				}
+			}
+		}
+		
+		if ( $has_new_items ) {
+			$merged = $existing_requests;
+			
+			foreach ( [ 'css', 'js' ] as $type ) {
+				if ( empty( $external_reqs[ $type ] ) ) {
+					continue;
+				}
+				
+				$existing_hrefs  = array_column( $merged[ $type ] ?? [], 'href' );
+				$new_items       = array_filter( $external_reqs[ $type ], fn( $item ) => ! in_array( $item['href'], $existing_hrefs ) );
+				$merged[ $type ] = array_merge( $merged[ $type ] ?? [], array_values( $new_items ) );
+			}
+			
+			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $merged );
 		}
 		
 		$html = $this->process_requests( $external_reqs, $html );
@@ -203,7 +233,7 @@ class RewriteUrl {
 	}
 	
 	/**
-	 * Build a processable array from $stylesheets.
+	 * Build processable array from $stylesheets.
 	 *
 	 * @since v1.2.0
 	 *
@@ -219,20 +249,10 @@ class RewriteUrl {
 		foreach ( $stylesheets as $stylesheet ) {
 			preg_match( '/href=[\'"](?P<href>.*?)[\'"]/', $stylesheet, $href );
 			
-			$href = $fixed_href = $href['href'] ?? '';
-			
-			if ( str_starts_with( $href, '//' ) ) {
-				if ( str_starts_with( $site_url, 'https:' ) ) {
-					$fixed_href = 'https:' . $href;
-				}
-				
-				if ( str_starts_with( $site_url, 'http:' ) ) {
-					$fixed_href = 'http:' . $href;
-				}
-			}
+			$href = $href['href'] ?? '';
 			
 			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
-			if ( ! $href || str_starts_with( $fixed_href, '/' ) || str_contains( $fixed_href, $site_url ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
+			if ( ! $href || str_starts_with( $href, '/' ) || str_contains( $href, $site_url ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
 				continue;
 			}
 			
@@ -334,7 +354,7 @@ class RewriteUrl {
 	}
 	
 	/**
-	 * Build a processable array from scripts.
+	 * Build processable array from scripts.
 	 *
 	 * @since v1.2.0
 	 *
@@ -358,7 +378,9 @@ class RewriteUrl {
 			}
 			
 			// If CAOS is active, let's ignore any files related to Google Analytics.
-			if ( function_exists( 'caos_init' ) && ( str_contains( $src, 'google-analytics.com' ) || str_contains( $src, 'googletagmanager.com' ) ) ) {
+			if ( function_exists( 'caos_init' ) &&
+			     ( str_contains( $src, 'google-analytics.com' ) || str_contains( $src, 'googletagmanager.com' ) )
+			) {
 				continue;
 			}
 			
@@ -377,7 +399,7 @@ class RewriteUrl {
 	}
 	
 	/**
-	 * Processes found external requests in $html. Download files and update DB when needed.
+	 * Processes the found external requests in $html. Download files and update DB when needed.
 	 *
 	 * @since v1.2.0
 	 *
