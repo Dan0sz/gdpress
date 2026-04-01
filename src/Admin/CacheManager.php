@@ -33,7 +33,7 @@ class CacheManager {
 		$this->settings_tab     = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : Settings::GDPRESS_ADMIN_SECTION_MANAGE;
 		$this->settings_updated = isset( $_GET['settings-updated'] );
 		
-		$this->maybe_manage_cache();
+		$this->maybe_manage_cached_files();
 	}
 	
 	/**
@@ -43,7 +43,7 @@ class CacheManager {
 	 *
 	 * @throws \SodiumException
 	 */
-	private function maybe_manage_cache() {
+	private function maybe_manage_cached_files() {
 		if ( Settings::GDPRESS_ADMIN_PAGE !== $this->settings_page ) {
 			return;
 		}
@@ -56,7 +56,7 @@ class CacheManager {
 			return;
 		}
 		
-		$this->manage_cache();
+		$this->manage_cached_files();
 		
 		// Clear the default 'Settings saved.' message.
 		delete_transient( 'settings_errors' );
@@ -72,7 +72,7 @@ class CacheManager {
 	 *
 	 * @throws \SodiumException
 	 */
-	private function manage_cache() {
+	private function manage_cached_files() {
 		if ( ! function_exists( 'download_url' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
