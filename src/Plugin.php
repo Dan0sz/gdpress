@@ -35,6 +35,8 @@ class Plugin {
 		
 		if ( ! is_admin() ) {
 			add_action( 'init', [ $this, 'rewrite_urls' ] );
+			
+			new AdminBar();
 		}
 		
 		add_filter( 'pre_update_option_' . Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [ $this, 'base64_decode_value' ] );

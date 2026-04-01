@@ -74,7 +74,6 @@ class Admin {
 		new Download();
 	}
 	
-	
 	/**
 	 * Print onscreen notices, if any.
 	 *
