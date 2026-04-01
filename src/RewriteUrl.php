@@ -46,13 +46,10 @@ class RewriteUrl {
 	private function init() {
 		/**
 		 * Halt execution if:
-		 * * Test Mode is enabled and the current user is not an admin or,
-		 * * Test Mode is enabled and `gdpress` GET-parameter is not set.
+		 * * Test Mode is enabled and,
+		 * * `gdpress` GET-parameter is not set.
 		 */
-		if (
-			( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) ) ||
-			( GDPRESS_TEST_MODE == 'on' && ! current_user_can( 'manage_options' ) && ! isset( $_GET['gdpress'] ) )
-		) {
+		if ( GDPRESS_TEST_MODE === 'on' && ! isset( $_GET['gdpress'] ) ) {
 			return;
 		}
 		
@@ -249,10 +246,14 @@ class RewriteUrl {
 		foreach ( $stylesheets as $stylesheet ) {
 			preg_match( '/href=[\'"](?P<href>.*?)[\'"]/', $stylesheet, $href );
 			
-			$href = $href['href'] ?? '';
+			$href = $fixed_href = $href['href'] ?? '';
+			
+			if ( str_starts_with( $href, '//' ) ) {
+				$fixed_href = 'https:' . $href;
+			}
 			
 			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
-			if ( ! $href || str_starts_with( $href, '/' ) || str_contains( $href, $site_url ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
+			if ( ! $href || str_starts_with( $fixed_href, '/' ) || str_contains( $fixed_href, $site_url ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
 				continue;
 			}
 			
