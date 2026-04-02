@@ -240,7 +240,10 @@ class Settings extends Admin {
          * If a WordPress update is available, show the original text.
          */
         $update_core = get_site_transient( 'update_core' );
-        $update      = ! empty( $update_core->updates ) && $update_core->updates[0]->response === 'upgrade';
+        $update      = is_object( $update_core )
+                       && ! empty( $update_core->updates )
+                       && isset( $update_core->updates[0]->response )
+                       && 'upgrade' === $update_core->updates[0]->response;
 
         if ( $update ) {
             return $text;
