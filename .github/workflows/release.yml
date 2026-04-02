@@ -5,7 +5,7 @@ on:
     types: [ released ]
 
 jobs:
-  tag:
+  release:
     name: Release plugin
     runs-on: ubuntu-latest
     steps:
