@@ -89,7 +89,12 @@ class Helper {
 	 * @return string
 	 */
 	private static function sanitize_relative_path( $path ) {
-		$path     = wp_normalize_path( $path );
+		$path = wp_normalize_path( $path );
+		
+		if ( $path === '/' ) {
+			return '/';
+		}
+		
 		$segments = explode( '/', $path );
 		$rel_path = '';
 		
