@@ -239,7 +239,10 @@ class Settings extends Admin {
         /**
          * If a WordPress update is available, show the original text.
          */
-        if ( str_contains( $text, 'Get Version' ) ) {
+        $update_core = get_site_transient( 'update_core' );
+        $update      = ! empty( $update_core->updates ) && $update_core->updates[0]->response === 'upgrade';
+
+        if ( $update ) {
             return $text;
         }
 
@@ -248,11 +251,11 @@ class Settings extends Admin {
 
         if ( ! $xml ) {
             $response = wp_safe_remote_get(
-                'https://daan.dev/blog/tag/gdpr/feed',
-                [
-                    'timeout'     => 3,
-                    'redirection' => 3,
-                ]
+                    'https://daan.dev/blog/tag/gdpr/feed',
+                    [
+                            'timeout'     => 3,
+                            'redirection' => 3,
+                    ]
             );
 
             if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
@@ -295,10 +298,10 @@ class Settings extends Admin {
 
             $hide = $i > 0 ? 'style="display: none;"' : '';
             $text .= "<span class='ticker-item' $hide>" . sprintf(
-                '<a target="_blank" rel="noopener noreferrer" href="%s"><em>%s</em></a>',
-                esc_url( (string) $item->link ),
-                esc_html( (string) $item->title )
-            ) . '</span>';
+                            '<a target="_blank" rel="noopener noreferrer" href="%s"><em>%s</em></a>',
+                            esc_url( (string) $item->link ),
+                            esc_html( (string) $item->title )
+                    ) . '</span>';
             $i ++;
         }
 
