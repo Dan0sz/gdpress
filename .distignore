@@ -3,6 +3,7 @@
 /.github
 /.vscode
 /node_modules
+/scripts
 
 .distignore
 .gitignore
@@ -10,4 +11,7 @@
 .gitattributes
 
 package.json
+package-lock.json
+composer.json
+composer.lock
 readme.md
