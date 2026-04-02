@@ -20,7 +20,9 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_url( $url, $type, $bypass = false ) {
-		if ( ! file_exists( self::get_local_path( $url, $type ) ) && ! $bypass ) {
+		$local_path = self::get_local_path( $url, $type );
+		
+		if ( ! file_exists( $local_path ) && ! $bypass ) {
 			return '';
 		}
 		
@@ -33,7 +35,13 @@ class Helper {
 			return '';
 		}
 		
-		return content_url( GDPRESS_CACHE_DIR . "/$type" . $path );
+		$rel_path = self::sanitize_relative_path( $path );
+		
+		if ( ! $rel_path ) {
+			return '';
+		}
+		
+		return content_url( GDPRESS_CACHE_DIR . "/$type$rel_path" );
 	}
 	
 	/**
@@ -58,7 +66,62 @@ class Helper {
 			return '';
 		}
 		
-		return GDPRESS_CACHE_ABSPATH . "/$type" . $path;
+		$rel_path = self::sanitize_relative_path( $path );
+		
+		if ( ! $rel_path ) {
+			return '';
+		}
+		
+		$full_path = GDPRESS_CACHE_ABSPATH . "/$type$rel_path";
+		
+		if ( ! self::is_within_cache_dir( $full_path ) ) {
+			return '';
+		}
+		
+		return $full_path;
+	}
+	
+	/**
+	 * Sanitizes and normalizes a relative path.
+	 *
+	 * @param string $path
+	 *
+	 * @return string
+	 */
+	private static function sanitize_relative_path( $path ) {
+		$path     = wp_normalize_path( $path );
+		$segments = explode( '/', $path );
+		$rel_path = '';
+		
+		foreach ( $segments as $segment ) {
+			if ( empty( $segment ) || $segment === '.' || $segment === '..' ) {
+				continue;
+			}
+			
+			$sanitized = sanitize_file_name( $segment );
+			
+			if ( str_starts_with( $sanitized, 'unnamed-file.' ) && ! str_starts_with( $segment, 'unnamed-file.' ) ) {
+				$sanitized = $segment;
+			}
+			
+			$rel_path .= '/' . basename( $sanitized );
+		}
+		
+		return $rel_path;
+	}
+	
+	/**
+	 * Verifies if $path is within GDPRESS_CACHE_ABSPATH.
+	 *
+	 * @param string $path
+	 *
+	 * @return bool
+	 */
+	private static function is_within_cache_dir( $path ) {
+		$path           = wp_normalize_path( $path );
+		$cache_dir_path = wp_normalize_path( GDPRESS_CACHE_ABSPATH );
+		
+		return str_starts_with( $path, $cache_dir_path );
 	}
 	
 	/**
@@ -72,11 +135,17 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_url_google_font( $filename, $bypass = false ) {
+		$rel_path = self::sanitize_relative_path( "/$filename/google-fonts.css" );
+		
+		if ( ! $rel_path ) {
+			return '';
+		}
+		
 		if ( ! file_exists( self::get_local_path_google_font( $filename ) ) && ! $bypass ) {
 			return '';
 		}
 		
-		return content_url( GDPRESS_CACHE_DIR . "/css/$filename/google-fonts.css" );
+		return content_url( GDPRESS_CACHE_DIR . "/css$rel_path" );
 	}
 	
 	/**
@@ -89,7 +158,19 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_path_google_font( $filename ) {
-		return GDPRESS_CACHE_ABSPATH . "/css/$filename/google-fonts.css";
+		$rel_path = self::sanitize_relative_path( "/$filename/google-fonts.css" );
+		
+		if ( ! $rel_path ) {
+			return '';
+		}
+		
+		$full_path = GDPRESS_CACHE_ABSPATH . "/css$rel_path";
+		
+		if ( ! self::is_within_cache_dir( $full_path ) ) {
+			return '';
+		}
+		
+		return $full_path;
 	}
 	
 	/**
