@@ -51,7 +51,7 @@ class Help extends Builder {
                         </ul>
                     </div>
                     <div class="column">
-                        <h3><?php echo esc_html( sprintf( __( 'Support %s & Spread the Word!', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ); ?></h3>
+                        <h3><?php echo esc_html( sprintf( __( 'Support %s & Spread the Word!', 'gdpr-press' ), wp_strip_all_tags( apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ) ); ?></h3>
                         <ul>
                             <li>
                                 <a target="_blank" rel="noopener noreferrer"
