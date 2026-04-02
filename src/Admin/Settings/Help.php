@@ -47,7 +47,7 @@ class Help extends Builder {
                         <ul>
                             <li><a target="_blank" rel="noopener noreferrer"
                                    href="<?php echo esc_url( apply_filters( 'gdpress_settings_help_support_link', 'https://wordpress.org/support/plugin/gdpr-press/' ) ); ?>"><i
-                                            class="dashicons dashicons-email"></i><?php echo __( 'Get Support', 'gdpr-press' ); ?></a></li>
+                                            class="dashicons dashicons-email"></i><?php echo esc_html__( 'Get Support', 'gdpr-press' ); ?></a></li>
                         </ul>
                     </div>
                     <div class="column">
