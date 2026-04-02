@@ -104,11 +104,13 @@ class Manage extends Builder {
         <?php endif; ?>
         <table>
             <thead>
-            <th class="downloaded" scope="col"><?php /** Header for Downloaded Status column */ ?></th>
-            <th class="name" scope="col"><?php echo __( 'Filename', 'gdpr-press' ); ?></th>
-            <th class="href" scope="col"><?php echo __( 'External URL', 'gdpr-press' ); ?></th>
-            <th class="href" scope="col"><?php echo __( 'Local URL', 'gdpr-press' ); ?></th>
-            <th class="exclude" scope="col"><?php echo __( 'Exclude', 'gdpr-press' ); ?></th>
+            <tr>
+                <th class="downloaded" scope="col"><?php /** Header for Downloaded Status column */ ?></th>
+                <th class="name" scope="col"><?php echo __( 'Filename', 'gdpr-press' ); ?></th>
+                <th class="href" scope="col"><?php echo __( 'External URL', 'gdpr-press' ); ?></th>
+                <th class="href" scope="col"><?php echo __( 'Local URL', 'gdpr-press' ); ?></th>
+                <th class="exclude" scope="col"><?php echo __( 'Exclude', 'gdpr-press' ); ?></th>
+            </tr>
             </thead>
             <?php foreach ( Helper::requests() as $type => $requests ) : ?>
                 <tbody class="<?php echo esc_attr( $type ); ?>">
@@ -128,8 +130,8 @@ class Manage extends Builder {
                         $classes .= 'info';
                     }
 
-                    $local_url    = Helper::is_google_fonts_request( $request['href'] ) ? Helper::get_local_url_google_font( $request['name'] ) : Helper::get_local_url( $request['href'], $type );
-                    $downloaded   = file_exists( Helper::get_local_path( $request['href'], $type ) );
+                    $local_url    = $request_type === 'google_fonts' ? Helper::get_local_url_google_font( $request['name'] ) : Helper::get_local_url( $request['href'], $type );
+                    $downloaded   = $request_type === 'google_fonts' ? file_exists( Helper::get_local_path_google_font( $request['href'] ) ) : file_exists( Helper::get_local_path( $request['href'], $type ) );
                     $tooltip_text = $this->get_tooltip_text( $request_type );
                     ?>
                     <tr <?php echo "class='" . esc_attr( $classes ) . "'"; ?>>
