@@ -315,13 +315,15 @@ class Helper {
 	public static function requests( $raw = false ) {
 		static $requests;
 		
+		if ( $raw ) {
+			return get_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
+		}
+		
 		/**
 		 * Get a fresh copy from the database if $requests is empty|null|false (on 1st run)
 		 */
-		if ( empty( $requests ) && $raw === false ) {
+		if ( empty( $requests ) ) {
 			$requests = get_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [] ) ?: [];
-		} elseif ( empty( $requests ) ) {
-			$requests = get_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
 		}
 		
 		/**
@@ -330,7 +332,7 @@ class Helper {
 		 * @since v0.1
 		 */
 		if ( is_string( $requests ) ) {
-			$requests = unserialize( $requests );
+			$requests = maybe_unserialize( $requests );
 		}
 		
 		return $requests;
