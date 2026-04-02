@@ -190,6 +190,10 @@ class Helper {
 	 * @return bool
 	 */
 	public static function is_excluded( $type, $url ) {
+		/**
+		 * @var string $url is stored in the database decoded, but it's escaped in the form.
+		 */
+		$url         = html_entity_decode( $url );
 		$is_excluded = isset( self::excluded()[ $type ] ) && in_array( $url, self::excluded()[ $type ] );
 		
 		if ( $is_excluded ) {
