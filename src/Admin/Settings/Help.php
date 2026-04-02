@@ -23,7 +23,7 @@ class Help extends Builder {
         $tweet_url = add_query_arg(
                 [
                         'text'     => sprintf(
-                                _x( 'I am using %s for `@WordPress`! Eliminate external requests and increase GDPR compliance. Try it for yourself:', 'Promotional Tweet text on Help tab in Settings screen', 'gdpress' ),
+                                _x( 'I am using %s for `@WordPress`! Eliminate external requests and increase GDPR compliance. Try it for yourself:', 'Promotional Tweet text on Help tab in Settings screen', 'gdpr-press' ),
                                 wp_strip_all_tags( (string) apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) )
                         ),
                         'via'      => 'Dan0sz',
