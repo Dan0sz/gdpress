@@ -127,15 +127,15 @@ class Download {
 	private function parse_font_faces( $file, $ext_url ) {
 		$contents = file_get_contents( $file );
 		
-		if ( strpos( $contents, '@font-face' ) === false ) {
+		if ( ! str_contains( $contents, '@font-face' ) ) {
 			return false;
 		}
 		
-		preg_match_all( '/@font-face\s*{([\s\S]*?)}/', $contents, $font_faces );
+		preg_match_all( '/@font-face\s*?{.*?}/si', $contents, $font_faces );
 		
 		/**
-		 * Let's assume $font_faces[0] exists. We already checked if the stylesheet contains font faces,
-		 * so if the Regex didn't find any, then that's a bug in the regex and I'd like to know about it.
+		 * Let's assume $font_faces[0] exists. We already checked if the stylesheet contains @font-face statements,
+		 * so if the Regex didn't find any, then that's a bug in the regex, and I'd like to know about it.
 		 */
 		$font_faces = $font_faces[0];
 		
@@ -188,9 +188,10 @@ class Download {
 				/**
 				 * Copy font file.
 				 */
-				if ( ! copy( $tmp, $path . $filename ) ) {
+				if ( ! copy( $tmp, trailingslashit( $path ) . $filename ) ) {
 					Notice::set_notice( sprintf( __( 'Ouch! GDPRess failed to copy font file <code>%s</code>.', 'gdpr-press' ), $filename ), 'error', 'gdpress-settings-manage', 'gdpress-copy-error' );
 				}
+				
 				@unlink( $tmp );
 			}
 		}
@@ -270,14 +271,19 @@ class Download {
 	 * Parse $file contents for occurrences of host.
 	 *
 	 * @param string $contents
-	 * @param string $path
+	 * @param string $url
 	 *
 	 * @return array|string|string[]
 	 */
-	private function replace_abs_urls( $contents, $path ) {
-		$parts     = parse_url( $path );
-		$local_url = content_url( GDPRESS_CACHE_DIR . '/css/' . $parts['path'] );
+	private function replace_abs_urls( $contents, $url ) {
+		$path = parse_url( $url, PHP_URL_PATH );
 		
-		return str_replace( $path, $local_url, $contents );
+		if ( ! $path ) {
+			$path = '/';
+		}
+		
+		$local_url = content_url( GDPRESS_CACHE_DIR . '/css' . $path );
+		
+		return str_replace( $url, $local_url, $contents );
 	}
 }
