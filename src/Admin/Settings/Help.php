@@ -20,7 +20,18 @@ class Help extends Builder {
     }
 
     public function content() {
-        $tweet_url = sprintf( 'https://twitter.com/intent/tweet?text=I+am+using+%s+for+@WordPress!+Eliminate+external+requests+and+increase+GDPR+compliance.+Try+it+for+yourself:&via=Dan0sz&hashtags=GDPR,Privacy,WordPress&url=%s', str_replace( ' ', '+', apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ), apply_filters( 'gdpress_help_tab_plugin_url', 'https://wordpress.org/plugins/gdpr-press/' ) );
+        $tweet_url = add_query_arg(
+                [
+                        'text'     => sprintf(
+                                _x( 'I am using %s for `@WordPress`! Eliminate external requests and increase GDPR compliance. Try it for yourself:', 'Promotional Tweet text on Help tab in Settings screen', 'gdpress' ),
+                                wp_strip_all_tags( (string) apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) )
+                        ),
+                        'via'      => 'Dan0sz',
+                        'hashtags' => 'GDPR,Privacy,WordPress',
+                        'url'      => esc_url_raw( (string) apply_filters( 'gdpress_help_tab_plugin_url', 'https://wordpress.org/plugins/gdpr-press/' ) ),
+                ],
+                'https://twitter.com/intent/tweet'
+        );
         ?>
         <div class="gdpress-help-container">
             <div class="content">
