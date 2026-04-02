@@ -170,11 +170,11 @@ class Settings extends Admin {
     }
 
     /**
-     * Register all settings.
+     * Register all settings when we're on the Manage tab.
      */
     public function register_settings() {
-        if ( $this->active_tab !== self::GDPRESS_ADMIN_SECTION_MANAGE && $this->active_tab !== self::GDPRESS_ADMIN_SECTION_HELP ) {
-            $this->active_tab = self::GDPRESS_ADMIN_SECTION_MANAGE;
+        if ( $this->active_tab !== self::GDPRESS_ADMIN_SECTION_MANAGE ) {
+            return;
         }
 
         foreach ( $this->get_settings() as $value ) {
@@ -325,11 +325,13 @@ class Settings extends Admin {
                 <?php do_action( 'gdpress_settings_tab' ); ?>
             </h2>
 
+            <?php if ( $this->active_tab === self::GDPRESS_ADMIN_SECTION_MANAGE ) : ?>
             <form id="<?php echo esc_attr( $this->active_tab ); ?>-form" method="post" action="options.php?tab=<?php echo esc_attr( $this->active_tab ); ?>">
                 <?php
                 settings_fields( $this->active_tab );
                 do_settings_sections( $this->active_tab );
                 ?>
+                <?php endif; ?>
 
                 <?php do_action( 'gdpress_settings_content' ); ?>
 
@@ -338,8 +340,10 @@ class Settings extends Admin {
                 do_action( "after_$current_section" );
                 ?>
 
+                <?php if ( $this->active_tab === self::GDPRESS_ADMIN_SECTION_MANAGE ) : ?>
                 <?php submit_button( __( 'Process changes', 'gdpr-press' ), 'primary', 'submit', false ); ?>
             </form>
+        <?php endif; ?>
         </div>
         <?php
     }
