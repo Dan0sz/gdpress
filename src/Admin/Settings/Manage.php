@@ -280,7 +280,7 @@ class Manage extends Builder {
             case 'excluded':
                 return $this->exclusion_notice;
             case 'upsell':
-                return $this->upsell_notice;
+                return sprintf($this->upsell_notice, 'https://daan.dev/wordpress/omgf-pro/');
             case 'google_fonts':
                 return sprintf( $this->gf_notice, admin_url( 'plugin-install.php?s=OMGF&tab=search&type=term' ) );
             case 'webfont_js':
