@@ -57,7 +57,7 @@ class Help extends Builder {
                                 <a target="_blank" rel="noopener noreferrer"
                                    href="<?php echo esc_url( apply_filters( 'gdpress_help_tab_review_link', 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post' ) ); ?>">
                                     <i class="dashicons dashicons-star-filled"></i>
-                                    <?php echo __( 'Write a 5-star Review or,', 'gdpr-press' ); ?>
+                                    <?php echo esc_html__( 'Write a 5-star Review or,', 'gdpr-press' ); ?>
                                 </a>
                             </li>
                             <li>
@@ -69,10 +69,10 @@ class Help extends Builder {
                         </ul>
                     </div>
                     <div class="column last">
-                        <h3 class="signature"><?php echo __( 'Coded with ❤️ by', 'gdpr-press' ); ?> </h3>
+                        <h3 class="signature"><?php echo esc_html__( 'Coded with ❤️ by', 'gdpr-press' ); ?> </h3>
                         <p class="signature">
-                            <a target="_blank" title="<?php echo __( 'Visit Daan.dev', 'gdpr-press' ); ?>" href="https://daan.dev/wordpress-plugins/">
-                                <img class="signature-image" alt="<?php echo __( 'Visit Daan.dev', 'gdpr-press' ); ?>"
+                            <a target="_blank" title="<?php echo esc_attr__( 'Visit Daan.dev', 'gdpr-press' ); ?>" href="https://daan.dev/wordpress-plugins/">
+                                <img class="signature-image" alt="<?php echo esc_attr__( 'Visit Daan.dev', 'gdpr-press' ); ?>"
                                      src="<?php echo esc_url( plugin_dir_url( GDPRESS_PLUGIN_FILE ) . 'assets/images/logo-color@2x.png' ); ?>"/>
                             </a>
                         </p>
