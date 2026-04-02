@@ -135,8 +135,8 @@ class Manage extends Builder {
                     <tr <?php echo "class='" . esc_attr( $classes ) . "'"; ?>>
                         <td class="downloaded"><?php echo $request_type ? sprintf( $this->tooltip_markup, wp_kses_post( $tooltip_text ) ) : ( $downloaded ? '<i class="dashicons dashicons-yes"></i>' : '' ); ?></td>
                         <th class="name" scope="row"><?php echo esc_attr( $request['name'] ); ?></th>
-                        <td class="href"><a href="#" title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></a></td>
-                        <td class="href"><a href="#" title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></a></td>
+                        <td class="href"><span title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></span></td>
+                        <td class="href"><span title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></span></td>
                         <td class="exclude">
                             <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $request_type === 'google_analytics' || $request_type === 'excluded' ? 'checked' : ''; ?> <?php echo $request_type === 'google_analytics' || $request_type === 'excluded' ? 'class="locked"' : ''; ?>
                                     name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] );
