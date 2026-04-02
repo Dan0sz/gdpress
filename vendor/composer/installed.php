@@ -3,7 +3,7 @@
         'name' => 'daandev/gdpress',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '41790ab44736e1100d5c3e5748cec5ae21b418b5',
+        'reference' => '1cadefb8120af0ec7f6f56b405eee0485372fabb',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -37,7 +37,7 @@
         'daandev/gdpress' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '41790ab44736e1100d5c3e5748cec5ae21b418b5',
+            'reference' => '1cadefb8120af0ec7f6f56b405eee0485372fabb',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

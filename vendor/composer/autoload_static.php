@@ -16,18 +16,18 @@ class ComposerStaticInita580b00d9bd25d96641eb4439d739601
     );
 
     public static $prefixLengthsPsr4 = array (
-        'P' =>
+        'P' => 
         array (
             'PhpParser\\' => 10,
             'PHP_Parallel_Lint\\PhpConsoleHighlighter\\' => 40,
             'PHP_Parallel_Lint\\PhpConsoleColor\\' => 34,
             'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 57,
         ),
-        'M' =>
+        'M' => 
         array (
             'Mockery\\' => 8,
         ),
-        'G' =>
+        'G' => 
         array (
             'GDPRess\\Tests\\Unit\\' => 19,
             'GDPRess\\Tests\\Mocks\\' => 20,
@@ -35,67 +35,67 @@ class ComposerStaticInita580b00d9bd25d96641eb4439d739601
             'GDPRess\\Tests\\' => 14,
             'GDPRess\\' => 8,
         ),
-        'D' =>
+        'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
         ),
-        'B' =>
+        'B' => 
         array (
             'Brain\\Monkey\\' => 13,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'PhpParser\\' =>
+        'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
-        'PHP_Parallel_Lint\\PhpConsoleHighlighter\\' =>
+        'PHP_Parallel_Lint\\PhpConsoleHighlighter\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-parallel-lint/php-console-highlighter/src',
         ),
-        'PHP_Parallel_Lint\\PhpConsoleColor\\' =>
+        'PHP_Parallel_Lint\\PhpConsoleColor\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-parallel-lint/php-console-color/src',
         ),
-        'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' =>
+        'PHPCSStandards\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\' => 
         array (
             0 => __DIR__ . '/..' . '/dealerdirect/phpcodesniffer-composer-installer/src',
         ),
-        'Mockery\\' =>
+        'Mockery\\' => 
         array (
             0 => __DIR__ . '/..' . '/mockery/mockery/library/Mockery',
         ),
-        'GDPRess\\Tests\\Unit\\' =>
+        'GDPRess\\Tests\\Unit\\' => 
         array (
             0 => __DIR__ . '/../..' . '/tests/unit',
         ),
-        'GDPRess\\Tests\\Mocks\\' =>
+        'GDPRess\\Tests\\Mocks\\' => 
         array (
             0 => __DIR__ . '/../..' . '/tests/mocks',
         ),
-        'GDPRess\\Tests\\Integration\\' =>
+        'GDPRess\\Tests\\Integration\\' => 
         array (
             0 => __DIR__ . '/../..' . '/tests/integration',
         ),
-        'GDPRess\\Tests\\' =>
+        'GDPRess\\Tests\\' => 
         array (
             0 => __DIR__ . '/../..' . '/tests',
         ),
-        'GDPRess\\' =>
+        'GDPRess\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
-        'Doctrine\\Instantiator\\' =>
+        'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
-        'DeepCopy\\' =>
+        'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
-        'Brain\\Monkey\\' =>
+        'Brain\\Monkey\\' => 
         array (
             0 => __DIR__ . '/..' . '/brain/monkey/src',
         ),
