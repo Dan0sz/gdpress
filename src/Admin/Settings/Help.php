@@ -35,9 +35,9 @@ class Help extends Builder {
         ?>
         <div class="gdpress-help-container">
             <div class="content">
-                <h2><?php echo sprintf( __( 'Thank you for using %s!', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ); ?></h2>
+                <h2><?php echo esc_html( sprintf( __( 'Thank you for using %s!', 'gdpr-press' ), wp_strip_all_tags( apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ) ); ?></h2>
                 <p class="about">
-                    <?php echo sprintf( __( 'Need help configuring %s? Please refer to the links below to get you started.', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ); ?>
+                    <?php echo esc_html( sprintf( __( 'Need help configuring %s? Please refer to the links below to get you started.', 'gdpr-press' ), wp_strip_all_tags( apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ) ); ?>
                 </p>
                 <div class="column-container">
                     <div class="column">
@@ -45,7 +45,7 @@ class Help extends Builder {
                             <?php _e( 'Need Help?', 'gdpr-press' ); ?>
                         </h3>
                         <ul>
-                            <li><a target="_blank" href="<?php echo apply_filters( 'gdpress_settings_help_support_link', esc_url( 'https://wordpress.org/support/plugin/gdpr-press/' ) ); ?>"><i
+                            <li><a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( apply_filters( 'gdpress_settings_help_support_link', 'https://wordpress.org/support/plugin/gdpr-press/' ) ); ?>"><i
                                             class="dashicons dashicons-email"></i><?php echo __( 'Get Support', 'gdpr-press' ); ?></a></li>
                         </ul>
                     </div>
