@@ -285,7 +285,6 @@ class Helper {
 			[
 				'fonts.googleapis.com/icon',
 				'fonts.gstatic.com',
-				'webfont.js',
 			]
 		);
 	}
