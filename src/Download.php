@@ -71,7 +71,7 @@ class Download {
 	 * @param string $path The path to create.
 	 * @param string $url  The URL of the file to download.
 	 *
-	 * @return string|\WP_Error
+	 * @return string
 	 *
 	 * @throws \SodiumException
 	 */
@@ -187,19 +187,24 @@ class Download {
 	}
 	
 	/**
-	 * Checks if $source contain mentions of '../' or doesn't begin with either 'http', '../' or alphanumerical characters.
+	 * Checks if $source is a relative URL (root-relative or relative to directory).
 	 *
 	 * @param string $source
 	 *
-	 * @return bool  false || true for e.g. "../fonts/file.woff2", "fonts/file.woff2" or "file.woff2"
+	 * @return bool
 	 */
 	private function is_rel_url( string $source ) {
-		// true: ../fonts/file.woff2
-		return str_starts_with( $source, '../' )
-		       // true: fonts/file.woff2
-		       || ( ! str_contains( $source, 'http' ) && ! str_contains( $source, '../' ) && strpos( $source, '/' ) > 0 )
-		       // true: file.woff2
-		       || ( ! str_contains( $source, 'http' ) && ! str_contains( $source, '../' ) && ! str_contains( $source, '/' ) && preg_match( '/^[a-zA-Z]/', $source ) === 1 );
+		// Does $source have a scheme? e.g. http://, https://, data:, etc.
+		if ( preg_match( '/^[a-zA-Z][a-zA-Z0-9+.\-]*:/', $source ) ) {
+			return false;
+		}
+		
+		// Does $source start with // (protocol-relative)?
+		if ( str_starts_with( $source, '//' ) ) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -209,6 +214,11 @@ class Download {
 	 * @return string Absolute URL
 	 */
 	private function get_abs_url( $rel_url, $source ) {
+		// Root-relative URL? Resolve against site origin.
+		if ( str_starts_with( $rel_url, '/' ) ) {
+			return get_site_url( null, $rel_url );
+		}
+		
 		$folder_depth  = substr_count( $rel_url, '../' );
 		$url_to_insert = $source;
 		
