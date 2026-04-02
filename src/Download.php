@@ -245,7 +245,7 @@ class Download {
 		 *      3: Etc.
 		 */
 		for ( $i = 0; $i <= $folder_depth; $i ++ ) {
-			$url_to_insert = substr( $source, 0, strrpos( $url_to_insert, '/' ) );
+			$url_to_insert = substr( $url_to_insert, 0, strrpos( $url_to_insert, '/' ) );
 		}
 		
 		$path = ltrim( $rel_url, './' );
