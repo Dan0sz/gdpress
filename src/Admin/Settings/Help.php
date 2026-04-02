@@ -59,7 +59,6 @@ class Help extends Builder {
                 </div>
             </div>
         </div>
-        </div>
         <?php
     }
 }
