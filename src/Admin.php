@@ -30,7 +30,7 @@ class Admin {
 	 * @return void
 	 */
 	private function init() {
-		add_action( 'admin_init', [ $this, 'download_files' ] );
+		add_action( 'admin_init', [ $this, 'update_cache' ] );
 		add_action( 'admin_notices', [ $this, 'print_notices' ] );
 		
 		$this->add_ajax_hooks();
@@ -66,20 +66,20 @@ class Admin {
 	}
 	
 	/**
-	 * File Downloader
-	 *
-	 * @return void
-	 */
-	public function download_files() {
-		new CacheManager();
-	}
-	
-	/**
 	 * Print onscreen notices, if any.
 	 *
 	 * @return void
 	 */
 	public function print_notices() {
 		Notice::print_notices();
+	}
+	
+	/**
+	 * File Downloader
+	 *
+	 * @return void
+	 */
+	public function update_cache() {
+		new CacheManager();
 	}
 }
