@@ -188,8 +188,10 @@ class Download {
 				/**
 				 * Copy font file.
 				 */
-				copy( $tmp, $path . $filename );
-				@unlink( $tmp );
+				if ( ! copy( $tmp, $path . $filename ) ) {
+					Notice::set_notice( sprintf( __( 'Ouch! GDPRess failed to copy font file <code>%s</code>.', 'gdpr-press' ), $filename ), 'error', 'gdpress-settings-manage', 'gdpress-copy-error' );
+				}
+				`@unlink`( $tmp );
 			}
 		}
 		
