@@ -214,8 +214,23 @@ class Download {
 	 * @return string Absolute URL
 	 */
 	private function get_abs_url( $rel_url, $source ) {
-		// Root-relative URL? Resolve against site origin.
+		// Root-relative URL? Resolve against origin of $source (or site origin as fallback).
 		if ( str_starts_with( $rel_url, '/' ) ) {
+			$origin = '';
+			$parts  = parse_url( $source );
+			
+			if ( isset( $parts['scheme'], $parts['host'] ) ) {
+				$origin = $parts['scheme'] . '://' . $parts['host'];
+				
+				if ( isset( $parts['port'] ) ) {
+					$origin .= ':' . $parts['port'];
+				}
+			}
+			
+			if ( $origin ) {
+				return $origin . $rel_url;
+			}
+			
 			return get_site_url( null, $rel_url );
 		}
 		
