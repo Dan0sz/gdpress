@@ -131,7 +131,8 @@ class Manage extends Builder {
                     }
 
                     $local_url    = $request_type === 'google_fonts' ? Helper::get_local_url_google_font( $request['name'] ) : Helper::get_local_url( $request['href'], $type );
-                    $downloaded   = $request_type === 'google_fonts' ? file_exists( Helper::get_local_path_google_font( $request['href'] ) ) : file_exists( Helper::get_local_path( $request['href'], $type ) );
+                    $downloaded   = $request_type === 'google_fonts' ? file_exists( Helper::get_local_path_google_font( $request['name'] ) ) : file_exists( Helper::get_local_path( $request['href'],
+                    $type ) );
                     $tooltip_text = $this->get_tooltip_text( $request_type );
                     ?>
                     <tr <?php echo "class='" . esc_attr( $classes ) . "'"; ?>>
