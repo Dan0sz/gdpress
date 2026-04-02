@@ -76,7 +76,27 @@ class Helper {
 			return '';
 		}
 		
-		$full_path = GDPRESS_CACHE_ABSPATH . "/$type$rel_path";
+		$full_path = wp_normalize_path( GDPRESS_CACHE_ABSPATH . "/$type$rel_path" );
+		
+		/**
+		 * Collapse dot segments.
+		 */
+		$parts     = explode( '/', $full_path );
+		$collapsed = [];
+		
+		foreach ( $parts as $part ) {
+			if ( $part === '.' || $part === '' ) {
+				continue;
+			}
+			
+			if ( $part === '..' ) {
+				array_pop( $collapsed );
+			} else {
+				$collapsed[] = $part;
+			}
+		}
+		
+		$full_path = ( str_starts_with( $full_path, '/' ) ? '/' : '' ) . implode( '/', $collapsed );
 		
 		if ( ! self::is_within_cache_dir( $full_path ) ) {
 			return '';

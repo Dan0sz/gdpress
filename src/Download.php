@@ -151,6 +151,8 @@ class Download {
 			 * Download each file (defined as @font-face src) to the appropriate dir.
 			 */
 			foreach ( $urls as $url ) {
+				$orig_url = $url;
+				
 				// Normalize protocol-relative URLs.
 				if ( str_starts_with( $url, '//' ) ) {
 					$url = 'https:' . $url;
@@ -161,9 +163,10 @@ class Download {
 					$url = $this->get_abs_url( $url, $ext_url );
 				}
 				
-				[ $filename ] = explode( '?', basename( $url ) );
-				$dir  = str_replace( $filename, '', $url );
-				$path = Helper::get_local_path( $dir, 'css' );
+				[ $cleaned_url ] = explode( '?', $url );
+				$filename = basename( $cleaned_url );
+				$dir      = str_replace( $filename, '', $cleaned_url );
+				$path     = Helper::get_local_path( $dir, 'css' );
 				
 				if ( ! $path ) {
 					Notice::set_notice( sprintf( __( 'Ouch! GDPRess encountered an error while determining the local path for <code>%s</code>.', 'gdpr-press' ), $url ), 'error', 'gdpress-settings-manage', 'gdpress-path-error' );
@@ -182,7 +185,17 @@ class Download {
 				 * $contents to use local cache dir.
 				 */
 				if ( ! $is_rel_url ) {
-					$contents = $this->replace_abs_urls( $contents, $dir );
+					// Use original URL (and protocol-relative variant) for matching.
+					$contents = $this->replace_abs_urls( $contents, str_replace( $filename, '', $orig_url ) );
+					
+					// Also match protocol-normalized variant if it differs from the original.
+					if ( str_starts_with( $orig_url, 'https:' ) || str_starts_with( $orig_url, 'http:' ) ) {
+						$protocol_relative = preg_replace( '/^https?:/', '', $orig_url );
+						$contents          = $this->replace_abs_urls( $contents, str_replace( $filename, '', $protocol_relative ) );
+					} elseif ( str_starts_with( $orig_url, '//' ) ) {
+						$protocol_absolute = 'https:' . $orig_url;
+						$contents          = $this->replace_abs_urls( $contents, str_replace( $filename, '', $protocol_absolute ) );
+					}
 				}
 				
 				/**
@@ -249,6 +262,16 @@ class Download {
 		
 		$folder_depth  = substr_count( $rel_url, '../' );
 		$url_to_insert = $source;
+		$parts         = parse_url( $source );
+		$origin        = '';
+		
+		if ( isset( $parts['scheme'], $parts['host'] ) ) {
+			$origin = $parts['scheme'] . '://' . $parts['host'];
+			
+			if ( isset( $parts['port'] ) ) {
+				$origin .= ':' . $parts['port'];
+			}
+		}
 		
 		/**
 		 * Remove everything after the last occurrence of a forward slash ('/');
@@ -259,7 +282,13 @@ class Download {
 		 *      3: Etc.
 		 */
 		for ( $i = 0; $i <= $folder_depth; $i ++ ) {
-			$url_to_insert = substr( $url_to_insert, 0, strrpos( $url_to_insert, '/' ) );
+			$last_slash_pos = strrpos( $url_to_insert, '/' );
+			
+			if ( $last_slash_pos === false || ( $origin && $url_to_insert === $origin ) || ( $origin && $last_slash_pos < strlen( $origin . '/' ) ) ) {
+				break;
+			}
+			
+			$url_to_insert = substr( $url_to_insert, 0, $last_slash_pos );
 		}
 		
 		$path = ltrim( $rel_url, './' );
