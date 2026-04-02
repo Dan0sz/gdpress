@@ -138,7 +138,7 @@ class Settings extends Admin {
      */
     public function add_settings_link( $links ) {
         $adminUrl     = admin_url() . 'options-general.php?page=' . self::GDPRESS_ADMIN_PAGE;
-        $settingsLink = "<a href='$adminUrl'>" . __( 'Settings', 'gdpr-press' ) . '</a>';
+        $settingsLink = "<a href='" . esc_url( $adminUrl ) . "'>" . __( 'Settings', 'gdpr-press' ) . '</a>';
         array_push( $links, $settingsLink );
 
         return $links;
