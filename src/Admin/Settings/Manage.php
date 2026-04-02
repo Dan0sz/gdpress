@@ -28,7 +28,7 @@ class Manage extends Builder {
     private $upsell_notice;
 
     /** @var string $tooltip_markup */
-    private $tooltip_markup = '<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></span></i>';
+    private $tooltip_markup = '<i class="dashicons dashicons-info-outline tooltip"><span class="tooltip-text"><span class="inline-text">%s</span></span></i>';
 
     /**
      * Set fields.
