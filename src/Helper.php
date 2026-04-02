@@ -22,6 +22,10 @@ class Helper {
 	public static function get_local_url( $url, $type, $bypass = false ) {
 		$local_path = self::get_local_path( $url, $type );
 		
+		if ( ! $local_path ) {
+			return '';
+		}
+		
 		if ( ! file_exists( $local_path ) && ! $bypass ) {
 			return '';
 		}
@@ -149,7 +153,13 @@ class Helper {
 			return '';
 		}
 		
-		if ( ! file_exists( self::get_local_path_google_font( $filename ) ) && ! $bypass ) {
+		$local_path = self::get_local_path_google_font( $filename );
+		
+		if ( ! $local_path ) {
+			return '';
+		}
+		
+		if ( ! file_exists( $local_path ) && ! $bypass ) {
 			return '';
 		}
 		
