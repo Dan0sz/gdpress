@@ -40,11 +40,8 @@ jobs:
           SLUG: gdpr-press
 
       - name: Attach asset to release
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ github.workspace }}/gdpr-press.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{github.workspace}}/gdpr-press.zip
-          asset_name: gdpr-press.zip
-          asset_content_type: application/zip
