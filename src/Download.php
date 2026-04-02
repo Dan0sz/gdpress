@@ -187,11 +187,11 @@ class Download {
 	}
 	
 	/**
-	 * Checks if $source contain mentions of '../' or doesn't begin with either 'http', '../' or '/'.
+	 * Checks if $source contain mentions of '../' or doesn't begin with either 'http', '../' or alphanumerical characters.
 	 *
 	 * @param string $source
 	 *
-	 * @return bool  false || true for e.g. "../fonts/file.woff2" or "/fonts/file.woff2" or "fonts/file.woff2"
+	 * @return bool  false || true for e.g. "../fonts/file.woff2", "fonts/file.woff2" or "file.woff2"
 	 */
 	private function is_rel_url( string $source ) {
 		// true: ../fonts/file.woff2
