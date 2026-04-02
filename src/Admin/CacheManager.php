@@ -98,7 +98,7 @@ class CacheManager {
 	}
 	
 	/**
-	 * Deletes the local file for the excluded resource, if it exists.
+	 * Deletes the local file for the excluded resource if it exists.
 	 *
 	 * @param string $type
 	 * @param array  $request
