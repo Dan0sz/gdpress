@@ -58,7 +58,6 @@ class Download {
 			$this->parse_font_faces( $tmp, $url );
 		}
 		
-		/** @var string $tmp */
 		copy( $tmp, $file_path );
 		@unlink( $tmp );
 		
