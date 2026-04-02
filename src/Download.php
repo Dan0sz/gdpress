@@ -284,14 +284,15 @@ class Download {
 		for ( $i = 0; $i <= $folder_depth; $i ++ ) {
 			$last_slash_pos = strrpos( $url_to_insert, '/' );
 			
-			if ( $last_slash_pos === false || ( $origin && $url_to_insert === $origin ) || ( $origin && $last_slash_pos < strlen( $origin . '/' ) ) ) {
+			if ( $last_slash_pos === false || ( $origin && $url_to_insert === $origin ) || ( $origin && $last_slash_pos < strlen( $origin ) ) ) {
 				break;
 			}
 			
 			$url_to_insert = substr( $url_to_insert, 0, $last_slash_pos );
 		}
 		
-		$path = ltrim( $rel_url, './' );
+		$path = str_replace( '../', '', $rel_url );
+		$path = ltrim( $path, './' );
 		
 		return $url_to_insert . '/' . $path;
 	}
