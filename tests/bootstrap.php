@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file.
  *
- * @package Host_Webfonts_Local
+ * @package gdpr-press
  */
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
