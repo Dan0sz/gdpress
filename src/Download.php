@@ -237,7 +237,7 @@ class Download {
 		$url_to_insert = $source;
 		
 		/**
-		 * Remove everything after the last occurence of a forward slash ('/');
+		 * Remove everything after the last occurrence of a forward slash ('/');
 		 *
 		 * $i = 0: Filename
 		 *      1: First level subdirectory, i.e. '../'
