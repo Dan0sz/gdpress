@@ -35,9 +35,9 @@ class Help extends Builder {
         ?>
         <div class="gdpress-help-container">
             <div class="content">
-                <h2><?php echo sprintf( __( 'Thank you for using %s!', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ); ?></h2>
+                <h2><?php echo esc_html( sprintf( __( 'Thank you for using %s!', 'gdpr-press' ), wp_strip_all_tags( apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ) ); ?></h2>
                 <p class="about">
-                    <?php echo sprintf( __( 'Need help configuring %s? Please refer to the links below to get you started.', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ); ?>
+                    <?php echo esc_html( sprintf( __( 'Need help configuring %s? Please refer to the links below to get you started.', 'gdpr-press' ), wp_strip_all_tags( apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ) ); ?>
                 </p>
                 <div class="column-container">
                     <div class="column">
