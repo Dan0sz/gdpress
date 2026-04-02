@@ -8,7 +8,6 @@
 namespace GDPRess\Admin;
 
 use GDPRess\Admin;
-use GDPRess\Helper;
 
 class Settings extends Admin {
 
@@ -103,7 +102,7 @@ class Settings extends Admin {
      */
     private function generate_tab( $id, $icon = null, $label = null ) {
         ?>
-        <a class="nav-tab dashicons-before <?php echo esc_attr( $icon ); ?> <?php echo $this->active_tab == $id ? 'nav-tab-active' : ''; ?>" href="<?php echo $this->generate_tab_link( $id ); ?>">
+        <a class="nav-tab dashicons-before <?php echo esc_attr( $icon ); ?> <?php echo $this->active_tab === $id ? 'nav-tab-active' : ''; ?>" href="<?php echo $this->generate_tab_link( $id ); ?>">
             <?php echo esc_html( $label ); ?>
         </a>
         <?php

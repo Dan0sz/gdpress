@@ -229,7 +229,7 @@ class Manage extends Builder {
     private function count_gf( $url ) {
         $parts = parse_url( $url );
 
-        if ( $parts['path'] == '/css2' ) {
+        if ( $parts['path'] === '/css2' ) {
             // CSS2
             $count = substr_count( $parts['query'] ?? '', 'family' );
         } else {
@@ -253,7 +253,7 @@ class Manage extends Builder {
         // Count fonts.
         $google_fonts = parse_url( $url );
 
-        if ( $google_fonts['path'] == '/css2' ) {
+        if ( $google_fonts['path'] === '/css2' ) {
             // CSS2
             $google_fonts_var_count = substr_count( $google_fonts['query'] ?? '', ';' );
         } else {
@@ -264,7 +264,7 @@ class Manage extends Builder {
         }
 
         // This means all variations are loaded, which is never good. So manually bump up the value to display the suggestion.
-        if ( $google_fonts_var_count == 0 ) {
+        if ( $google_fonts_var_count === 0 ) {
             $google_fonts_var_count = 6;
         }
 
@@ -329,7 +329,7 @@ class Manage extends Builder {
         $this->do_checkbox(
                 __( 'Test mode', 'gdpr-press' ),
                 Settings::GDPRESS_MANAGE_SETTING_TEST_MODE,
-                GDPRESS_TEST_MODE == 'on',
+                GDPRESS_TEST_MODE === 'on',
                 __( '<strong>Warning!</strong> Test thoroughly, before disabling this option. While this setting is enabled, any changes made by GDPRess will only be visible to logged in administrators or when <code>?gdpress</code> is added to an URL in the frontend.', 'gdpr-press' )
         );
     }

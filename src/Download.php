@@ -51,17 +51,22 @@ class Download {
 		$tmp = $this->download_to_tmp( $path, $url );
 		
 		if ( ! $tmp ) {
-			return $file_url;
+			return '';
 		}
 		
-		if ( $type == 'css' ) {
+		if ( $type === 'css' ) {
 			$this->parse_font_faces( $tmp, $url );
 		}
 		
-		copy( $tmp, $file_path );
+		if ( copy( $tmp, $file_path ) ) {
+			@unlink( $tmp );
+			
+			return $file_url;
+		}
+		
 		@unlink( $tmp );
 		
-		return $file_url;
+		return '';
 	}
 	
 	/**
