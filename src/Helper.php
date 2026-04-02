@@ -218,7 +218,7 @@ class Helper {
 		 * @since v0.1
 		 */
 		if ( is_string( $excluded ) ) {
-			$excluded = unserialize( $excluded );
+			$excluded = maybe_unserialize( $excluded );
 		}
 		
 		return $excluded;
