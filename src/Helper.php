@@ -103,7 +103,10 @@ class Helper {
 				continue;
 			}
 			
-			$sanitized = sanitize_file_name( $segment );
+			/**
+			 * sanitize_file_name() messes up filenames of minified (.min.) files.
+			 */
+			$sanitized = preg_replace( '/[^a-zA-Z0-9\-_\.]/', '-', $segment );
 			
 			if ( str_starts_with( $sanitized, 'unnamed-file.' ) && ! str_starts_with( $segment, 'unnamed-file.' ) ) {
 				$sanitized = $segment;
