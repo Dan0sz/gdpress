@@ -161,6 +161,8 @@ class Download {
 				$path = Helper::get_local_path( $dir, 'css' );
 				
 				if ( ! $path ) {
+					Notice::set_notice( sprintf( __( 'Ouch! GDPRess encountered an error while determining the local path for <code>%s</code>.', 'gdpr-press' ), $url ), 'error', 'gdpress-settings-manage', 'gdpress-path-error' );
+					
 					continue;
 				}
 				

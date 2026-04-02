@@ -45,16 +45,17 @@ class Help extends Builder {
                             <?php _e( 'Need Help?', 'gdpr-press' ); ?>
                         </h3>
                         <ul>
-                            <li><a target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( apply_filters( 'gdpress_settings_help_support_link', 'https://wordpress.org/support/plugin/gdpr-press/' ) ); ?>"><i
+                            <li><a target="_blank" rel="noopener noreferrer"
+                                   href="<?php echo esc_url( apply_filters( 'gdpress_settings_help_support_link', 'https://wordpress.org/support/plugin/gdpr-press/' ) ); ?>"><i
                                             class="dashicons dashicons-email"></i><?php echo __( 'Get Support', 'gdpr-press' ); ?></a></li>
                         </ul>
                     </div>
                     <div class="column">
-                        <h3><?php echo sprintf( __( 'Support %s & Spread the Word!', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ); ?></h3>
+                        <h3><?php echo esc_html( sprintf( __( 'Support %s & Spread the Word!', 'gdpr-press' ), apply_filters( 'gdpress_settings_page_title', 'GDPRess' ) ) ); ?></h3>
                         <ul>
                             <li>
-                                <a target="_blank"
-                                   href="<?php echo apply_filters( 'gdpress_help_tab_review_link', esc_url( 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post' ) ); ?>">
+                                <a target="_blank" rel="noopener noreferrer"
+                                   href="<?php echo esc_url( apply_filters( 'gdpress_help_tab_review_link', 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post' ) ); ?>">
                                     <i class="dashicons dashicons-star-filled"></i>
                                     <?php echo __( 'Write a 5-star Review or,', 'gdpr-press' ); ?>
                                 </a>

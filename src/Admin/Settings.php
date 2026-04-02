@@ -289,7 +289,7 @@ class Settings extends Admin {
             return $text;
         }
 
-        $text = sprintf( __( 'Recently tagged <a target="_blank" href="%s"><strong>#GDPR</strong></a> on my blog:', 'gdpr-press' ), 'https://daan.dev/blog/tag/gdpr' ) . ' ';
+        $text = sprintf( __( 'Recently tagged <a target="_blank" rel="noopener noreferrer" href="%s"><strong>#GDPR</strong></a> on my blog:', 'gdpr-press' ), 'https://daan.dev/blog/tag/gdpr' ) . ' ';
         $text .= '<span id="gdpress-ticker-wrap">';
         $i    = 0;
 
