@@ -304,7 +304,7 @@ class Helper {
 		 * @since v0.1
 		 */
 		if ( is_string( $local ) ) {
-			$local = unserialize( $local );
+			$local = maybe_unserialize( $local );
 		}
 		
 		return $local;
