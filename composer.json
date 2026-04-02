@@ -1,15 +1,29 @@
 {
-    "name": "daandev/gdpress",
-    "autoload": {
-        "psr-4": {
-            "GDPRess\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Daan from Daan.dev",
-            "email": "18595395+Dan0sz@users.noreply.github.com"
-        }
+  "name": "daandev/gdpress",
+  "autoload": {
+    "psr-4": {
+      "GDPRess\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Daan from Daan.dev",
+      "email": "18595395+Dan0sz@users.noreply.github.com"
+    }
+  ],
+  "scripts": {
+    "lint": [
+      "@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint . -e php --show-deprecated --exclude vendor --exclude .git"
     ],
-    "require": {}
+    "unit": [
+      "@php ./vendor/bin/phpunit --no-coverage"
+    ],
+    "integration": [
+      "@php ./vendor/bin/phpunit --configuration phpunit-with-integration.xml --no-coverage"
+    ],
+    "coverage": [
+      "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover ./build/clover.xml"
+    ]
+  },
+  "require": {}
 }
