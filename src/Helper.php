@@ -243,8 +243,8 @@ class Helper {
 		return apply_filters(
 			'gdpress_exclusion_list',
 			[
-				'gtag.js',
-				'analytics.js',
+				'googletagmanager.com/gtag/js',
+				'google-analytics.com/analytics.js',
 				'maps.googleapis.com',
 				'js.stripe.com',
 				'app.usercentrics.eu',
