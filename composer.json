@@ -2,7 +2,11 @@
   "name": "daandev/gdpress",
   "autoload": {
     "psr-4": {
-      "GDPRess\\": "src/",
+      "GDPRess\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "GDPRess\\Tests\\Integration\\": "tests/integration/",
       "GDPRess\\Tests\\Mocks\\": "tests/mocks/",
       "GDPRess\\Tests\\Unit\\": "tests/unit/",
