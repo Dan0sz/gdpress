@@ -141,9 +141,10 @@ class Manage extends Builder {
                         <td class="href"><span title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></span></td>
                         <td class="href"><span title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></span></td>
                         <td class="exclude">
-                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $request_type === 'google_analytics' || $request_type === 'excluded' ? 'checked' : ''; ?> <?php echo $request_type === 'google_analytics' || $request_type === 'excluded' ? 'class="locked"' : ''; ?>
-                                    name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] );
-                                    ?>" />
+                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $request_type === 'google_analytics' || $request_type === 'excluded' ? 'checked' : ''; ?>
+                                <?php echo $request_type === 'google_analytics' || $request_type === 'excluded' ? 'class="locked"' : ''; ?>
+                                name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] ); ?>"
+                            />
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -329,7 +330,7 @@ class Manage extends Builder {
         $this->do_checkbox(
                 __( 'Test mode', 'gdpr-press' ),
                 Settings::GDPRESS_MANAGE_SETTING_TEST_MODE,
-                GDPRESS_TEST_MODE === 'on',
+                GDPRESS_TEST_MODE,
                 __( '<strong>Warning!</strong> Test thoroughly, before disabling this option. While this setting is enabled, any changes made by GDPRess will only be visible to logged in administrators or when <code>?gdpress</code> is added to an URL in the frontend.', 'gdpr-press' )
         );
     }
