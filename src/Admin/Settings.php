@@ -294,7 +294,11 @@ class Settings extends Admin {
             }
 
             $hide = $i > 0 ? 'style="display: none;"' : '';
-            $text .= "<span class='ticker-item' $hide>" . sprintf( '<a target="_blank" href="%s"><em>%s</em></a>', $item->link, $item->title ) . '</span>';
+            $text .= "<span class='ticker-item' $hide>" . sprintf(
+                '<a target="_blank" rel="noopener noreferrer" href="%s"><em>%s</em></a>',
+                esc_url( (string) $item->link ),
+                esc_html( (string) $item->title )
+            ) . '</span>';
             $i ++;
         }
 
