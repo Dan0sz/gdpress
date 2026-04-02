@@ -6,5 +6,9 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'GDPRess\\Tests\\Unit\\' => array($baseDir . '/tests/unit'),
+    'GDPRess\\Tests\\Mocks\\' => array($baseDir . '/tests/mocks'),
+    'GDPRess\\Tests\\Integration\\' => array($baseDir . '/tests/integration'),
+    'GDPRess\\Tests\\' => array($baseDir . '/tests'),
     'GDPRess\\' => array($baseDir . '/src'),
 );

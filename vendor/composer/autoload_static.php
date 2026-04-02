@@ -9,11 +9,31 @@ class ComposerStaticInita580b00d9bd25d96641eb4439d739601
     public static $prefixLengthsPsr4 = array (
         'G' =>
         array (
+            'GDPRess\\Tests\\Unit\\' => 19,
+            'GDPRess\\Tests\\Mocks\\' => 20,
+            'GDPRess\\Tests\\Integration\\' => 26,
+            'GDPRess\\Tests\\' => 14,
             'GDPRess\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'GDPRess\\Tests\\Unit\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/tests/unit',
+        ),
+        'GDPRess\\Tests\\Mocks\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/tests/mocks',
+        ),
+        'GDPRess\\Tests\\Integration\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/tests/integration',
+        ),
+        'GDPRess\\Tests\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/tests',
+        ),
         'GDPRess\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
