@@ -160,6 +160,10 @@ class Download {
 				$dir  = str_replace( $filename, '', $url );
 				$path = Helper::get_local_path( $dir, 'css' );
 				
+				if ( ! $path ) {
+					continue;
+				}
+				
 				$tmp = $this->download_to_tmp( $path, $url );
 				
 				if ( ! $tmp ) {
