@@ -4,6 +4,7 @@
 /.vscode
 /node_modules
 /scripts
+/tests
 
 .distignore
 .gitignore
@@ -12,6 +13,8 @@
 
 package.json
 package-lock.json
+phpunit.xml
+phpunit-with-integration.xml
 composer.json
 composer.lock
 readme.md
