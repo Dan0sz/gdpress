@@ -277,11 +277,12 @@ class Helper {
 		return apply_filters(
 			'gdpress_exclusion_list',
 			[
+				'app.usercentrics.eu',
+				'challenges.cloudflare.com',
 				'googletagmanager.com/gtag/js',
 				'google-analytics.com/analytics.js',
-				'maps.googleapis.com',
 				'js.stripe.com',
-				'app.usercentrics.eu',
+				'maps.googleapis.com',
 			]
 		);
 	}
