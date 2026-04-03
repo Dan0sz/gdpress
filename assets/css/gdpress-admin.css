@@ -1,219 +1,374 @@
 /**
  * @package   GDPRess
  * @author    Daan van den Bergh
- *            https://ffw.press
+ *            https://daan.dev
  */
-#gdpress-help-form {
-  max-width: 1350px;
+
+/**
+ * Typography
+ */
+@import "gdpr-press-admin-google-fonts.min.css";
+
+#wpwrap {
+    background-color: rgb(248 250 252 / 1);
 }
-#gdpress-manage-form {
-  max-width: 1350px;
+
+.gdpress {
+    font-family: "Public Sans", Arial, sans-serif;
+    max-width: 1350px;
 }
-#gdpress-manage-form .gdpress.manage {
-  padding: 25px 50px;
-  max-width: 1024px;
-  margin: 20px auto 20px 220px;
-  overflow: visible;
-  position: relative;
+
+.gdpress h1 {
+    font-family: Poppins, Verdana, sans-serif;
+    font-weight: 800;
 }
-#gdpress-manage-form .gdpress.manage p {
-  text-align: center;
+
+.gdpress h2,
+.gdpress h3,
+.gdpress h4,
+.gdpress h5,
+.gdpress h6 {
+    font-family: Poppins, Verdana, sans-serif;
+    font-weight: 600;
 }
-#gdpress-manage-form .gdpress.manage .option-title {
-  position: absolute;
-  left: -220px;
-  top: 0;
-  font-weight: 600;
-  font-size: 14px;
-  color: #1d2327;
+
+/**
+ * Buttons
+ */
+.gdpress .button {
+    color: #00adda;
+    font-family: Poppins, Verdana, sans-serif;
+    border-radius: 10px;
+    border: none;
+    font-weight: 500;
+    padding: 7px 20px;
+    margin-right: 1em;
+    background-color: transparent;
 }
-#gdpress-manage-form .gdpress.manage .tooltip {
-  position: relative;
-  font-size: 16px;
-  line-height: 20px;
+
+.gdpress .button:hover {
+    background-color: transparent;
 }
-#gdpress-manage-form .gdpress.manage .tooltip .tooltip-text {
-  visibility: hidden;
-  position: absolute;
-  top: 100%;
-  left: 100%;
-  z-index: 10000;
-  background-color: rgba(0, 0, 0, 0.75);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size: 0.8em;
-  color: #fff;
-  line-height: 1.5;
-  width: 250px;
-  padding: 10px;
-  margin-left: -125px;
-  border-radius: 3px;
+
+.gdpress .button-primary {
+    color: white;
+    background-color: #00adda;
 }
-#gdpress-manage-form .gdpress.manage .tooltip .tooltip-text a {
-  color: white;
+
+.gdpress .button-primary:hover {
+    background-color: #09c;
 }
-#gdpress-manage-form .gdpress.manage .tooltip:hover .tooltip-text {
-  visibility: visible;
+
+.gdpress .button-cancel {
+    color: #a00;
+    text-decoration: none;
+    border-color: transparent;
+    box-shadow: none;
+    background: 0 0;
+    white-space: nowrap;
 }
-#gdpress-manage-form .gdpress.manage table {
-  width: 100%;
-  max-width: 1024px;
-  border-collapse: collapse;
+
+.gdpress .button-cancel:hover {
+    cursor: pointer;
+    background: #d54e21;
+    color: #fff;
+    border-color: #d54e21;
+    border-radius: 10px;
 }
-#gdpress-manage-form .gdpress.manage table td,
-#gdpress-manage-form .gdpress.manage table th {
-  line-height: 2.5;
-  padding: 6px 12px;
+
+.gdpress #submit {
+    background: #00adda;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
 }
-#gdpress-manage-form .gdpress.manage table td.title,
-#gdpress-manage-form .gdpress.manage table th.title {
-  padding: 0;
-  line-height: 1;
-  border-bottom: 1px solid #c3c4c7;
+
+.gdpress #submit:hover {
+    background-color: #0099cc;
 }
-#gdpress-manage-form .gdpress.manage table td.downloaded,
-#gdpress-manage-form .gdpress.manage table th.downloaded,
-#gdpress-manage-form .gdpress.manage table td.exclude,
-#gdpress-manage-form .gdpress.manage table th.exclude {
-  max-width: 25px;
+
+/**
+ * Navigation
+ */
+.gdpress h2.gdpress-nav {
+    border-bottom: 0;
+    padding-bottom: 3px;
 }
-#gdpress-manage-form .gdpress.manage table td.downloaded i,
-#gdpress-manage-form .gdpress.manage table th.downloaded i,
-#gdpress-manage-form .gdpress.manage table td.exclude i,
-#gdpress-manage-form .gdpress.manage table th.exclude i {
-  vertical-align: -5px;
+
+.gdpress h2.gdpress-nav a {
+    border: 0;
+    background-color: transparent;
+    font-weight: 600;
+    box-shadow: none;
 }
-#gdpress-manage-form .gdpress.manage table td.downloaded i.dashicons-yes,
-#gdpress-manage-form .gdpress.manage table th.downloaded i.dashicons-yes,
-#gdpress-manage-form .gdpress.manage table td.exclude i.dashicons-yes,
-#gdpress-manage-form .gdpress.manage table th.exclude i.dashicons-yes {
-  color: #2ECC40;
+
+.gdpress h2.gdpress-nav .nav-tab {
+    color: #000;
 }
-#gdpress-manage-form .gdpress.manage table td.downloaded i.dashicons-info-outline,
-#gdpress-manage-form .gdpress.manage table th.downloaded i.dashicons-info-outline,
-#gdpress-manage-form .gdpress.manage table td.exclude i.dashicons-info-outline,
-#gdpress-manage-form .gdpress.manage table th.exclude i.dashicons-info-outline {
-  color: #201e14;
+
+.gdpress h2.gdpress-nav .nav-tab:last-child {
+    float: right;
 }
-#gdpress-manage-form .gdpress.manage table td.downloaded input,
-#gdpress-manage-form .gdpress.manage table th.downloaded input,
-#gdpress-manage-form .gdpress.manage table td.exclude input,
-#gdpress-manage-form .gdpress.manage table th.exclude input {
-  vertical-align: -3px;
+
+.gdpress h2.gdpress-nav .nav-tab-active {
+    color: #00adda;
 }
-#gdpress-manage-form .gdpress.manage table td.name,
-#gdpress-manage-form .gdpress.manage table th.name {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 250px;
-  width: 15%;
+
+.gdpress h2.gdpress-nav .nav-tab:hover {
+    color: #00adda;
 }
-#gdpress-manage-form .gdpress.manage table td.href,
-#gdpress-manage-form .gdpress.manage table th.href {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 362px;
-  width: 35%;
+
+.gdpress-nav .dashicons-before:before {
+    margin-right: 0.25em;
+    line-height: 1.15em;
 }
-#gdpress-manage-form .gdpress.manage table td.href a,
-#gdpress-manage-form .gdpress.manage table th.href a {
-  text-decoration: none;
-  color: #3c434a;
+
+.gdpress form {
+    max-width: 1350px;
 }
-#gdpress-manage-form .gdpress.manage table tbody th {
-  text-align: left;
+
+.gdpress form .dashicons {
+    line-height: 15px;
 }
-#gdpress-manage-form .gdpress.manage table tbody tr.even {
-  background-color: #f0f0f1;
+
+/**
+ * Containers
+ */
+.gdpress-manage-container,
+.gdpress-settings-container,
+.gdpress-help-container {
+    padding: 5px 25px 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px 1px #ccc;
+    border: 0;
+    border-top: 4px solid #00adda;
+    border-radius: 10px;
+    background: #fff;
 }
-#gdpress-manage-form .gdpress.manage table tbody tr.info {
-  background-color: #C2EEFF;
+
+.gdpress-manage-container .option-title {
+    display: none;
 }
-#gdpress-manage-form .gdpress.manage table tbody tr.warning {
-  background-color: #FFEF87;
+
+.gdpress-container {
+    margin-top: 1.5em;
 }
-#gdpress-manage-form .button-cancel {
-  color: #a00;
-  text-decoration: none;
-  border-color: transparent;
-  box-shadow: none;
-  background: 0 0;
-  border-radius: 3px;
-  white-space: nowrap;
-  padding: 1px 10px !important;
+
+.gdpress-container p {
+    text-align: center;
+    margin-bottom: 2em;
 }
-#gdpress-manage-form .button-cancel:hover {
-  cursor: pointer;
-  background: #d54e21;
-  color: #fff;
-  border-color: #d54e21;
+
+/**
+ * Table styles (Preserved)
+ */
+.gdpress-manage-container table {
+    width: 100%;
+    border-collapse: collapse;
 }
-#gdpress-help-form .postbox {
-  padding: 0 15px 5px;
+
+.gdpress-manage-container table td,
+.gdpress-manage-container table th {
+    line-height: 2.5;
+    padding: 6px 12px;
 }
-#gdpress-help-form .postbox .column-container {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
+
+.gdpress-manage-container table .gdpress-manage-cache {
+    border-top: 1px solid #c3c4c7;
 }
-#gdpress-help-form .postbox .column-container .column ul li {
-  margin-bottom: 10px;
+
+.gdpress-manage-container table .gdpress-manage-cache th {
+    font-size: 14px;
+    color: #1d2327;
+    padding: 0;
 }
-#gdpress-help-form .postbox .column-container .column ul li:last-child {
-  margin-bottom: none;
+
+.gdpress-manage-container table td.title,
+.gdpress-manage-container table th.title {
+    padding: 0;
+    line-height: 1;
+    border-top: 1px solid #c3c4c7;
 }
-#gdpress-help-form .postbox .column-container .column ul li a {
-  text-decoration: none;
-  line-height: 1.45;
+
+.gdpress-manage-container table td.downloaded,
+.gdpress-manage-container table th.downloaded,
+.gdpress-manage-container table td.exclude,
+.gdpress-manage-container table th.exclude {
+    max-width: 25px;
 }
-#gdpress-help-form .postbox .column-container .column ul li a i.dashicons {
-  margin-right: 5px;
-  color: #646970;
+
+.gdpress-manage-container table td.downloaded i,
+.gdpress-manage-container table th.downloaded i,
+.gdpress-manage-container table td.exclude i,
+.gdpress-manage-container table th.exclude i {
+    vertical-align: -5px;
 }
-#gdpress-help-form .postbox .column-container .column.last {
-  margin-right: 45px;
+
+.gdpress-manage-container table td.downloaded i.dashicons-yes,
+.gdpress-manage-container table td.exclude i.dashicons-yes {
+    color: #2ECC40;
 }
-#gdpress-help-form .postbox .column-container .column.last .signature {
-  text-align: center;
+
+.gdpress-manage-container table td.downloaded i.dashicons-info-outline,
+.gdpress-manage-container table td.exclude i.dashicons-info-outline {
+    color: #201e14;
 }
-#gdpress-help-form .postbox .column-container .column.last .signature .dashicons-heart {
-  color: #FF4136;
+
+.gdpress-manage-container table td.downloaded input,
+.gdpress-manage-container table td.exclude input {
+    vertical-align: -3px;
 }
+
+.gdpress-manage-container table td.name,
+.gdpress-manage-container table th.name {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    width: 15%;
+}
+
+.gdpress-manage-container table td.href,
+.gdpress-manage-container table th.href {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 362px;
+    width: 35%;
+}
+
+.gdpress-manage-container table td.href a {
+    text-decoration: none;
+    color: #3c434a;
+}
+
+.gdpress-manage-container table tbody th {
+    text-align: left;
+}
+
+.gdpress-manage-container table tbody tr.even {
+    background-color: #f0f0f1;
+}
+
+/* Blue highlighted rows for Google Fonts upsell */
+.gdpress-manage-container table tbody tr.info {
+    background-color: #C2EEFF;
+}
+
+/* Yellow highlighted rows for denylisted resources */
+.gdpress-manage-container table tbody tr.warning {
+    background-color: #FFEF87;
+}
+
+/**
+ * Tooltip
+ */
+.gdpress-manage-container .tooltip {
+    position: relative;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.gdpress-manage-container .tooltip .tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.75);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 0.8em;
+    color: #fff;
+    line-height: 1.5;
+    width: 250px;
+    padding: 10px;
+    margin-left: -30px;
+    border-radius: 3px;
+}
+
+.gdpress-manage-container .tooltip .tooltip-text a {
+    color: white;
+}
+
+.gdpress-manage-container .tooltip:hover .tooltip-text {
+    visibility: visible;
+}
+
+/**
+ * Help Tab Specific
+ */
+.gdpress-help-container .postbox {
+    padding: 0;
+    box-shadow: none;
+    border: 0;
+}
+
+.gdpress-help-container .column-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.gdpress-help-container .column ul li {
+    margin-bottom: 10px;
+}
+
+.gdpress-help-container .column ul li a {
+    text-decoration: none;
+    line-height: 1.45;
+}
+
+.gdpress-help-container .column ul li a i.dashicons {
+    margin-right: 5px;
+    color: #646970;
+}
+
+.gdpress-help-container .column.last {
+    margin-right: 45px;
+}
+
+.gdpress-help-container .column.last .signature {
+    text-align: center;
+}
+
+.gdpress-help-container .column.last .signature-image {
+    width: 185px;
+}
+
 /**
  * Loader
  */
 .gdpress-loading {
-  position: fixed;
-  background-color: rgba(255, 255, 255, 0.6);
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  text-align: center;
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.6);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
 }
+
 .gdpress-loading .spinner {
-  top: 50%;
-  left: 50%;
-  position: absolute;
-  -ms-transform: translateX(-50%);
-  transform: translateX(-50%);
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
-/**
- * Welcome Block
- */
+
 #footer-thankyou a {
-  vertical-align: -0.65em;
+    vertical-align: -0.65em;
 }
+
 #footer-thankyou .dashicons.ffwp-heart {
-  vertical-align: middle;
+    vertical-align: middle;
+    color: #FF4136;
 }
-#footer-thankyou .dashicons.ffwp-heart:before {
-  color: #FF4136;
-}
+
 #footer-thankyou .signature-image {
-  width: 96px;
+    width: 96px;
 }
+
 /*# sourceMappingURL=./gdpress-admin.css.map */

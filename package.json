@@ -1,15 +1,28 @@
 {
-    "name": "GDPRess",
-    "version": "1.2.3",
-    "description": "",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Dan0sz/gdpress.git"
-    },
-    "author": "Daan van den Bergh",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://wordpress.org/support/plugin/gdpr-press/"
-    },
-    "homepage": "https://wordpress.org/plugins/gdpr-press/"
+  "name": "GDPRess",
+  "version": "1.2.3",
+  "description": "![WordPress version](https://img.shields.io/wordpress/plugin/v/gdpr-press.svg) ![WordPress Rating](https://img.shields.io/wordpress/plugin/r/gdpr-press.svg) ![WordPress Downloads](https://img.shields.io/wordpress/plugin/dt/gdpr-press.svg)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dan0sz/gdpress.git"
+  },
+  "author": "Daan van den Bergh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://wordpress.org/support/plugin/gdpr-press/"
+  },
+  "homepage": "https://wordpress.org/plugins/gdpr-press/",
+  "main": "index.js",
+  "scripts": {
+    "prod": "node scripts/minify-all.js",
+    "watch": "chokidar 'assets/js/**/*.js' 'assets/css/**/*.css' -i 'assets/**/*.min.*' -c 'npm run prod'"
+  },
+  "keywords": [],
+  "type": "module",
+  "devDependencies": {
+    "chokidar-cli": "^3.0.0",
+    "clean-css": "^5.3.3",
+    "glob": "^13.0.6",
+    "uglify-js": "^3.19.3"
+  }
 }

@@ -1,15 +1,49 @@
 {
-    "name": "daandev/gdpress",
-    "autoload": {
-        "psr-4": {
-            "GDPRess\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Daan from Daan.dev",
-            "email": "18595395+Dan0sz@users.noreply.github.com"
-        }
+  "name": "daandev/gdpress",
+  "autoload": {
+    "psr-4": {
+      "GDPRess\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "GDPRess\\Tests\\Integration\\": "tests/integration/",
+      "GDPRess\\Tests\\Mocks\\": "tests/mocks/",
+      "GDPRess\\Tests\\Unit\\": "tests/unit/",
+      "GDPRess\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Daan from Daan.dev",
+      "email": "18595395+Dan0sz@users.noreply.github.com"
+    }
+  ],
+  "scripts": {
+    "lint": [
+      "@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint . -e php --show-deprecated --exclude vendor --exclude .git"
     ],
-    "require": {}
+    "unit": [
+      "@php ./vendor/bin/phpunit --no-coverage"
+    ],
+    "integration": [
+      "@php ./vendor/bin/phpunit --configuration phpunit-with-integration.xml --no-coverage"
+    ],
+    "coverage": [
+      "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover ./build/clover.xml"
+    ]
+  },
+  "require-dev": {
+    "yoast/wp-test-utils": "^1.2",
+    "php-parallel-lint/php-parallel-lint": "*",
+    "php-parallel-lint/php-console-highlighter": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "wp-coding-standards/wpcs": "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
 }
