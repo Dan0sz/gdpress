@@ -17,6 +17,8 @@ class DownloadTest extends TestCase {
 	private $download;
 	
 	public function setUp(): void {
+		parent::setUp();
+		
 		$this->download = new Download();
 	}
 	
