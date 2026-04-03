@@ -3,7 +3,7 @@
  * Plugin Name: GDPRess
  * Plugin URI: https://wordpress.org/plugins/gdpr-press/
  * Description: Easily eliminate external requests with GDPRess.
- * Version: 1.2.3
+ * Version: 1.3.0
  * Author: Daan from Daan.dev
  * Author URI: https://daan.dev
  * License: GPL2v2 or later
