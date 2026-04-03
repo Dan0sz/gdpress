@@ -87,7 +87,17 @@ class DownloadTest extends TestCase {
 			'protocol-relative source'                => [
 				'/fonts/font.woff2',
 				'//example.com/css/style.css',
-				'http://example.org/fonts/font.woff2',
+				get_site_url( null, '/fonts/font.woff2' ),
+			],
+			'source without scheme/host'              => [
+				'/fonts/font.woff2',
+				'path/to/resource.css',
+				get_site_url( null, '/fonts/font.woff2' ),
+			],
+			'fully qualified source'                  => [
+				'/fonts/font.woff2',
+				'https://example.com/css/style.css',
+				'https://example.com/fonts/font.woff2',
 			],
 		];
 	}
