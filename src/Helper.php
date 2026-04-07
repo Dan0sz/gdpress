@@ -283,6 +283,7 @@ class Helper {
 				'google-analytics.com/analytics.js',
 				'js.stripe.com',
 				'maps.googleapis.com',
+				'paypal.com/sdk/js',
 			]
 		);
 	}
