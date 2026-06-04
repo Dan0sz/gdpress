@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: gdpr, dsgvo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.9
 Tested up to: 7.0
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,6 +63,10 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.3.1 =
+* Improved: PayPal SDK and Cloudflare Turnstile are now automatically excluded.
+* Tested with WP 7.0.
 
 = 1.3.0 | The "He is risen!" Release =
 * Added: Admin bar menu with "Scan this page" option to trigger a scan on the current page.
