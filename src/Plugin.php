@@ -29,10 +29,10 @@ class Plugin {
 	private function init() {
 		new Constants();
 		new Setup();
+		new Migrate();
 		
 		if ( is_admin() ) {
 			new Settings();
-			new Migrate();
 		}
 		
 		if ( ! is_admin() ) {

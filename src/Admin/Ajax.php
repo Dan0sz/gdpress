@@ -76,7 +76,6 @@ class Ajax {
 		
 		$db_cleanup = [
 			Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
-			Settings::GDPRESS_MANAGE_SETTING_LOCAL,
 			Settings::GDPRESS_MANAGE_SETTING_EXCLUDED,
 		];
 		

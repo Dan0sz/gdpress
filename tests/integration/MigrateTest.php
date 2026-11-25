@@ -17,6 +17,7 @@ class MigrateTest extends TestCase {
 	public function tearDown(): void {
 		delete_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
 		delete_option( Settings::GDPRESS_OPTION_DB_VERSION );
+		wp_clear_scheduled_hook( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] );
 		
 		parent::tearDown();
 	}
@@ -72,48 +73,43 @@ class MigrateTest extends TestCase {
 	}
 	
 	/**
-	 * @covers \GDPRess\Admin\Migrate::maybe_migrate
+	 * @covers \GDPRess\Admin\Migrate::schedule_delete_old_files
 	 */
-	public function test_copies_of_local_files_are_deleted() {
-		$host  = wp_parse_url( get_home_url(), PHP_URL_HOST );
-		$files = [
-			'/css/gdpress-own/css/icons.css'     => "@font-face{src:url('../fonts/icons.woff2?v=1')} a{background:url(../../../../../outside.txt)}",
-			'/css/gdpress-own/fonts/icons.woff2' => 'font',
-			'/js/gdpress-own/script.js'          => 'js',
-			'/js/gdpress-ext/script.js'          => 'js',
-		];
-		
-		foreach ( $files as $path => $contents ) {
-			wp_mkdir_p( dirname( GDPRESS_CACHE_ABSPATH . $path ) );
-			file_put_contents( GDPRESS_CACHE_ABSPATH . $path, $contents );
-		}
-		
-		$outside = dirname( GDPRESS_CACHE_ABSPATH ) . '/outside.txt';
-		file_put_contents( $outside, 'keep' );
-		
-		$own_js    = "http://$host/gdpress-own/script.js?ver=1";
-		$ext_js    = 'https://cdn.example.net/gdpress-ext/script.js';
-		$ext_local = Helper::get_local_url( $ext_js, 'js' );
-		
-		update_option(
-			Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
-			[
-				'css' => [ [ 'href' => "http://$host/gdpress-own/css/icons.css?ver=1", 'name' => 'icons.css' ] ],
-				'js'  => [ [ 'href' => $own_js, 'name' => 'script.js' ], [ 'href' => $ext_js, 'name' => 'script.js' ] ],
-			]
-		);
-		update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, [ 'js' => [ $own_js, Helper::get_local_url( $own_js, 'js' ), $ext_local ] ] );
+	public function test_cleanup_is_scheduled() {
+		update_option( 'gdpress_local_urls', [ 'js' => [ 'https://example.org/script.js' ] ] );
 		
 		( new Migrate() )->maybe_migrate();
 		
-		$this->assertDirectoryDoesNotExist( GDPRESS_CACHE_ABSPATH . '/css/gdpress-own' );
-		$this->assertDirectoryDoesNotExist( GDPRESS_CACHE_ABSPATH . '/js/gdpress-own' );
-		$this->assertFileExists( GDPRESS_CACHE_ABSPATH . '/js/gdpress-ext/script.js' );
-		$this->assertFileExists( $outside );
-		$this->assertSame( [ 'js' => [ $ext_local ] ], get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL ) );
+		$this->assertFalse( get_option( 'gdpress_local_urls' ) );
+		$this->assertNotFalse( wp_next_scheduled( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] ) );
+	}
+	
+	/**
+	 * @covers \GDPRess\Admin\Migrate::delete_old_files
+	 */
+	public function test_only_old_files_are_deleted() {
+		$old     = GDPRESS_CACHE_ABSPATH . '/js/gdpress-old/script.js';
+		$new     = GDPRESS_CACHE_ABSPATH . '/js/gdpress.example.net/script.js';
+		$outside = GDPRESS_CACHE_ABSPATH . '/gdpress-outside.txt';
+		$now     = time();
 		
+		foreach ( [ $old, $new, $outside ] as $file ) {
+			wp_mkdir_p( dirname( $file ) );
+			file_put_contents( $file, 'contents' );
+		}
+		
+		touch( $old, $now - 60 );
+		touch( $outside, $now - 60 );
+		touch( $new, $now );
+		
+		( new Migrate() )->delete_old_files( $now );
+		
+		$this->assertDirectoryDoesNotExist( dirname( $old ) );
+		$this->assertFileExists( $new );
+		$this->assertFileExists( $outside );
+		
+		unlink( $new );
+		rmdir( dirname( $new ) );
 		unlink( $outside );
-		unlink( GDPRESS_CACHE_ABSPATH . '/js/gdpress-ext/script.js' );
-		delete_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL );
 	}
 }

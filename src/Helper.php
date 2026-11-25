@@ -30,16 +30,7 @@ class Helper {
 			return '';
 		}
 		
-		$path = wp_parse_url( $url, PHP_URL_PATH );
-		
-		if ( ! $path ) {
-			/**
-			 * @TODO: Generate a unique path a different way.
-			 */
-			return '';
-		}
-		
-		$rel_path = self::sanitize_relative_path( $path );
+		$rel_path = self::get_relative_path( $url );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -61,16 +52,7 @@ class Helper {
 			return '';
 		}
 		
-		$path = wp_parse_url( $url, PHP_URL_PATH );
-		
-		if ( ! $path ) {
-			/**
-			 * @TODO: Generate a unique path a different way.
-			 */
-			return '';
-		}
-		
-		$rel_path = self::sanitize_relative_path( $path );
+		$rel_path = self::get_relative_path( $url );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -103,6 +85,31 @@ class Helper {
 		}
 		
 		return $full_path;
+	}
+	
+	/**
+	 * Generate a path from $url, relative to the cache directory. It starts with the host, because different hosts can
+	 * serve different files from the same path.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $url
+	 *
+	 * @return string
+	 */
+	private static function get_relative_path( $url ) {
+		$parts = wp_parse_url( $url );
+		
+		if ( empty( $parts['host'] ) || empty( $parts['path'] ) ) {
+			/**
+			 * @TODO: Generate a unique path a different way.
+			 */
+			return '';
+		}
+		
+		$port = isset( $parts['port'] ) ? ':' . $parts['port'] : '';
+		
+		return self::sanitize_relative_path( '/' . strtolower( $parts['host'] ) . $port . $parts['path'] );
 	}
 	
 	/**
@@ -167,7 +174,7 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_url_google_font( $filename, $bypass = false ) {
-		$rel_path = self::sanitize_relative_path( "/$filename/google-fonts.css" );
+		$rel_path = self::sanitize_relative_path( "/fonts.googleapis.com/$filename/google-fonts.css" );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -196,7 +203,7 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_path_google_font( $filename ) {
-		$rel_path = self::sanitize_relative_path( "/$filename/google-fonts.css" );
+		$rel_path = self::sanitize_relative_path( "/fonts.googleapis.com/$filename/google-fonts.css" );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -281,6 +288,7 @@ class Helper {
 				'challenges.cloudflare.com',
 				'googletagmanager.com/gtag/js',
 				'google-analytics.com/analytics.js',
+				'hcaptcha.com/1/api.js',
 				'js.stripe.com',
 				'maps.googleapis.com',
 				'paypal.com/sdk/js',
@@ -317,33 +325,6 @@ class Helper {
 	 */
 	public static function is_webfont_loader_request( $url ) {
 		return strpos( $url, 'webfont.js' ) !== false;
-	}
-	
-	/**
-	 * Contains all localized file URLs.
-	 *
-	 * @return array
-	 */
-	public static function local() {
-		static $local;
-		
-		/**
-		 * Get a fresh copy from the database if $excluded is empty|null|false (on 1st run)
-		 */
-		if ( empty( $local ) ) {
-			$local = get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, [] ) ?: [];
-		}
-		
-		/**
-		 * get_option() should take care of this, but often it doesn't.
-		 *
-		 * @since v0.1
-		 */
-		if ( is_string( $local ) ) {
-			$local = maybe_unserialize( $local );
-		}
-		
-		return $local;
 	}
 	
 	/**
@@ -427,6 +408,33 @@ class Helper {
 	}
 	
 	/**
+	 * Count the requests of $type a local copy is used for.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $type
+	 *
+	 * @return int
+	 */
+	public static function count_local( $type ) {
+		$count = 0;
+		
+		foreach ( self::requests()[ $type ] ?? [] as $request ) {
+			if ( self::is_excluded( $type, $request['href'] ) ) {
+				continue;
+			}
+			
+			$path = self::is_google_fonts_request( $request['href'] ) ? self::get_local_path_google_font( $request['name'] ) : self::get_local_path( $request['href'], $type );
+			
+			if ( $path && is_file( $path ) ) {
+				$count ++;
+			}
+		}
+		
+		return $count;
+	}
+	
+	/**
 	 * Check if $url is a file hosted on this site, regardless of its scheme (http, https or protocol relative) and
 	 * www-prefix.
 	 *
@@ -476,28 +484,6 @@ class Helper {
 	 */
 	private static function normalize_host( $host ) {
 		return preg_replace( '/^www\./', '', strtolower( $host ) );
-	}
-	
-	/**
-	 *
-	 * @param string $type
-	 * @param string $url
-	 * @param bool   $write_to_db
-	 *
-	 * @return bool
-	 */
-	public static function set_local_url( $type = '', $url = '', $write_to_db = false ) {
-		static $local_urls;
-		
-		if ( $type && $url ) {
-			$local_urls[ $type ][] = $url;
-		}
-		
-		if ( $write_to_db ) {
-			return update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, $local_urls );
-		}
-		
-		return true;
 	}
 	
 	/**

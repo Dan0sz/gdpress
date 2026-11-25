@@ -38,17 +38,15 @@ class Download {
 			$file_url  = Helper::get_local_url( $url, $type, true );
 		}
 		
-		if ( file_exists( $file_path ) ) {
+		if ( ! $file_path ) {
+			return '';
+		}
+		
+		if ( is_file( $file_path ) ) {
 			return $file_url;
 		}
 		
-		if ( Helper::is_google_fonts_request( $url ) ) {
-			$path = str_replace( 'google-fonts.css', '', $file_path );
-		} else {
-			$path = str_replace( $filename, '', $file_path );
-		}
-		
-		$tmp = $this->download_to_tmp( $path, $url );
+		$tmp = $this->download_to_tmp( dirname( $file_path ), $url );
 		
 		if ( ! $tmp ) {
 			return '';
@@ -306,14 +304,12 @@ class Download {
 	 * @return array|string|string[]
 	 */
 	private function replace_abs_urls( $contents, $url ) {
-		$path = parse_url( $url, PHP_URL_PATH );
+		$local_url = Helper::get_local_url( $url, 'css', true );
 		
-		if ( ! $path ) {
-			$path = '/';
+		if ( ! $local_url ) {
+			return $contents;
 		}
 		
-		$local_url = content_url( GDPRESS_CACHE_DIR . '/css' . $path );
-		
-		return str_replace( $url, $local_url, $contents );
+		return str_replace( $url, trailingslashit( $local_url ), $contents );
 	}
 }
