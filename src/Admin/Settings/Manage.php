@@ -90,16 +90,28 @@ class Manage extends Builder {
     }
 
     private function manage_screen() {
-        $css_count = isset( Helper::requests()['css'] ) ? count( Helper::requests()['css'] ) : 0;
-        $js_count  = isset( Helper::requests()['js'] ) ? count( Helper::requests()['js'] ) : 0;
+        $local_css_count = Helper::count_local( 'css' );
+        $local_js_count  = Helper::count_local( 'js' );
+        $css_count       = isset( Helper::requests()['css'] ) ? count( Helper::requests()['css'] ) : 0;
+        $js_count        = isset( Helper::requests()['js'] ) ? count( Helper::requests()['js'] ) : 0;
         ?>
-        <?php if ( empty( Helper::local() ) ) : ?>
+        <?php if ( ! $local_css_count && ! $local_js_count ) : ?>
             <p>
-                <em><?php echo sprintf( __( 'Beep-boop! 🤖 GDPRess Bot has detected %1$s stylesheets and %2$s scripts loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press' ), (string) $css_count, (string) $js_count ); ?></em>
+                <em>
+                    <?php
+                    /* translators: 1: Number of stylesheets, e.g. "2 stylesheets". 2: Number of scripts, e.g. "1 script". */
+                    echo sprintf( __( 'Beep-boop! 🤖 GDPRess Bot has detected %1$s and %2$s loaded from 3rd parties. Download them to your server to increase GDPR compliance.', 'gdpr-press' ), $this->get_count_text( 'css', $css_count ), $this->get_count_text( 'js', $js_count ) );
+                    ?>
+                </em>
             </p>
         <?php else : ?>
             <p>
-                <em><?php echo sprintf( __( 'Hurray! 🎉 GDPRess Bot has downloaded %1$s stylesheets and %2$s scripts. Kickback, relax, enjoy your (increased) GDPR compliance and <a href="%3$s" target="_blank">maybe oil my circuits with a 5 ⭐ rating</a>?', 'gdpr-press' ), count( Helper::local()['css'] ?? [] ), count( Helper::local()['js'] ?? [] ), 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post' ); ?></em> <?php echo sprintf( $this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.' ); ?>
+                <em>
+                    <?php
+                    /* translators: 1: Number of stylesheets, e.g. "2 stylesheets". 2: Number of scripts, e.g. "1 script". 3: URL. */
+                    echo sprintf( __( 'Hurray! 🎉 GDPRess Bot has downloaded %1$s and %2$s. Kickback, relax, enjoy your (increased) GDPR compliance and <a href="%3$s" target="_blank">maybe oil my circuits with a 5 ⭐ rating</a>?', 'gdpr-press' ), $this->get_count_text( 'css', $local_css_count ), $this->get_count_text( 'js', $local_js_count ), 'https://wordpress.org/support/plugin/gdpr-press/reviews/?rate=5#new-post' );
+                    ?>
+                </em> <?php echo sprintf( $this->tooltip_markup, 'GDPRess is a helper bot, not a legal advice bot. Please refer to your country\'s GDPR regulations and make sure you\'ve taken all necessary steps to comply.' ); ?>
             </p>
         <?php endif; ?>
         <table>
@@ -165,6 +177,22 @@ class Manage extends Builder {
         </table>
         <input type="hidden" name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_REQUESTS ); ?>" value="<?php echo base64_encode( serialize( Helper::requests() ) ); ?>"/>
         <?php
+    }
+
+    /**
+     * @param string $type
+     * @param int    $count
+     *
+     * @return string
+     */
+    private function get_count_text( $type, $count ) {
+        if ( 'css' === $type ) {
+            /* translators: %s: Number of stylesheets. */
+            return sprintf( _n( '%s stylesheet', '%s stylesheets', $count, 'gdpr-press' ), number_format_i18n( $count ) );
+        }
+
+        /* translators: %s: Number of scripts. */
+        return sprintf( _n( '%s script', '%s scripts', $count, 'gdpr-press' ), number_format_i18n( $count ) );
     }
 
     /**

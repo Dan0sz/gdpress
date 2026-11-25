@@ -40,7 +40,7 @@ class Migrate {
 		if ( version_compare( $db_version, '1.3.2', '<' ) ) {
 			$this->remove_local_requests();
 			$this->merge_requests();
-			$this->update_local_urls();
+			delete_option( 'gdpress_local_urls' ); // Not used anymore.
 			$this->schedule_delete_old_files();
 		}
 		
@@ -83,35 +83,6 @@ class Migrate {
 		}
 		
 		update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, array_map( [ Helper::class, 'unique_requests' ], $requests ) );
-	}
-	
-	/**
-	 * Local copies are stored by host since v1.3.2.
-	 *
-	 * @since v1.3.2
-	 *
-	 * @return void
-	 */
-	private function update_local_urls() {
-		$requests = maybe_unserialize( Helper::requests( true ) );
-		
-		if ( ! is_array( $requests ) || ! get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL ) ) {
-			return;
-		}
-		
-		$local_urls = [];
-		
-		foreach ( $requests as $type => $type_requests ) {
-			foreach ( $type_requests as $request ) {
-				if ( Helper::is_excluded( $type, $request['href'] ) ) {
-					continue;
-				}
-				
-				$local_urls[ $type ][] = Helper::is_google_fonts_request( $request['href'] ) ? Helper::get_local_url_google_font( $request['name'], true ) : Helper::get_local_url( $request['href'], $type, true );
-			}
-		}
-		
-		update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, $local_urls );
 	}
 	
 	/**

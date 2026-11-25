@@ -16,7 +16,6 @@ use GDPRess\Tests\TestCase;
 class MigrateTest extends TestCase {
 	public function tearDown(): void {
 		delete_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
-		delete_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL );
 		delete_option( Settings::GDPRESS_OPTION_DB_VERSION );
 		wp_clear_scheduled_hook( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filemtime( GDPRESS_PLUGIN_FILE ) ] );
 		
@@ -74,18 +73,14 @@ class MigrateTest extends TestCase {
 	}
 	
 	/**
-	 * @covers \GDPRess\Admin\Migrate::update_local_urls
 	 * @covers \GDPRess\Admin\Migrate::schedule_delete_old_files
 	 */
-	public function test_local_urls_are_updated_and_cleanup_is_scheduled() {
-		$url = 'https://cdn.example.net/script.js';
-		
-		update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [ 'js' => [ [ 'href' => $url, 'name' => 'script.js' ] ] ] );
-		update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, [ 'js' => [ content_url( GDPRESS_CACHE_DIR . '/js/script.js' ) ] ] );
+	public function test_cleanup_is_scheduled() {
+		update_option( 'gdpress_local_urls', [ 'js' => [ 'https://example.org/script.js' ] ] );
 		
 		( new Migrate() )->maybe_migrate();
 		
-		$this->assertSame( [ 'js' => [ content_url( GDPRESS_CACHE_DIR . '/js/cdn.example.net/script.js' ) ] ], get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL ) );
+		$this->assertFalse( get_option( 'gdpress_local_urls' ) );
 		$this->assertNotFalse( wp_next_scheduled( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filemtime( GDPRESS_PLUGIN_FILE ) ] ) );
 	}
 	

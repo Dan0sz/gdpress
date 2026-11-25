@@ -85,16 +85,9 @@ class CacheManager {
 					continue;
 				}
 				
-				$url = $downloader->download_file( $request['name'], $type, $request['href'] );
-				
-				Helper::set_local_url( $type, $url );
+				$downloader->download_file( $request['name'], $type, $request['href'] );
 			}
 		}
-		
-		/**
-		 * Write everything to the database.
-		 */
-		Helper::set_local_url( '', '', true );
 	}
 	
 	/**

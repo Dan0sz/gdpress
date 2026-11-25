@@ -328,33 +328,6 @@ class Helper {
 	}
 	
 	/**
-	 * Contains all localized file URLs.
-	 *
-	 * @return array
-	 */
-	public static function local() {
-		static $local;
-		
-		/**
-		 * Get a fresh copy from the database if $excluded is empty|null|false (on 1st run)
-		 */
-		if ( empty( $local ) ) {
-			$local = get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, [] ) ?: [];
-		}
-		
-		/**
-		 * get_option() should take care of this, but often it doesn't.
-		 *
-		 * @since v0.1
-		 */
-		if ( is_string( $local ) ) {
-			$local = maybe_unserialize( $local );
-		}
-		
-		return $local;
-	}
-	
-	/**
 	 * Contains all fetched external requests.
 	 *
 	 * @return array
@@ -435,6 +408,33 @@ class Helper {
 	}
 	
 	/**
+	 * Count the requests of $type a local copy is used for.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $type
+	 *
+	 * @return int
+	 */
+	public static function count_local( $type ) {
+		$count = 0;
+		
+		foreach ( self::requests()[ $type ] ?? [] as $request ) {
+			if ( self::is_excluded( $type, $request['href'] ) ) {
+				continue;
+			}
+			
+			$path = self::is_google_fonts_request( $request['href'] ) ? self::get_local_path_google_font( $request['name'] ) : self::get_local_path( $request['href'], $type );
+			
+			if ( $path && is_file( $path ) ) {
+				$count ++;
+			}
+		}
+		
+		return $count;
+	}
+	
+	/**
 	 * Check if $url is a file hosted on this site, regardless of its scheme (http, https or protocol relative) and
 	 * www-prefix.
 	 *
@@ -484,28 +484,6 @@ class Helper {
 	 */
 	private static function normalize_host( $host ) {
 		return preg_replace( '/^www\./', '', strtolower( $host ) );
-	}
-	
-	/**
-	 *
-	 * @param string $type
-	 * @param string $url
-	 * @param bool   $write_to_db
-	 *
-	 * @return bool
-	 */
-	public static function set_local_url( $type = '', $url = '', $write_to_db = false ) {
-		static $local_urls;
-		
-		if ( $type && $url ) {
-			$local_urls[ $type ][] = $url;
-		}
-		
-		if ( $write_to_db ) {
-			return update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, $local_urls );
-		}
-		
-		return true;
 	}
 	
 	/**

@@ -361,8 +361,7 @@ class OutputProcessor {
 	 * @throws \SodiumException
 	 */
 	private function process_requests( $requests, $html ) {
-		$download  = new Download();
-		$added_new = false;
+		$download = new Download();
 		
 		foreach ( $requests as $type => $type_requests ) {
 			foreach ( $type_requests as $request ) {
@@ -388,18 +387,10 @@ class OutputProcessor {
 					if ( ! $local_url ) {
 						continue;
 					}
-					
-					Helper::set_local_url( $type, $request['href'] );
-					
-					$added_new = true;
 				}
 				
 				$html = str_replace( $request['href'], esc_attr( $local_url ) . $this->get_query( $request['href'] ), $html );
 			}
-		}
-		
-		if ( $added_new ) {
-			Helper::set_local_url( '', '', true );
 		}
 		
 		return $html;
