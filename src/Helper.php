@@ -224,7 +224,7 @@ class Helper {
 		 * @var string $url is stored in the database decoded, but it's escaped in the form.
 		 */
 		$url         = html_entity_decode( $url );
-		$is_excluded = isset( self::excluded()[ $type ] ) && in_array( $url, self::excluded()[ $type ] );
+		$is_excluded = isset( self::excluded()[ $type ] ) && in_array( self::get_request_id( $url ), array_map( [ self::class, 'get_request_id' ], self::excluded()[ $type ] ), true );
 		
 		if ( $is_excluded ) {
 			return true;
@@ -375,6 +375,55 @@ class Helper {
 		}
 		
 		return $requests;
+	}
+	
+	/**
+	 * Generate an identifier for $url, which is the same for each variant of its query string, because these variants
+	 * share the same local copy.
+	 *
+	 * @see   Helper::get_local_path()
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $url
+	 *
+	 * @return string
+	 */
+	public static function get_request_id( $url ) {
+		$url   = html_entity_decode( trim( $url ) );
+		$parts = wp_parse_url( $url );
+		
+		// The contents of Google Fonts stylesheets are defined by the query string.
+		if ( empty( $parts['host'] ) || empty( $parts['path'] ) || self::is_google_fonts_request( $url ) ) {
+			return $url;
+		}
+		
+		$port = isset( $parts['port'] ) ? ':' . $parts['port'] : '';
+		
+		return strtolower( $parts['host'] ) . $port . $parts['path'];
+	}
+	
+	/**
+	 * Keep the first of each request in $requests.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param array $requests { int => { 'name' => string, 'href' => string } }
+	 *
+	 * @return array
+	 */
+	public static function unique_requests( $requests ) {
+		$unique = [];
+		
+		foreach ( $requests as $request ) {
+			$id = self::get_request_id( $request['href'] );
+			
+			if ( ! isset( $unique[ $id ] ) ) {
+				$unique[ $id ] = $request;
+			}
+		}
+		
+		return array_values( $unique );
 	}
 	
 	/**

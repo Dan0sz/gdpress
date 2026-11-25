@@ -324,6 +324,7 @@ class OutputProcessor {
 	 */
 	private function update_managed_requests( $external_reqs ) {
 		$existing_requests = Helper::requests();
+		$merged            = $existing_requests;
 		$has_new_items     = false;
 		
 		foreach ( [ 'css', 'js' ] as $type ) {
@@ -331,29 +332,18 @@ class OutputProcessor {
 				continue;
 			}
 			
-			$existing_hrefs = array_column( $existing_requests[ $type ] ?? [], 'href' );
+			$existing_ids = array_map( [ Helper::class, 'get_request_id' ], array_column( $existing_requests[ $type ] ?? [], 'href' ) );
+			$new_items    = array_filter( $external_reqs[ $type ], fn( $item ) => ! in_array( Helper::get_request_id( $item['href'] ), $existing_ids, true ) );
 			
-			foreach ( $external_reqs[ $type ] as $item ) {
-				if ( ! in_array( $item['href'], $existing_hrefs ) ) {
-					$has_new_items = true;
-					break 2;
-				}
+			if ( ! $new_items ) {
+				continue;
 			}
+			
+			$has_new_items   = true;
+			$merged[ $type ] = array_merge( $merged[ $type ] ?? [], Helper::unique_requests( $new_items ) );
 		}
 		
 		if ( $has_new_items ) {
-			$merged = $existing_requests;
-			
-			foreach ( [ 'css', 'js' ] as $type ) {
-				if ( empty( $external_reqs[ $type ] ) ) {
-					continue;
-				}
-				
-				$existing_hrefs  = array_column( $merged[ $type ] ?? [], 'href' );
-				$new_items       = array_filter( $external_reqs[ $type ], fn( $item ) => ! in_array( $item['href'], $existing_hrefs ) );
-				$merged[ $type ] = array_merge( $merged[ $type ] ?? [], array_values( $new_items ) );
-			}
-			
 			update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, $merged );
 		}
 	}

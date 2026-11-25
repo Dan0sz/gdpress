@@ -36,6 +36,7 @@ class Migrate {
 		
 		if ( version_compare( $db_version, '1.3.2', '<' ) ) {
 			$this->remove_local_requests();
+			$this->merge_requests();
 		}
 		
 		update_option( Settings::GDPRESS_OPTION_DB_VERSION, GDPRESS_DB_VERSION );
@@ -89,6 +90,23 @@ class Migrate {
 		}
 		
 		update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, array_filter( $requests ) );
+	}
+	
+	/**
+	 * Previous versions would store a request again for each variant of its query string.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @return void
+	 */
+	private function merge_requests() {
+		$requests = maybe_unserialize( Helper::requests( true ) );
+		
+		if ( ! is_array( $requests ) ) {
+			return;
+		}
+		
+		update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, array_map( [ Helper::class, 'unique_requests' ], $requests ) );
 	}
 	
 	/**
