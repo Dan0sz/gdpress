@@ -130,15 +130,13 @@ class OutputProcessor {
 	 * @return array
 	 */
 	private function get_external_requests( $html ) {
-		$site_url = get_home_url();
-		
 		preg_match_all( '/<link.*?stylesheet.*?[\/]?>/', $html, $stylesheets );
 		
-		$stylesheets = $this->parse_stylesheets( $stylesheets[0] ?? [], $site_url );
+		$stylesheets = $this->parse_stylesheets( $stylesheets[0] ?? [] );
 		
 		preg_match_all( '/<script.*?src.*?<\/script>/', $html, $scripts );
 		
-		$scripts = $this->parse_scripts( $scripts[0] ?? [], $site_url );
+		$scripts = $this->parse_scripts( $scripts[0] ?? [] );
 		
 		$external_reqs = [];
 		
@@ -158,26 +156,21 @@ class OutputProcessor {
 	 *
 	 * @since v1.2.0
 	 *
-	 * @param array  $stylesheets
-	 * @param string $site_url
+	 * @param array $stylesheets
 	 *
 	 * @return array { int => { 'name' => string, 'href' => string } }
 	 */
-	private function parse_stylesheets( $stylesheets, $site_url ) {
+	private function parse_stylesheets( $stylesheets ) {
 		$external_css = [];
 		$i            = 0;
 		
 		foreach ( $stylesheets as $stylesheet ) {
 			preg_match( '/href=[\'"](?P<href>.*?)[\'"]/', $stylesheet, $href );
 			
-			$href = $fixed_href = $href['href'] ?? '';
-			
-			if ( str_starts_with( $href, '//' ) ) {
-				$fixed_href = 'https:' . $href;
-			}
+			$href = $href['href'] ?? '';
 			
 			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
-			if ( ! $href || str_starts_with( $fixed_href, '/' ) || str_contains( $fixed_href, $site_url ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
+			if ( ! $href || Helper::is_local_request( $href ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $href ) ) {
 				continue;
 			}
 			
@@ -283,12 +276,11 @@ class OutputProcessor {
 	 *
 	 * @since v1.2.0
 	 *
-	 * @param array  $scripts
-	 * @param string $site_url
+	 * @param array $scripts
 	 *
 	 * @return array { int => { 'name' => string, 'href' => string } }
 	 */
-	private function parse_scripts( $scripts, $site_url ) {
+	private function parse_scripts( $scripts ) {
 		$external_js = [];
 		$i           = 0;
 		
@@ -298,7 +290,7 @@ class OutputProcessor {
 			$src = $src['src'] ?? '';
 			
 			// If the resource is already locally loaded, it's an inline style block, or it's a non-external URI scheme, move along.
-			if ( str_contains( $src, $site_url ) || ! $src || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $src ) ) {
+			if ( ! $src || Helper::is_local_request( $src ) || preg_match( '/^(data:|blob:|javascript:|about:|#)/', $src ) ) {
 				continue;
 			}
 			

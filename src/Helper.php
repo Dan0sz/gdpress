@@ -363,18 +363,93 @@ class Helper {
 		 */
 		if ( empty( $requests ) ) {
 			$requests = get_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [] ) ?: [];
-		}
-		
-		/**
-		 * get_option() should take care of this, but sometimes it doesn't.
-		 *
-		 * @since v0.1
-		 */
-		if ( is_string( $requests ) ) {
-			$requests = maybe_unserialize( $requests );
+			
+			/**
+			 * get_option() should take care of this, but sometimes it doesn't.
+			 *
+			 * @since v0.1
+			 */
+			if ( is_string( $requests ) ) {
+				$requests = maybe_unserialize( $requests );
+			}
+			
+			$requests = self::remove_local_requests( $requests );
 		}
 		
 		return $requests;
+	}
+	
+	/**
+	 * Remove this site's own files from $requests. Previous versions would store those if the URL's scheme differed.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param mixed $requests
+	 *
+	 * @return array
+	 */
+	private static function remove_local_requests( $requests ) {
+		if ( ! is_array( $requests ) ) {
+			return [];
+		}
+		
+		foreach ( $requests as $type => $type_requests ) {
+			$requests[ $type ] = array_values( array_filter( $type_requests, fn( $request ) => ! self::is_local_request( $request['href'] ) ) );
+		}
+		
+		return array_filter( $requests );
+	}
+	
+	/**
+	 * Check if $url is a file hosted on this site, regardless of its scheme (http, https or protocol relative) and
+	 * www-prefix.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $url
+	 *
+	 * @return bool
+	 */
+	public static function is_local_request( $url ) {
+		$host = wp_parse_url( trim( $url ), PHP_URL_HOST );
+		
+		// Relative URL.
+		if ( null === $host ) {
+			return true;
+		}
+		
+		if ( ! $host ) {
+			return false;
+		}
+		
+		return in_array( self::normalize_host( $host ), self::local_hosts(), true );
+	}
+	
+	/**
+	 * Contains the hosts this site is served from.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @return array
+	 */
+	private static function local_hosts() {
+		$hosts = [
+			wp_parse_url( get_home_url(), PHP_URL_HOST ),
+			wp_parse_url( get_site_url(), PHP_URL_HOST ),
+		];
+		
+		return array_map( [ self::class, 'normalize_host' ], array_filter( $hosts ) );
+	}
+	
+	/**
+	 * @since v1.3.2
+	 *
+	 * @param string $host
+	 *
+	 * @return string
+	 */
+	private static function normalize_host( $host ) {
+		return preg_replace( '/^www\./', '', strtolower( $host ) );
 	}
 	
 	/**
