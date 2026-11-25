@@ -18,6 +18,9 @@ class Manage extends Builder {
     /** @var string $gf_notice */
     private $gf_notice;
 
+    /** @var string $bunny_notice */
+    private $bunny_notice;
+
     /** @var string $webfont_notice */
     private $webfont_notice;
 
@@ -134,9 +137,10 @@ class Manage extends Builder {
                 <?php foreach ( $requests as $i => $request ) : ?>
                     <?php
                     $request_type = $this->get_request_type( $request );
+                    $is_locked    = in_array( $request_type, [ 'google_analytics', 'bunny_fonts', 'excluded' ], true );
                     $classes      = $i % 2 ? 'even ' : '';
 
-                    if ( $request_type === 'google_analytics' || $request_type === 'excluded' ) {
+                    if ( $is_locked ) {
                         $classes .= 'warning';
                     } elseif ( $request_type === 'google_fonts' || $request_type === 'webfont_js' || $request_type === 'upsell' ) {
                         $classes .= 'info';
@@ -154,8 +158,8 @@ class Manage extends Builder {
                         <td class="href"><span title="<?php echo esc_url( $request['href'] ); ?>"><?php echo esc_url( $request['href'] ); ?></span></td>
                         <td class="href"><span title="<?php echo esc_url( $local_url ); ?>"><?php echo esc_url( $local_url ); ?></span></td>
                         <td class="exclude">
-                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $request_type === 'google_analytics' || $request_type === 'excluded' ? 'checked' : ''; ?>
-                                <?php echo $request_type === 'google_analytics' || $request_type === 'excluded' ? 'class="locked"' : ''; ?>
+                            <input type="checkbox" <?php echo Helper::is_excluded( $type, $request['href'] ) || $is_locked ? 'checked' : ''; ?>
+                                <?php echo $is_locked ? 'class="locked"' : ''; ?>
                                 name="<?php echo esc_attr( Settings::GDPRESS_MANAGE_SETTING_EXCLUDED ); ?>[<?php echo esc_attr( $type ); ?>][]" value="<?php echo esc_url( $request['href'] ); ?>"
                             />
                         </td>
@@ -208,7 +212,7 @@ class Manage extends Builder {
         $is_upsell  = false;
 
         foreach ( Helper::exclusion_list() as $pattern ) {
-            if ( str_contains( $request['href'], $pattern ) ) {
+            if ( stripos( $request['href'], $pattern ) !== false ) {
                 $is_excl = true;
                 break;
             }
@@ -228,6 +232,10 @@ class Manage extends Builder {
 
         if ( $is_ga ) {
             return 'google_analytics';
+        }
+
+        if ( $is_excl && Helper::is_bunny_fonts_request( $request['href'] ) ) {
+            return 'bunny_fonts';
         }
 
         if ( $is_excl ) {
@@ -310,6 +318,8 @@ class Manage extends Builder {
         switch ( $request_type ) {
             case 'google_analytics':
                 return sprintf( $this->ga_notice, admin_url( 'plugin-install.php?s=CAOS&tab=search&type=term' ) );
+            case 'bunny_fonts':
+                return sprintf( $this->bunny_notice, admin_url( 'plugin-install.php?s=OMGF&tab=search&type=term' ) );
             case 'excluded':
                 return $this->exclusion_notice;
             case 'upsell':
@@ -347,6 +357,7 @@ class Manage extends Builder {
     public function set_translations() {
         $this->ga_notice        = __( '<strong>Warning!</strong> 🤖 Due to the sensitive nature of using Google Analytics in compliance with GDPR, GDPRess Bot will ignore this file automatically. I suggest optimizing this request using <a href="%s" target="_blank" rel="noopener noreferrer">CAOS</a> (free).', 'gdpr-press' );
         $this->gf_notice        = __( '<strong>Uh-oh!</strong> 😵 GDPRess Bot has detected <strong>a lot</strong> of Google Fonts! I can download all of them, but I doubt you need (all of) them. I suggest optimizing this request using <a href="%s" target="_blank" rel="noopener noreferrer">OMGF</a> (free).', 'gdpr-press' );
+        $this->bunny_notice     = __( '<strong>Heads up!</strong> 🐰 GDPRess Bot has detected Bunny Fonts and will ignore this file automatically, because its contents depend on the requested fonts. I suggest optimizing this request using <a href="%s" target="_blank" rel="noopener noreferrer">OMGF</a> (free).', 'gdpr-press' );
         $this->webfont_notice   = __( '<strong>Heads up!</strong> 🔍 GDPRess Bot has detected a Web Font Loader script. I can download it for you, but the Google Fonts it loads will still be requested externally. Want to optimize those too? <a href="%s" target="_blank" rel="noopener noreferrer">OMGF Pro</a> can automatically preload, swap or unload individual font families — without any manual configuration.', 'gdpr-press' );
         $this->exclusion_notice = __( '<strong>Beep-boop!</strong> 🤖 GDPRess Bot has automatically marked this resource as excluded because it\'s known to break when locally hosted. You\'re welcome!', 'gdpr-press' );
         $this->upsell_notice    = __( '<strong>Psst!</strong> 💡 GDPRess Bot detected a Google Fonts request. I can download it — but humans shouldn\'t be trusted with font optimization. <a href="%s" target="_blank" rel="noopener noreferrer">OMGF Pro</a> automatically preloads, unloads and subsets your fonts. No human error.', 'gdpr-press' );

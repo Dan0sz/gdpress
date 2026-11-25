@@ -13,6 +13,19 @@ use GDPRess\Tests\TestCase;
 
 class HelperTest extends TestCase {
 	/**
+	 * @covers \GDPRess\Helper::is_bunny_fonts_request
+	 * @covers \GDPRess\Helper::is_excluded
+	 */
+	public function test_bunny_fonts_are_excluded() {
+		foreach ( [ 'https://fonts.bunny.net/css?family=roboto:400', 'https://FONTS.BUNNY.NET/css?family=inter:400' ] as $url ) {
+			$this->assertTrue( Helper::is_bunny_fonts_request( $url ) );
+			$this->assertTrue( Helper::is_excluded( 'css', $url ) );
+		}
+		
+		$this->assertFalse( Helper::is_bunny_fonts_request( 'https://cdn.example.net/style.css?source=fonts.bunny.net' ) );
+	}
+	
+	/**
 	 * @covers \GDPRess\Helper::get_local_path
 	 * @covers \GDPRess\Helper::get_local_url
 	 */

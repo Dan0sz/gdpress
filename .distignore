@@ -2,6 +2,7 @@
 /.git
 /.github
 /.vscode
+/bin
 /node_modules
 /scripts
 /tests

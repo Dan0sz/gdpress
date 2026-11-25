@@ -4,7 +4,7 @@ Tags: gdpr, dsgvo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.9
 Tested up to: 7.0
 Stable tag: 1.3.2
-Requires PHP: 7.2
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,7 +32,7 @@ GDPRess scans your homepage for third party scripts (JS) and stylesheets (CSS), 
 * Parses the stylesheets for loaded font files, downloads them, and rewrites the stylesheet to use the local copies.
 * Makes sure the local copies of each script/stylesheet are used in your site's frontend.
 
-In short, it makes sure no requests are made to external/embedded/3rd party scripts and stylesheets.
+In short, it makes sure no requests are made to external/embedded/3rd party scripts and stylesheets, except for the ones that are excluded or can't be downloaded.
 
 == Installation ==
 
