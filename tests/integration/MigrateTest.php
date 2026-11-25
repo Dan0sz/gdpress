@@ -85,6 +85,63 @@ class MigrateTest extends TestCase {
 	}
 	
 	/**
+	 * @covers \GDPRess\Admin\Migrate::copy_local_files
+	 */
+	public function test_local_files_are_copied_to_their_host() {
+		$cache = GDPRESS_CACHE_ABSPATH;
+		$url   = content_url( GDPRESS_CACHE_DIR . '/css' );
+		$old   = [
+			'/js/gdpress-one/script.js'          => 'one',
+			'/js/gdpress-shared/script.js'       => 'shared',
+			'/css/gdpress-one/css/style.css'     => "@font-face{src:url('../fonts/font.woff2?v=1')}",
+			'/css/gdpress-one/fonts/font.woff2'  => 'font',
+			'/css/gdpress-font/google-fonts.css' => "@font-face{src:url(https://old.example.net" . wp_parse_url( $url, PHP_URL_PATH ) . "/s/gdpress/font.woff2)}",
+			'/css/s/gdpress/font.woff2'          => 'google font',
+		];
+		$new   = [
+			'/js/cdn.example.net/gdpress-one/script.js'              => 'one',
+			'/css/cdn.example.net/gdpress-one/css/style.css'         => "@font-face{src:url('../fonts/font.woff2?v=1')}",
+			'/css/cdn.example.net/gdpress-one/fonts/font.woff2'      => 'font',
+			'/css/fonts.googleapis.com/gdpress-font/google-fonts.css' => "@font-face{src:url($url/fonts.gstatic.com/s/gdpress/font.woff2)}",
+			'/css/fonts.gstatic.com/s/gdpress/font.woff2'            => 'google font',
+		];
+		
+		foreach ( $old as $path => $contents ) {
+			wp_mkdir_p( dirname( $cache . $path ) );
+			file_put_contents( $cache . $path, $contents );
+		}
+		
+		update_option(
+			Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
+			[
+				'css' => [
+					[ 'href' => 'https://cdn.example.net/gdpress-one/css/style.css?ver=1', 'name' => 'style.css' ],
+					[ 'href' => 'https://fonts.googleapis.com/css?family=GDPRess', 'name' => 'gdpress-font' ],
+				],
+				'js'  => [
+					[ 'href' => 'https://cdn.example.net/gdpress-one/script.js?ver=1', 'name' => 'script.js' ],
+					[ 'href' => 'https://cdn.example.net/gdpress-shared/script.js', 'name' => 'script.js' ],
+					[ 'href' => 'https://cdn.example.com/gdpress-shared/script.js', 'name' => 'script.js' ],
+				],
+			]
+		);
+		
+		( new Migrate() )->maybe_migrate();
+		
+		foreach ( $new as $path => $contents ) {
+			$this->assertStringEqualsFile( $cache . $path, $contents );
+		}
+		
+		$this->assertFileDoesNotExist( $cache . '/js/cdn.example.net/gdpress-shared/script.js' );
+		$this->assertFileDoesNotExist( $cache . '/js/cdn.example.com/gdpress-shared/script.js' );
+		
+		foreach ( array_keys( $old + $new ) as $path ) {
+			$this->assertFileExists( $cache . $path );
+			unlink( $cache . $path );
+		}
+	}
+	
+	/**
 	 * @covers \GDPRess\Admin\Migrate::delete_old_files
 	 */
 	public function test_only_old_files_are_deleted() {
