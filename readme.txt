@@ -3,7 +3,7 @@ Contributors: DaanvandenBergh
 Tags: gdpr, dsgvo, avg, external, 3rd party, requests, minimize
 Requires at least: 5.9
 Tested up to: 7.0
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,6 +63,16 @@ No, because much more is needed than *just* downloading analytics.js/gtag.js to 
 5. When the selected files are downloaded, the URLs of the local copies are listed.
 
 == Changelog ==
+
+= 1.3.2 =
+* Added: hCaptcha and the Apple Pay SDK are now automatically excluded, because they're known to break when locally hosted.
+* Fixed: Files hosted on the site itself are no longer marked as external if the URL's scheme or www-prefix differs. Existing entries are removed automatically.
+* Fixed: Files with the same path on different hosts no longer share the same local copy. Existing local copies are moved automatically.
+* Fixed: URL parameters are now preserved in the local URL, because some scripts depend on them.
+* Fixed: If a download fails, the external URL is now left in place, instead of being replaced with an empty URL.
+* Fixed: Some files (e.g., `/sdk/js`) couldn't be saved locally.
+* Fixed: The number of downloaded stylesheets and scripts is now displayed correctly.
+* Improved: Requests which only differ in their URL parameters are now listed as one. Excluding it, excludes all variants.
 
 = 1.3.1 =
 * Improved: PayPal SDK and Cloudflare Turnstile are now automatically excluded.
