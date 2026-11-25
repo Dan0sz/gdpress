@@ -285,6 +285,7 @@ class Helper {
 			'gdpress_exclusion_list',
 			[
 				'app.usercentrics.eu',
+				'applepay.cdn-apple.com',
 				'challenges.cloudflare.com',
 				'googletagmanager.com/gtag/js',
 				'google-analytics.com/analytics.js',
