@@ -287,6 +287,7 @@ class Helper {
 				'app.usercentrics.eu',
 				'applepay.cdn-apple.com',
 				'challenges.cloudflare.com',
+				'fonts.bunny.net',
 				'googletagmanager.com/gtag/js',
 				'google-analytics.com/analytics.js',
 				'hcaptcha.com/1/api.js',
@@ -313,6 +314,19 @@ class Helper {
 		return strpos( $url, 'fonts.googleapis.com/css' ) !== false
 		       || strpos( $url, 'fonts.googleapis.com/icon' ) !== false
 		       || strpos( $url, 'fonts.gstatic.com' ) !== false;
+	}
+	
+	/**
+	 * Check if $url is a Bunny Fonts request.
+	 *
+	 * @since v1.3.3
+	 *
+	 * @param string $url
+	 *
+	 * @return bool
+	 */
+	public static function is_bunny_fonts_request( $url ) {
+		return strpos( $url, 'fonts.bunny.net' ) !== false;
 	}
 	
 	/**
