@@ -48,6 +48,31 @@ class MigrateTest extends TestCase {
 	
 	/**
 	 * @covers \GDPRess\Admin\Migrate::maybe_migrate
+	 * @covers \GDPRess\Helper::unique_requests
+	 */
+	public function test_variants_are_merged() {
+		$sdk   = [ 'href' => 'https://cdn.example.net/sdk/js?intent=capture&#038;funding=a%2Cb', 'name' => 'js' ];
+		$other = [ 'href' => 'https://cdn.example.net/other.js', 'name' => 'other.js' ];
+		$fonts = [
+			[ 'href' => 'https://fonts.googleapis.com/css?family=Poppins', 'name' => 'poppins' ],
+			[ 'href' => 'https://fonts.googleapis.com/css?family=Roboto', 'name' => 'roboto' ],
+		];
+		
+		update_option(
+			Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
+			[
+				'css' => $fonts,
+				'js'  => [ $sdk, [ 'href' => '//cdn.example.net/sdk/js?intent=subscription', 'name' => 'js' ], $other ],
+			]
+		);
+		
+		( new Migrate() )->maybe_migrate();
+		
+		$this->assertSame( [ 'css' => $fonts, 'js' => [ $sdk, $other ] ], Helper::requests( true ) );
+	}
+	
+	/**
+	 * @covers \GDPRess\Admin\Migrate::maybe_migrate
 	 */
 	public function test_copies_of_local_files_are_deleted() {
 		$host  = wp_parse_url( get_home_url(), PHP_URL_HOST );
