@@ -378,6 +378,58 @@ class Helper {
 	}
 	
 	/**
+	 * Check if $url is a file hosted on this site, regardless of its scheme (http, https or protocol relative) and
+	 * www-prefix.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $url
+	 *
+	 * @return bool
+	 */
+	public static function is_local_request( $url ) {
+		$host = wp_parse_url( trim( $url ), PHP_URL_HOST );
+		
+		// Relative URL.
+		if ( null === $host ) {
+			return true;
+		}
+		
+		if ( ! $host ) {
+			return false;
+		}
+		
+		return in_array( self::normalize_host( $host ), self::local_hosts(), true );
+	}
+	
+	/**
+	 * Contains the hosts this site is served from.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @return array
+	 */
+	private static function local_hosts() {
+		$hosts = [
+			wp_parse_url( get_home_url(), PHP_URL_HOST ),
+			wp_parse_url( get_site_url(), PHP_URL_HOST ),
+		];
+		
+		return array_map( [ self::class, 'normalize_host' ], array_filter( $hosts ) );
+	}
+	
+	/**
+	 * @since v1.3.2
+	 *
+	 * @param string $host
+	 *
+	 * @return string
+	 */
+	private static function normalize_host( $host ) {
+		return preg_replace( '/^www\./', '', strtolower( $host ) );
+	}
+	
+	/**
 	 *
 	 * @param string $type
 	 * @param string $url
