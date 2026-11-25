@@ -93,14 +93,14 @@ class MigrateTest extends TestCase {
 		$old   = [
 			'/js/gdpress-one/script.js'          => 'one',
 			'/js/gdpress-shared/script.js'       => 'shared',
-			'/css/gdpress-one/css/style.css'     => "@font-face{src:url('../fonts/font.woff2?v=1')}",
+			'/css/gdpress-one/css/style.css'     => "@font-face{src:url( '../fonts/font.woff2?v=1' )}",
 			'/css/gdpress-one/fonts/font.woff2'  => 'font',
 			'/css/gdpress-font/google-fonts.css' => "@font-face{src:url(https://old.example.net" . wp_parse_url( $url, PHP_URL_PATH ) . "/s/gdpress/font.woff2)}",
 			'/css/s/gdpress/font.woff2'          => 'google font',
 		];
 		$new   = [
 			'/js/cdn.example.net/gdpress-one/script.js'              => 'one',
-			'/css/cdn.example.net/gdpress-one/css/style.css'         => "@font-face{src:url('../fonts/font.woff2?v=1')}",
+			'/css/cdn.example.net/gdpress-one/css/style.css'         => "@font-face{src:url( '../fonts/font.woff2?v=1' )}",
 			'/css/cdn.example.net/gdpress-one/fonts/font.woff2'      => 'font',
 			'/css/fonts.googleapis.com/gdpress-font/google-fonts.css' => "@font-face{src:url($url/fonts.gstatic.com/s/gdpress/font.woff2)}",
 			'/css/fonts.gstatic.com/s/gdpress/font.woff2'            => 'google font',

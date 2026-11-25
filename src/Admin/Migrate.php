@@ -182,7 +182,7 @@ class Migrate {
 		$host    = $is_google_fonts ? 'fonts.gstatic.com' : $this->get_host_dir( $new );
 		$fonts   = [];
 		
-		preg_match_all( '/url\([\'"]?(?P<urls>.+?)[\'"]?\)/', $contents, $matches );
+		preg_match_all( '/url\(\s*[\'"]?(?P<urls>.+?)[\'"]?\s*\)/', $contents, $matches );
 		
 		foreach ( array_unique( $matches['urls'] ) as $url ) {
 			$font     = preg_replace( '/[?#].*$/', '', $url );
