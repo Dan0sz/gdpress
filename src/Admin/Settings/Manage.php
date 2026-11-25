@@ -212,7 +212,7 @@ class Manage extends Builder {
         $is_upsell  = false;
 
         foreach ( Helper::exclusion_list() as $pattern ) {
-            if ( str_contains( $request['href'], $pattern ) ) {
+            if ( stripos( $request['href'], $pattern ) !== false ) {
                 $is_excl = true;
                 break;
             }

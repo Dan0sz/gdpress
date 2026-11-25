@@ -17,10 +17,10 @@ class HelperTest extends TestCase {
 	 * @covers \GDPRess\Helper::is_excluded
 	 */
 	public function test_bunny_fonts_are_excluded() {
-		$url = 'https://fonts.bunny.net/css?family=roboto:400';
-		
-		$this->assertTrue( Helper::is_bunny_fonts_request( $url ) );
-		$this->assertTrue( Helper::is_excluded( 'css', $url ) );
+		foreach ( [ 'https://fonts.bunny.net/css?family=roboto:400', 'https://FONTS.BUNNY.NET/css?family=inter:400' ] as $url ) {
+			$this->assertTrue( Helper::is_bunny_fonts_request( $url ) );
+			$this->assertTrue( Helper::is_excluded( 'css', $url ) );
+		}
 	}
 	
 	/**

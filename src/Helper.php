@@ -238,7 +238,7 @@ class Helper {
 		}
 		
 		foreach ( self::exclusion_list() as $pattern ) {
-			if ( str_contains( $url, $pattern ) ) {
+			if ( stripos( $url, $pattern ) !== false ) {
 				return true;
 			}
 		}
@@ -326,7 +326,7 @@ class Helper {
 	 * @return bool
 	 */
 	public static function is_bunny_fonts_request( $url ) {
-		return strpos( $url, 'fonts.bunny.net' ) !== false;
+		return stripos( $url, 'fonts.bunny.net' ) !== false;
 	}
 	
 	/**
