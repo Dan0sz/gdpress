@@ -363,41 +363,18 @@ class Helper {
 		 */
 		if ( empty( $requests ) ) {
 			$requests = get_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [] ) ?: [];
-			
-			/**
-			 * get_option() should take care of this, but sometimes it doesn't.
-			 *
-			 * @since v0.1
-			 */
-			if ( is_string( $requests ) ) {
-				$requests = maybe_unserialize( $requests );
-			}
-			
-			$requests = self::remove_local_requests( $requests );
+		}
+		
+		/**
+		 * get_option() should take care of this, but sometimes it doesn't.
+		 *
+		 * @since v0.1
+		 */
+		if ( is_string( $requests ) ) {
+			$requests = maybe_unserialize( $requests );
 		}
 		
 		return $requests;
-	}
-	
-	/**
-	 * Remove this site's own files from $requests. Previous versions would store those if the URL's scheme differed.
-	 *
-	 * @since v1.3.2
-	 *
-	 * @param mixed $requests
-	 *
-	 * @return array
-	 */
-	private static function remove_local_requests( $requests ) {
-		if ( ! is_array( $requests ) ) {
-			return [];
-		}
-		
-		foreach ( $requests as $type => $type_requests ) {
-			$requests[ $type ] = array_values( array_filter( $type_requests, fn( $request ) => ! self::is_local_request( $request['href'] ) ) );
-		}
-		
-		return array_filter( $requests );
 	}
 	
 	/**

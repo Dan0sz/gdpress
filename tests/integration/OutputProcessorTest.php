@@ -8,8 +8,6 @@
 
 namespace GDPRess\Tests\Integration;
 
-use GDPRess\Admin\Settings;
-use GDPRess\Helper;
 use GDPRess\OutputProcessor;
 use GDPRess\Tests\TestCase;
 use ReflectionClass;
@@ -44,28 +42,6 @@ class OutputProcessorTest extends TestCase {
 		foreach ( $ext as $url ) {
 			$this->assertSame( [ $url, $url ], $this->parse( $url ), "Should be external: $url" );
 		}
-	}
-	
-	/**
-	 * @covers \GDPRess\Helper::requests
-	 */
-	public function test_stored_local_files_are_removed() {
-		$host = wp_parse_url( get_home_url(), PHP_URL_HOST );
-		
-		update_option(
-			Settings::GDPRESS_MANAGE_SETTING_REQUESTS,
-			[
-				'css' => [ [ 'href' => "http://$host/style.css", 'name' => 'style.css' ] ],
-				'js'  => [
-					[ 'href' => "http://$host/script.js", 'name' => 'script.js' ],
-					[ 'href' => 'https://cdn.example.net/script.js', 'name' => 'script.js' ],
-				],
-			]
-		);
-		
-		$this->assertSame( [ 'js' => [ [ 'href' => 'https://cdn.example.net/script.js', 'name' => 'script.js' ] ] ], Helper::requests() );
-		
-		delete_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
 	}
 	
 	/**
