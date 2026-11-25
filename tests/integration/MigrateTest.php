@@ -14,6 +14,14 @@ use GDPRess\Helper;
 use GDPRess\Tests\TestCase;
 
 class MigrateTest extends TestCase {
+	public function setUp(): void {
+		parent::setUp();
+		
+		// The migration already ran while WordPress was loading.
+		delete_option( Settings::GDPRESS_OPTION_DB_VERSION );
+		wp_clear_scheduled_hook( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] );
+	}
+	
 	public function tearDown(): void {
 		delete_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
 		delete_option( Settings::GDPRESS_OPTION_DB_VERSION );
@@ -76,6 +84,8 @@ class MigrateTest extends TestCase {
 	 * @covers \GDPRess\Admin\Migrate::schedule_delete_old_files
 	 */
 	public function test_cleanup_is_scheduled() {
+		wp_mkdir_p( GDPRESS_CACHE_ABSPATH . '/js' );
+		update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, [ 'js' => [ [ 'href' => 'https://cdn.example.net/script.js', 'name' => 'script.js' ] ] ] );
 		update_option( 'gdpress_local_urls', [ 'js' => [ 'https://example.org/script.js' ] ] );
 		
 		( new Migrate() )->maybe_migrate();

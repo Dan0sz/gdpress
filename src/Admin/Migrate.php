@@ -250,6 +250,10 @@ class Migrate {
 	 * @return void
 	 */
 	private function schedule_delete_old_files() {
+		if ( ! is_dir( GDPRESS_CACHE_ABSPATH . '/css' ) && ! is_dir( GDPRESS_CACHE_ABSPATH . '/js' ) ) {
+			return;
+		}
+		
 		wp_schedule_single_event( time() + 30 * DAY_IN_SECONDS, self::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] );
 	}
 	
