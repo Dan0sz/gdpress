@@ -326,7 +326,7 @@ class Helper {
 	 * @return bool
 	 */
 	public static function is_bunny_fonts_request( $url ) {
-		return stripos( $url, 'fonts.bunny.net' ) !== false;
+		return strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) ) === 'fonts.bunny.net';
 	}
 	
 	/**

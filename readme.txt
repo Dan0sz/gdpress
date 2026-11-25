@@ -32,7 +32,7 @@ GDPRess scans your homepage for third party scripts (JS) and stylesheets (CSS), 
 * Parses the stylesheets for loaded font files, downloads them, and rewrites the stylesheet to use the local copies.
 * Makes sure the local copies of each script/stylesheet are used in your site's frontend.
 
-In short, it makes sure no requests are made to external/embedded/3rd party scripts and stylesheets, except for the ones that are excluded.
+In short, it makes sure no requests are made to external/embedded/3rd party scripts and stylesheets, except for the ones that are excluded or can't be downloaded.
 
 == Installation ==
 

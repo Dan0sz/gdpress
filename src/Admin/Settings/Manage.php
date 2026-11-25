@@ -234,7 +234,7 @@ class Manage extends Builder {
             return 'google_analytics';
         }
 
-        if ( Helper::is_bunny_fonts_request( $request['href'] ) ) {
+        if ( $is_excl && Helper::is_bunny_fonts_request( $request['href'] ) ) {
             return 'bunny_fonts';
         }
 

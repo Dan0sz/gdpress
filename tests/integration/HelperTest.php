@@ -21,6 +21,8 @@ class HelperTest extends TestCase {
 			$this->assertTrue( Helper::is_bunny_fonts_request( $url ) );
 			$this->assertTrue( Helper::is_excluded( 'css', $url ) );
 		}
+		
+		$this->assertFalse( Helper::is_bunny_fonts_request( 'https://cdn.example.net/style.css?source=fonts.bunny.net' ) );
 	}
 	
 	/**
