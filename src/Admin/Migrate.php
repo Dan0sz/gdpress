@@ -89,12 +89,14 @@ class Migrate {
 	 * The copies stored by previous versions aren't used anymore, but cached pages might still refer to them. So, give
 	 * these some time to expire.
 	 *
+	 * The change time is used, because the modification time isn't updated by all deployment methods.
+	 *
 	 * @since v1.3.2
 	 *
 	 * @return void
 	 */
 	private function schedule_delete_old_files() {
-		wp_schedule_single_event( time() + 30 * DAY_IN_SECONDS, self::DELETE_OLD_FILES_HOOK, [ (int) filemtime( GDPRESS_PLUGIN_FILE ) ] );
+		wp_schedule_single_event( time() + 30 * DAY_IN_SECONDS, self::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] );
 	}
 	
 	/**

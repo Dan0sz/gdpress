@@ -38,7 +38,6 @@ class Settings extends Admin {
 
     const GDPRESS_MANAGE_SETTING_REQUESTS = 'gdpress_external_requests';
 
-
     const GDPRESS_MANAGE_SETTING_EXCLUDED = 'gdpress_excluded_urls';
 
     /** @var string $active_tab */

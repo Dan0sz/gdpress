@@ -17,7 +17,7 @@ class MigrateTest extends TestCase {
 	public function tearDown(): void {
 		delete_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS );
 		delete_option( Settings::GDPRESS_OPTION_DB_VERSION );
-		wp_clear_scheduled_hook( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filemtime( GDPRESS_PLUGIN_FILE ) ] );
+		wp_clear_scheduled_hook( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] );
 		
 		parent::tearDown();
 	}
@@ -81,7 +81,7 @@ class MigrateTest extends TestCase {
 		( new Migrate() )->maybe_migrate();
 		
 		$this->assertFalse( get_option( 'gdpress_local_urls' ) );
-		$this->assertNotFalse( wp_next_scheduled( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filemtime( GDPRESS_PLUGIN_FILE ) ] ) );
+		$this->assertNotFalse( wp_next_scheduled( Migrate::DELETE_OLD_FILES_HOOK, [ (int) filectime( GDPRESS_PLUGIN_FILE ) ] ) );
 	}
 	
 	/**
