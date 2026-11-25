@@ -381,15 +381,20 @@ class OutputProcessor {
 				/**
 				 * If it doesn't exist, download it.
 				 */
-				if ( ! file_exists( $local_dir ) ) {
-					$download->download_file( $request['name'], $type, $request['href'] );
+				if ( ! is_file( $local_dir ) ) {
+					$local_url = $download->download_file( $request['name'], $type, $request['href'] );
+					
+					// Download failed, so leave the external URL in place.
+					if ( ! $local_url ) {
+						continue;
+					}
 					
 					Helper::set_local_url( $type, $request['href'] );
 					
 					$added_new = true;
 				}
 				
-				$html = str_replace( $request['href'], esc_attr( $local_url ), $html );
+				$html = str_replace( $request['href'], esc_attr( $local_url ) . $this->get_query( $request['href'] ), $html );
 			}
 		}
 		
@@ -398,6 +403,24 @@ class OutputProcessor {
 		}
 		
 		return $html;
+	}
+	
+	/**
+	 * Get the query string (including the question mark) as it's used in the HTML, because some scripts read the
+	 * parameters from their own URL.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $url
+	 *
+	 * @return string
+	 */
+	private function get_query( $url ) {
+		if ( Helper::is_google_fonts_request( $url ) ) {
+			return '';
+		}
+		
+		return strstr( $url, '?' ) ?: '';
 	}
 	
 	/**

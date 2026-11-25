@@ -11,6 +11,8 @@ use GDPRess\Helper;
 
 class Migrate {
 	
+	const DELETE_OLD_FILES_HOOK = 'gdpress_delete_old_files';
+	
 	/**
 	 * Build class.
 	 *
@@ -18,6 +20,7 @@ class Migrate {
 	 */
 	public function __construct() {
 		add_action( 'admin_init', [ $this, 'maybe_migrate' ], 1 );
+		add_action( self::DELETE_OLD_FILES_HOOK, [ $this, 'delete_old_files' ] );
 	}
 	
 	/**
@@ -37,13 +40,15 @@ class Migrate {
 		if ( version_compare( $db_version, '1.3.2', '<' ) ) {
 			$this->remove_local_requests();
 			$this->merge_requests();
+			$this->update_local_urls();
+			$this->schedule_delete_old_files();
 		}
 		
 		update_option( Settings::GDPRESS_OPTION_DB_VERSION, GDPRESS_DB_VERSION );
 	}
 	
 	/**
-	 * Previous versions would store (and download) this site's own files if the URL's scheme differed.
+	 * Previous versions would store this site's own files if the URL's scheme differed.
 	 *
 	 * @since v1.3.2
 	 *
@@ -56,37 +61,8 @@ class Migrate {
 			return;
 		}
 		
-		$removed = [];
-		
 		foreach ( $requests as $type => $type_requests ) {
-			foreach ( $type_requests as $i => $request ) {
-				if ( ! Helper::is_local_request( $request['href'] ) ) {
-					continue;
-				}
-				
-				$this->delete_local_copy( $type, $request['href'] );
-				
-				$removed[] = $this->strip_scheme( $request['href'] );
-				$removed[] = $this->strip_scheme( Helper::get_local_url( $request['href'], $type, true ) );
-				
-				unset( $requests[ $type ][ $i ] );
-			}
-			
-			$requests[ $type ] = array_values( $requests[ $type ] );
-		}
-		
-		if ( ! $removed ) {
-			return;
-		}
-		
-		$local_urls = maybe_unserialize( get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, [] ) );
-		
-		if ( is_array( $local_urls ) ) {
-			foreach ( $local_urls as $type => $urls ) {
-				$local_urls[ $type ] = array_values( array_filter( $urls, fn( $url ) => ! in_array( $this->strip_scheme( $url ), $removed, true ) ) );
-			}
-			
-			update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, array_filter( $local_urls ) );
+			$requests[ $type ] = array_values( array_filter( $type_requests, fn( $request ) => ! Helper::is_local_request( $request['href'] ) ) );
 		}
 		
 		update_option( Settings::GDPRESS_MANAGE_SETTING_REQUESTS, array_filter( $requests ) );
@@ -110,72 +86,78 @@ class Migrate {
 	}
 	
 	/**
-	 * Delete the copy of $url, including the font files downloaded along with it, if it's a stylesheet.
+	 * Local copies are stored by host since v1.3.2.
 	 *
-	 * @param string $type
-	 * @param string $url
+	 * @since v1.3.2
 	 *
 	 * @return void
 	 */
-	private function delete_local_copy( $type, $url ) {
-		$file = Helper::get_local_path( $url, $type );
+	private function update_local_urls() {
+		$requests = maybe_unserialize( Helper::requests( true ) );
 		
-		if ( ! $file || ! is_file( $file ) ) {
+		if ( ! is_array( $requests ) || ! get_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL ) ) {
 			return;
 		}
 		
-		if ( 'css' === $type ) {
-			preg_match_all( '/url\([\'"]?(?P<urls>.+?)[\'"]?\)/', (string) file_get_contents( $file ), $fonts );
-			
-			foreach ( $fonts['urls'] as $font ) {
-				// Absolute URLs might be in use by an external stylesheet too.
-				if ( str_starts_with( $font, '//' ) || preg_match( '/^[a-zA-Z][a-zA-Z0-9+.\-]*:/', $font ) ) {
+		$local_urls = [];
+		
+		foreach ( $requests as $type => $type_requests ) {
+			foreach ( $type_requests as $request ) {
+				if ( Helper::is_excluded( $type, $request['href'] ) ) {
 					continue;
 				}
 				
-				$font = preg_replace( '/[?#].*$/', '', $font );
-				
-				$this->delete_file( ( str_starts_with( $font, '/' ) ? GDPRESS_CACHE_ABSPATH . '/css' : dirname( $file ) . '/' ) . $font );
+				$local_urls[ $type ][] = Helper::is_google_fonts_request( $request['href'] ) ? Helper::get_local_url_google_font( $request['name'], true ) : Helper::get_local_url( $request['href'], $type, true );
 			}
 		}
 		
-		$this->delete_file( $file );
+		update_option( Settings::GDPRESS_MANAGE_SETTING_LOCAL, $local_urls );
 	}
 	
 	/**
-	 * Delete $file, and the directories it leaves empty, if it's in the cache directory.
+	 * The copies stored by previous versions aren't used anymore, but cached pages might still refer to them. So, give
+	 * these some time to expire.
 	 *
-	 * @param string $file
+	 * @since v1.3.2
 	 *
 	 * @return void
 	 */
-	private function delete_file( $file ) {
-		$file      = realpath( $file );
-		$cache_dir = realpath( GDPRESS_CACHE_ABSPATH );
-		
-		if ( ! $file || ! $cache_dir || ! is_file( $file ) || ! str_starts_with( $file, $cache_dir . DIRECTORY_SEPARATOR ) ) {
-			return;
-		}
-		
-		wp_delete_file( $file );
-		
-		$dir = dirname( $file );
-		
-		while ( str_starts_with( $dir, $cache_dir . DIRECTORY_SEPARATOR ) && is_dir( $dir ) && ! array_diff( (array) scandir( $dir ), [ '.', '..' ] ) ) {
-			if ( ! @rmdir( $dir ) ) {
-				break;
-			}
-			
-			$dir = dirname( $dir );
-		}
+	private function schedule_delete_old_files() {
+		wp_schedule_single_event( time() + 30 * DAY_IN_SECONDS, self::DELETE_OLD_FILES_HOOK, [ (int) filemtime( GDPRESS_PLUGIN_FILE ) ] );
 	}
 	
 	/**
-	 * @param string $url
+	 * Delete all local copies stored before $timestamp, and the directories this leaves empty.
 	 *
-	 * @return string
+	 * @since  v1.3.2
+	 *
+	 * @action gdpress_delete_old_files
+	 *
+	 * @param int $timestamp The moment this version was installed.
+	 *
+	 * @return void
 	 */
-	private function strip_scheme( $url ) {
-		return preg_replace( '/^https?:/', '', $url );
+	public function delete_old_files( $timestamp ) {
+		foreach ( [ 'css', 'js' ] as $type ) {
+			$dir = GDPRESS_CACHE_ABSPATH . "/$type";
+			
+			if ( ! is_dir( $dir ) ) {
+				continue;
+			}
+			
+			$files = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $dir, \FilesystemIterator::SKIP_DOTS ), \RecursiveIteratorIterator::CHILD_FIRST );
+			
+			foreach ( $files as $file ) {
+				$path = $file->getPathname();
+				
+				if ( $file->isDir() && ! $file->isLink() ) {
+					if ( ! array_diff( (array) scandir( $path ), [ '.', '..' ] ) ) {
+						@rmdir( $path );
+					}
+				} elseif ( $file->isFile() && $file->getMTime() < $timestamp ) {
+					wp_delete_file( $path );
+				}
+			}
+		}
 	}
 }

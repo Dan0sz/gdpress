@@ -13,6 +13,26 @@ use GDPRess\Tests\TestCase;
 
 class HelperTest extends TestCase {
 	/**
+	 * @covers \GDPRess\Helper::get_local_path
+	 * @covers \GDPRess\Helper::get_local_url
+	 */
+	public function test_local_copies_are_stored_by_host() {
+		$paths = [
+			'https://cdn.example.net/a/widgets.js?ver=1' => '/js/cdn.example.net/a/widgets.js',
+			'//CDN.example.com/a/widgets.js'             => '/js/cdn.example.com/a/widgets.js',
+			'https://cdn.example.net:8080/a/widgets.js'  => '/js/cdn.example.net-8080/a/widgets.js',
+			'https://cdn.example.net/../../widgets.js'   => '/js/cdn.example.net/widgets.js',
+		];
+		
+		foreach ( $paths as $url => $path ) {
+			$this->assertSame( wp_normalize_path( GDPRESS_CACHE_ABSPATH . $path ), Helper::get_local_path( $url, 'js' ) );
+			$this->assertSame( content_url( GDPRESS_CACHE_DIR . $path ), Helper::get_local_url( $url, 'js', true ) );
+		}
+		
+		$this->assertSame( '', Helper::get_local_path( 'https://cdn.example.net?file=1', 'js' ) );
+	}
+	
+	/**
 	 * @covers \GDPRess\Helper::get_request_id
 	 */
 	public function test_variants_share_an_id() {

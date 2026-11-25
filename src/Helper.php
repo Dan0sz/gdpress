@@ -30,16 +30,7 @@ class Helper {
 			return '';
 		}
 		
-		$path = wp_parse_url( $url, PHP_URL_PATH );
-		
-		if ( ! $path ) {
-			/**
-			 * @TODO: Generate a unique path a different way.
-			 */
-			return '';
-		}
-		
-		$rel_path = self::sanitize_relative_path( $path );
+		$rel_path = self::get_relative_path( $url );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -61,16 +52,7 @@ class Helper {
 			return '';
 		}
 		
-		$path = wp_parse_url( $url, PHP_URL_PATH );
-		
-		if ( ! $path ) {
-			/**
-			 * @TODO: Generate a unique path a different way.
-			 */
-			return '';
-		}
-		
-		$rel_path = self::sanitize_relative_path( $path );
+		$rel_path = self::get_relative_path( $url );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -103,6 +85,31 @@ class Helper {
 		}
 		
 		return $full_path;
+	}
+	
+	/**
+	 * Generate a path from $url, relative to the cache directory. It starts with the host, because different hosts can
+	 * serve different files from the same path.
+	 *
+	 * @since v1.3.2
+	 *
+	 * @param string $url
+	 *
+	 * @return string
+	 */
+	private static function get_relative_path( $url ) {
+		$parts = wp_parse_url( $url );
+		
+		if ( empty( $parts['host'] ) || empty( $parts['path'] ) ) {
+			/**
+			 * @TODO: Generate a unique path a different way.
+			 */
+			return '';
+		}
+		
+		$port = isset( $parts['port'] ) ? ':' . $parts['port'] : '';
+		
+		return self::sanitize_relative_path( '/' . strtolower( $parts['host'] ) . $port . $parts['path'] );
 	}
 	
 	/**
@@ -167,7 +174,7 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_url_google_font( $filename, $bypass = false ) {
-		$rel_path = self::sanitize_relative_path( "/$filename/google-fonts.css" );
+		$rel_path = self::sanitize_relative_path( "/fonts.googleapis.com/$filename/google-fonts.css" );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -196,7 +203,7 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_local_path_google_font( $filename ) {
-		$rel_path = self::sanitize_relative_path( "/$filename/google-fonts.css" );
+		$rel_path = self::sanitize_relative_path( "/fonts.googleapis.com/$filename/google-fonts.css" );
 		
 		if ( ! $rel_path ) {
 			return '';
@@ -281,6 +288,7 @@ class Helper {
 				'challenges.cloudflare.com',
 				'googletagmanager.com/gtag/js',
 				'google-analytics.com/analytics.js',
+				'hcaptcha.com/1/api.js',
 				'js.stripe.com',
 				'maps.googleapis.com',
 				'paypal.com/sdk/js',
