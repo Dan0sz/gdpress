@@ -157,7 +157,7 @@ class MigrateTest extends TestCase {
 		
 		touch( $old, $now - 60 );
 		touch( $outside, $now - 60 );
-		touch( $new, $now );
+		touch( $new, $now - 60 );
 		
 		( new Migrate() )->delete_old_files( $now );
 		

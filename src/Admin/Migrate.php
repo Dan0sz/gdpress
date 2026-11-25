@@ -19,14 +19,15 @@ class Migrate {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'admin_init', [ $this, 'maybe_migrate' ], 1 );
+		add_action( 'init', [ $this, 'maybe_migrate' ], 1 );
 		add_action( self::DELETE_OLD_FILES_HOOK, [ $this, 'delete_old_files' ] );
 	}
 	
 	/**
-	 * Run the migrations this install hasn't had yet.
+	 * Run the migrations this install hasn't had yet. This isn't limited to the admin, because after an automatic update
+	 * it can take a while before someone logs in.
 	 *
-	 * @action admin_init
+	 * @action init
 	 *
 	 * @return void
 	 */
@@ -266,6 +267,7 @@ class Migrate {
 	public function delete_old_files( $timestamp ) {
 		foreach ( [ 'css', 'js' ] as $type ) {
 			$dir = GDPRESS_CACHE_ABSPATH . "/$type";
+			$len = strlen( "$dir/" );
 			
 			if ( ! is_dir( $dir ) ) {
 				continue;
@@ -275,6 +277,12 @@ class Migrate {
 			
 			foreach ( $files as $file ) {
 				$path = $file->getPathname();
+				
+				// Stored by host, so it's not an old file.
+				if ( preg_match( '#^([a-z0-9_-]+\.)+[a-z][a-z0-9-]*/#', wp_normalize_path( substr( $path, $len ) ) ) ) {
+					continue;
+				}
+				
 				
 				if ( $file->isDir() && ! $file->isLink() ) {
 					if ( ! array_diff( (array) scandir( $path ), [ '.', '..' ] ) ) {
